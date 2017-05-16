@@ -50,3 +50,5 @@ log4j2.yml
 .mvn
 mvnw
 mvnw.cmd
+
+/.gitignore
