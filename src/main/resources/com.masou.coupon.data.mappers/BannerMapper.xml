@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.masou.coupon.data.mappers.BannerMapper">
+    <resultMap id="BaseResultMap" type="com.masou.coupon.data.models.Banner">
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="section" jdbcType="VARCHAR" property="section"/>
+        <result column="action" jdbcType="VARCHAR" property="action"/>
+        <result column="image" jdbcType="VARCHAR" property="image"/>
+        <result column="weight" jdbcType="INTEGER" property="weight"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+    id, section, action, image, weight
+  </sql>
+    <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from b_banner
+        where id = #{id,jdbcType=INTEGER}
+    </select>
+
+    <select id="selectListBySection" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from b_banner
+        where section=#{section}
+    </select>
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from b_banner
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+    <insert id="insert" parameterType="com.masou.coupon.data.models.Banner">
+    insert into b_banner (id, section, action, 
+      image, weight)
+    values (#{id,jdbcType=INTEGER}, #{section,jdbcType=VARCHAR}, #{action,jdbcType=VARCHAR}, 
+      #{image,jdbcType=VARCHAR}, #{weight,jdbcType=INTEGER})
+  </insert>
+    <insert id="insertSelective" parameterType="com.masou.coupon.data.models.Banner">
+        insert into b_banner
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="section != null">
+                section,
+            </if>
+            <if test="action != null">
+                action,
+            </if>
+            <if test="image != null">
+                image,
+            </if>
+            <if test="weight != null">
+                weight,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=INTEGER},
+            </if>
+            <if test="section != null">
+                #{section,jdbcType=VARCHAR},
+            </if>
+            <if test="action != null">
+                #{action,jdbcType=VARCHAR},
+            </if>
+            <if test="image != null">
+                #{image,jdbcType=VARCHAR},
+            </if>
+            <if test="weight != null">
+                #{weight,jdbcType=INTEGER},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.masou.coupon.data.models.Banner">
+        update b_banner
+        <set>
+            <if test="section != null">
+                section = #{section,jdbcType=VARCHAR},
+            </if>
+            <if test="action != null">
+                action = #{action,jdbcType=VARCHAR},
+            </if>
+            <if test="image != null">
+                image = #{image,jdbcType=VARCHAR},
+            </if>
+            <if test="weight != null">
+                weight = #{weight,jdbcType=INTEGER},
+            </if>
+        </set>
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.masou.coupon.data.models.Banner">
+    update b_banner
+    set section = #{section,jdbcType=VARCHAR},
+      action = #{action,jdbcType=VARCHAR},
+      image = #{image,jdbcType=VARCHAR},
+      weight = #{weight,jdbcType=INTEGER}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>
