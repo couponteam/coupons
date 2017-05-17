@@ -21,17 +21,17 @@ public class Swagger2 {
         return new Docket(DocumentationType.SWAGGER_2)
                 .apiInfo(apiInfo())
                 .select()
-                .apis(RequestHandlerSelectors.basePackage("com.bestexpress.webyb.action"))
+                .apis(RequestHandlerSelectors.basePackage("com.masou.coupon.action"))
                 .paths(PathSelectors.any())
                 .build();
     }
 
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder()
-                .title("818文档")
-                .description("818文档")
-                .termsOfServiceUrl("http://we818.com")
-                .contact("黄浦")
+                .title("领汇圈文档")
+                .description("领汇圈文档")
+                .termsOfServiceUrl("http://51li.com")
+                .contact("领汇圈")
                 .version("1.0")
                 .build();
     }

@@ -20,8 +20,8 @@ import org.springframework.web.bind.annotation.RestController;
 public class ApiCommonController {
 
 
-    @RequestMapping("/getQiniuBaseUrl")
-    public Result getQiniuBaseUrl(){
+    @RequestMapping(value = "/getQiniuBaseUrl", method = RequestMethod.GET)
+    public Result getQiniuBaseUrl() {
 
         return ResultHelper.genResultWithSuccess(BeValue.QINIU_BASE_URL);
     }
