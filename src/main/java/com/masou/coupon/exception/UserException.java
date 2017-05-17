@@ -2,7 +2,7 @@ package com.masou.coupon.exception;
 
 
 import com.masou.coupon.common.exception.BaseException;
-import com.masou.coupon.constant.enums.ErrorCodeEnum;
+import com.masou.coupon.common.enums.ErrorCodeEnum;
 import com.masou.coupon.utils.EnumMsg;
 
 /**

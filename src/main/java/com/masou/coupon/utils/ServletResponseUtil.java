@@ -2,7 +2,7 @@ package com.masou.coupon.utils;
 
 import com.alibaba.fastjson.JSON;
 import com.masou.coupon.common.struct.Result;
-import com.masou.coupon.constant.enums.ErrorCodeEnum;
+import com.masou.coupon.common.enums.ErrorCodeEnum;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;

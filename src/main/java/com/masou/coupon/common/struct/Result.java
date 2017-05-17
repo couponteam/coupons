@@ -2,7 +2,7 @@ package com.masou.coupon.common.struct;
 
 
 import com.masou.coupon.common.dto.BaseDTO;
-import com.masou.coupon.constant.enums.ErrorCodeEnum;
+import com.masou.coupon.common.enums.ErrorCodeEnum;
 
 /**
  * Created by july on 2016/11/2.

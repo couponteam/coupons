@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.masou.coupon.data.mappers.PhoneMessageMapper">
+    <resultMap id="BaseResultMap" type="com.masou.coupon.data.models.PhoneMessage">
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="phone_number" jdbcType="VARCHAR" property="phoneNumber"/>
+        <result column="verify" jdbcType="VARCHAR" property="verify"/>
+        <result column="content" jdbcType="VARCHAR" property="content"/>
+        <result column="create_at" jdbcType="TIMESTAMP" property="createAt"/>
+        <result column="expire_at" jdbcType="TIMESTAMP" property="expireAt"/>
+        <result column="source" jdbcType="INTEGER" property="source"/>
+        <result column="type" jdbcType="INTEGER" property="type"/>
+        <result column="used" property="used"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+    id, phone_number, verify, content, create_at, expire_at, source, type,used
+  </sql>
+    <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from ety_phone_message
+        where id = #{id,jdbcType=INTEGER}
+    </select>
+
+    <select id="selectTodayMessageCount" resultType="java.lang.Integer">
+        select count(*) from ety_phone_message where phone_number = #{phone} and create_at > date_format(now(),'%Y-%m-%d 00:00:00');
+    </select>
+
+    <select id="selectLastByType" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from ety_phone_message
+        where phone_number = #{phone}
+        and type = #{type}
+        and used = 0
+        order by id desc
+        limit 1
+    </select>
+
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from ety_phone_message
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+    <insert id="insert" parameterType="com.masou.coupon.data.models.PhoneMessage">
+    insert into ety_phone_message (id, phone_number, verify,
+      content, create_at, expire_at, 
+      source, type)
+    values (#{id,jdbcType=INTEGER}, #{phoneNumber,jdbcType=VARCHAR}, #{verify,jdbcType=VARCHAR}, 
+      #{content,jdbcType=VARCHAR}, #{createAt,jdbcType=TIMESTAMP}, #{expireAt,jdbcType=TIMESTAMP}, 
+      #{source,jdbcType=INTEGER}, #{type,jdbcType=INTEGER})
+  </insert>
+    <insert id="insertSelective" parameterType="com.masou.coupon.data.models.PhoneMessage">
+        insert into ety_phone_message
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="phoneNumber != null">
+                phone_number,
+            </if>
+            <if test="verify != null">
+                verify,
+            </if>
+            <if test="content != null">
+                content,
+            </if>
+            <if test="createAt != null">
+                create_at,
+            </if>
+            <if test="expireAt != null">
+                expire_at,
+            </if>
+            <if test="source != null">
+                source,
+            </if>
+            <if test="type != null">
+                type,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=INTEGER},
+            </if>
+            <if test="phoneNumber != null">
+                #{phoneNumber,jdbcType=VARCHAR},
+            </if>
+            <if test="verify != null">
+                #{verify,jdbcType=VARCHAR},
+            </if>
+            <if test="content != null">
+                #{content,jdbcType=VARCHAR},
+            </if>
+            <if test="createAt != null">
+                #{createAt,jdbcType=TIMESTAMP},
+            </if>
+            <if test="expireAt != null">
+                #{expireAt,jdbcType=TIMESTAMP},
+            </if>
+            <if test="source != null">
+                #{source,jdbcType=INTEGER},
+            </if>
+            <if test="type != null">
+                #{type,jdbcType=INTEGER},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.masou.coupon.data.models.PhoneMessage">
+        update ety_phone_message
+        <set>
+            <if test="phoneNumber != null">
+                phone_number = #{phoneNumber,jdbcType=VARCHAR},
+            </if>
+            <if test="verify != null">
+                verify = #{verify,jdbcType=VARCHAR},
+            </if>
+            <if test="content != null">
+                content = #{content,jdbcType=VARCHAR},
+            </if>
+            <if test="createAt != null">
+                create_at = #{createAt,jdbcType=TIMESTAMP},
+            </if>
+            <if test="expireAt != null">
+                expire_at = #{expireAt,jdbcType=TIMESTAMP},
+            </if>
+            <if test="source != null">
+                source = #{source,jdbcType=INTEGER},
+            </if>
+            <if test="type != null">
+                type = #{type,jdbcType=INTEGER},
+            </if>
+            <if test="used!=null">
+                used = #{used},
+            </if>
+        </set>
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.masou.coupon.data.models.PhoneMessage">
+    update ety_phone_message
+    set phone_number = #{phoneNumber,jdbcType=VARCHAR},
+      verify = #{verify,jdbcType=VARCHAR},
+      content = #{content,jdbcType=VARCHAR},
+      create_at = #{createAt,jdbcType=TIMESTAMP},
+      expire_at = #{expireAt,jdbcType=TIMESTAMP},
+      source = #{source,jdbcType=INTEGER},
+      type = #{type,jdbcType=INTEGER}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

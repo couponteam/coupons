@@ -1,4 +1,4 @@
-package com.masou.coupon.constant.enums;
+package com.masou.coupon.common.enums;
 
 /**
  * Created by Paul on 2017/2/23.
@@ -18,7 +18,7 @@ public enum ErrorCodeEnum {
     OLD_PASSWORD_WRONG(8, "原密码错误"),
     PHONE_EXIST(9, "手机号已存在"),
     PHONE_NOT_EXIST(10, "用户不存在"),
-    MULT_ORDER_ERROR(11, ""),
+    MANAGER_NOT_EXIST(11, "管理员不存在"),
     DENY_USER(12, "用户被禁止登陆"),
     WRONG_CAPTCHA(13, "图形验证码错误"),
     MISSING_CAPTCHA(14, "需要图形验证码，但用户未提交"),
