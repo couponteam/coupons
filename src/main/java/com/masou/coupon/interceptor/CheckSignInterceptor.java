@@ -2,7 +2,7 @@ package com.masou.coupon.interceptor;
 
 import com.alibaba.fastjson.JSON;
 import com.masou.coupon.common.struct.Result;
-import com.masou.coupon.constant.enums.ErrorCodeEnum;
+import com.masou.coupon.common.enums.ErrorCodeEnum;
 import com.masou.coupon.utils.MD5Util;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -1,4 +1,4 @@
-package com.masou.coupon.action.erpapi;
+package com.masou.coupon.action.shopapi;
 
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;

@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.masou.coupon.data.mappers.UserDenyMapper">
+    <resultMap id="BaseResultMap" type="com.masou.coupon.data.models.UserDeny">
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="phone" jdbcType="VARCHAR" property="phone"/>
+        <result column="uid" jdbcType="BIGINT" property="uid"/>
+        <result column="description" jdbcType="VARCHAR" property="description"/>
+        <result column="create_at" jdbcType="TIMESTAMP" property="createAt"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+    id, phone, uid, description, create_at
+  </sql>
+    <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from ety_user_deny
+        where id = #{id,jdbcType=INTEGER}
+    </select>
+
+    <select id="selectByPhone" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from ety_user_deny
+        where phone =#{phone}
+
+    </select>
+    <select id="selectAllList" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from ety_user_deny
+
+    </select>
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from ety_user_deny
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+    <insert id="insert" parameterType="com.masou.coupon.data.models.UserDeny">
+    insert into ety_user_deny (id, phone, uid,
+      description, create_at)
+    values (#{id,jdbcType=INTEGER}, #{phone,jdbcType=VARCHAR}, #{uid,jdbcType=BIGINT}, 
+      #{description,jdbcType=VARCHAR}, #{createAt,jdbcType=TIMESTAMP})
+  </insert>
+    <insert id="insertSelective" parameterType="com.masou.coupon.data.models.UserDeny">
+        insert into ety_user_deny
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="phone != null">
+                phone,
+            </if>
+            <if test="uid != null">
+                uid,
+            </if>
+            <if test="description != null">
+                description,
+            </if>
+            <if test="createAt != null">
+                create_at,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=INTEGER},
+            </if>
+            <if test="phone != null">
+                #{phone,jdbcType=VARCHAR},
+            </if>
+            <if test="uid != null">
+                #{uid,jdbcType=BIGINT},
+            </if>
+            <if test="description != null">
+                #{description,jdbcType=VARCHAR},
+            </if>
+            <if test="createAt != null">
+                #{createAt,jdbcType=TIMESTAMP},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.masou.coupon.data.models.UserDeny">
+        update ety_user_deny
+        <set>
+            <if test="phone != null">
+                phone = #{phone,jdbcType=VARCHAR},
+            </if>
+            <if test="uid != null">
+                uid = #{uid,jdbcType=BIGINT},
+            </if>
+            <if test="description != null">
+                description = #{description,jdbcType=VARCHAR},
+            </if>
+            <if test="createAt != null">
+                create_at = #{createAt,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.masou.coupon.data.models.UserDeny">
+    update ety_user_deny
+    set phone = #{phone,jdbcType=VARCHAR},
+      uid = #{uid,jdbcType=BIGINT},
+      description = #{description,jdbcType=VARCHAR},
+      create_at = #{createAt,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

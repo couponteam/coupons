@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.masou.coupon.data.mappers.UserMapper">
+    <resultMap id="BaseResultMapWithProfile" type="com.masou.coupon.data.models.User">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="username" jdbcType="VARCHAR" property="username"/>
+        <result column="password" jdbcType="VARCHAR" property="password"/>
+        <result column="create_at" jdbcType="TIMESTAMP" property="createAt"/>
+        <result column="role" jdbcType="INTEGER" property="role"/>
+        <result column="phone" jdbcType="VARCHAR" property="phone"/>
+
+        <association property="profile" javaType="com.masou.coupon.data.models.UserProfile">
+
+            <id column="pId" property="id"/>
+            <result column="pNickname" property="nickname"/>
+            <result column="pPhone" property="phone"/>
+            <result column="pInviteCode" property="inviteCode"/>
+            <result column="pBeInviteCode" property="beInviteCode"/>
+            <result column="pUid" property="uid"/>
+            <result column="pGender" property="gender"/>
+            <result column="pFromKey" property="fromKey"/>
+            <result column="pAvatar" property="avatar" />
+
+        </association>
+    </resultMap>
+    <sql id="Base_Column_List">
+        u.id as id,
+        u.username as username,
+        u.password as password,
+        u.create_at as createAt,
+        u.role as role,
+        u.phone as phone,
+        p.id as pId,
+        p.nickname as pNickname,
+        p.phone as pPhone,
+        p.invite_code as pInviteCode,
+        p.be_invite_code as pBeInviteCode,
+        p.uid as pUid,
+        p.gender as pGender,
+        p.from_key as pFromKey,
+        p.avatar as pAvatar
+
+  </sql>
+
+    <select id="selectByInviteCode" resultMap="BaseResultMapWithProfile">
+        select
+        <include refid="Base_Column_List"/>
+        from ety_user u
+        left join ety_user_profile p
+        on p.uid = u.id
+        where p.invite_code=#{inviteCode}
+
+    </select>
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMapWithProfile">
+        select
+        <include refid="Base_Column_List"/>
+        from ety_user u
+        left join ety_user_profile p
+        on p.uid = u.id
+        where u.id = #{id}
+    </select>
+    <select id="selectByPhone" resultMap="BaseResultMapWithProfile">
+        select
+        <include refid="Base_Column_List"/>
+        from ety_user u
+        left join ety_user_profile p
+        on p.uid = u.id
+        where u.phone=#{phone}
+    </select>
+
+    <select id="selectListByFilter" resultMap="BaseResultMapWithProfile">
+        select
+        <include refid="Base_Column_List"/>
+        from ety_user u
+        left join ety_user_profile p
+        on p.uid = u.id
+
+        <where>
+            <if test="username!=null">
+                and u.username like CONCAT('%', #{username}, '%' )
+            </if>
+
+            <if test="timeBegin!=null">
+                and u.create_at <![CDATA[ > ]]> #{timeBegin}
+            </if>
+
+            <if test="timeEnd !=null">
+                and u.create_at <![CDATA[ < ]]> #{timeEnd}
+            </if>
+
+            <if test="fromKey!=null">
+                and p.from_key = #{fromKey}
+            </if>
+
+        </where>
+        order by u.id desc
+
+        <if test="limit !=null">
+            limit #{limit}
+        </if>
+        <if test="offset != null">
+            offset #{offset}
+        </if>
+
+    </select>
+
+    <select id="selectCountByFilter" resultType="java.lang.Integer">
+        select count(1)
+        from ety_user u,ety_user_profile p
+        where u.id = p.uid
+        <where>
+            <if test="username!=null">
+                and u.username like CONCAT('%', #{username}, '%' )
+            </if>
+
+            <if test="timeBegin!=null">
+                and u.create_at <![CDATA[ > ]]> #{timeBegin}
+            </if>
+
+            <if test="timeEnd !=null">
+                and u.create_at <![CDATA[ < ]]> #{timeEnd}
+            </if>
+
+            <if test="fromKey!=null">
+                and p.from_key = #{fromKey}
+            </if>
+        </where>
+
+    </select>
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from ety_user
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+
+    <insert id="insertSelective" parameterType="com.masou.coupon.data.models.User">
+        insert into ety_user
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="username != null">
+                username,
+            </if>
+            <if test="password != null">
+                password,
+            </if>
+            <if test="createAt != null">
+                create_at,
+            </if>
+            <if test="role != null">
+                role,
+            </if>
+            <if test="phone != null">
+                phone,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=BIGINT},
+            </if>
+            <if test="username != null">
+                #{username,jdbcType=VARCHAR},
+            </if>
+            <if test="password != null">
+                #{password,jdbcType=VARCHAR},
+            </if>
+            <if test="createAt != null">
+                #{createAt,jdbcType=TIMESTAMP},
+            </if>
+            <if test="role != null">
+                #{role,jdbcType=INTEGER},
+            </if>
+            <if test="phone != null">
+                #{phone,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.masou.coupon.data.models.User">
+        update ety_user
+        <set>
+            <if test="username != null">
+                username = #{username,jdbcType=VARCHAR},
+            </if>
+            <if test="password != null">
+                password = #{password,jdbcType=VARCHAR},
+            </if>
+            <if test="createAt != null">
+                create_at = #{createAt,jdbcType=TIMESTAMP},
+            </if>
+            <if test="role != null">
+                role = #{role,jdbcType=INTEGER},
+            </if>
+            <if test="phone != null">
+                phone = #{phone,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+
+</mapper>

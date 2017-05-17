@@ -4,7 +4,8 @@ server:
     max-threads: 1000
 
 
-
+be:
+  phone_message_per_day: 10
 
 
 mybatis:
