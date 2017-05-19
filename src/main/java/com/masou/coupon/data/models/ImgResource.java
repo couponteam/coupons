@@ -5,7 +5,7 @@ import java.util.Date;
 public class ImgResource {
     private Long id;
 
-    private String shopId;
+    private Integer shopId;
 
     private Byte status;
 
@@ -15,6 +15,13 @@ public class ImgResource {
 
     private String filePath;
 
+    public ImgResource(Integer shopId, Byte status, Byte type, String filePath) {
+        this.shopId = shopId;
+        this.status = status;
+        this.type = type;
+        this.filePath = filePath;
+    }
+
     public Long getId() {
         return id;
     }
@@ -23,12 +30,12 @@ public class ImgResource {
         this.id = id;
     }
 
-    public String getShopId() {
+    public Integer getShopId() {
         return shopId;
     }
 
-    public void setShopId(String shopId) {
-        this.shopId = shopId == null ? null : shopId.trim();
+    public void setShopId(Integer shopId) {
+        this.shopId = shopId;
     }
 
     public Byte getStatus() {

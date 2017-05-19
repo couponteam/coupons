@@ -2,9 +2,11 @@ package com.masou.coupon.action.erpapi;
 
 import com.masou.coupon.common.struct.Result;
 import com.masou.coupon.common.utils.ResultHelper;
+import com.masou.coupon.data.models.ImgResource;
 import com.masou.coupon.data.models.Resource;
 import com.masou.coupon.exception.UserException;
 import com.masou.coupon.service.QiniuService;
+import com.masou.coupon.service.api.ImageResourceService;
 import com.masou.coupon.utils.MD5Util;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,9 +30,14 @@ public class ErpResourceController {
     @Autowired
     private QiniuService qiniuService;
 
+    @Autowired
+    private ImageResourceService imageResourceService;
+
     @ApiOperation("插入图片")
     @RequestMapping(value = "/insert", method = RequestMethod.POST)
     public Result insert(@RequestParam(value = "name") String name,
+                         @RequestParam(value = "shopId", required = false) Integer shopId,
+                         @RequestParam(value = "type", required = false) Integer type,
                          @RequestParam(value = "file") MultipartFile file) {
 
         String md5 = null;
@@ -54,8 +61,10 @@ public class ErpResourceController {
             String fileKey = String.format("%s.%s", md5, extension);
             boolean uploadResult = qiniuService.upload(file.getBytes(), fileKey);
             //保存
+            ImgResource record = new ImgResource(shopId, (byte) 0, type != null ? type.byteValue() : 0, fileKey);
 
-            return ResultHelper.genResultWithSuccess(fileKey);
+            return imageResourceService.insertSelective(record);
+
         } catch (IOException e) {
             throw new UserException("异常错误");
         }

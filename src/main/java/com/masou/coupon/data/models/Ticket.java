@@ -23,6 +23,8 @@ public class Ticket {
 
     private Byte collectingMethod;
 
+    private Integer shopId;
+
     public Long getId() {
         return id;
     }
@@ -101,5 +103,13 @@ public class Ticket {
 
     public void setCollectingMethod(Byte collectingMethod) {
         this.collectingMethod = collectingMethod;
+    }
+
+    public Integer getShopId() {
+        return shopId;
+    }
+
+    public void setShopId(Integer shopId) {
+        this.shopId = shopId;
     }
 }
