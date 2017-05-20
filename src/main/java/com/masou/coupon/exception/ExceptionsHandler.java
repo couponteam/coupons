@@ -40,7 +40,7 @@ public class ExceptionsHandler {
 
         } else {
             result.setCode(ViewResultCodeEnum.UNKNOWN_EXCEPTION.getCode());
-//            result.setMessage(ex.toString());
+            result.setMessage(ex.toString());
         }
 
         StringBuffer buffer = new StringBuffer();

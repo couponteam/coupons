@@ -28,7 +28,6 @@ public class UserProfile {
 
     private String avatar;
 
-    private String avatarUrl;
 
     public Integer getId() {
         return id;
@@ -125,5 +124,4 @@ public class UserProfile {
     public void setAvatar(String avatar) {
         this.avatar = avatar;
     }
-
 }

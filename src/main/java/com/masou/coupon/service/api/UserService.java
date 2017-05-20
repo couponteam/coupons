@@ -3,7 +3,7 @@ package com.masou.coupon.service.api;
 
 import com.masou.coupon.action.api.vo.UserVO;
 import com.masou.coupon.action.erpapi.vo.UserListVO;
-import com.masou.coupon.action.param.AbstractPageParam;
+import com.masou.coupon.action.param.PageParam;
 import com.masou.coupon.common.enums.MessageTypeEnum;
 import com.masou.coupon.common.struct.Result;
 import com.masou.coupon.common.utils.ResultHelper;
@@ -206,7 +206,7 @@ public class UserService {
     }
 
 
-    public Result userList(AbstractPageParam param, String fromKey, String phone, String timeBegin, String timeEnd) {
+    public Result userList(PageParam param, String fromKey, String phone, String timeBegin, String timeEnd) {
         UserFilter filter = new UserFilter();
         filter.setFromKey(fromKey);
         filter.setUsername(phone);

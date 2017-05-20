@@ -1,221 +1,254 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.masou.coupon.data.mappers.ShopMapper">
-  <resultMap id="BaseResultMap" type="com.masou.coupon.data.models.Shop">
-    <id column="id" jdbcType="INTEGER" property="id" />
-    <result column="shop_name" jdbcType="VARCHAR" property="shopName" />
-    <result column="icon_id" jdbcType="BIGINT" property="iconId" />
-    <result column="industry_id" jdbcType="INTEGER" property="industryId" />
-    <result column="phone" jdbcType="CHAR" property="phone" />
-    <result column="is_phone_verified" jdbcType="TINYINT" property="isPhoneVerified" />
-    <result column="password" jdbcType="CHAR" property="password" />
-    <result column="telephone" jdbcType="CHAR" property="telephone" />
-    <result column="telephone_ex" jdbcType="CHAR" property="telephoneEx" />
-    <result column="brief_intro" jdbcType="VARCHAR" property="briefIntro" />
-    <result column="business_license_id" jdbcType="BIGINT" property="businessLicenseId" />
-    <result column="is_shop_verified" jdbcType="TINYINT" property="isShopVerified" />
-    <result column="wechat_account" jdbcType="VARCHAR" property="wechatAccount" />
-    <result column="shop_address" jdbcType="VARCHAR" property="shopAddress" />
-    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
-    <result column="last_update_time" jdbcType="TIMESTAMP" property="lastUpdateTime" />
-    <result column="phone_verified_time" jdbcType="TIMESTAMP" property="phoneVerifiedTime" />
-  </resultMap>
-  <sql id="Base_Column_List">
+    <resultMap id="BaseResultMap" type="com.masou.coupon.data.models.Shop">
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="shop_name" jdbcType="VARCHAR" property="shopName"/>
+        <result column="icon_id" jdbcType="VARCHAR" property="iconId"/>
+        <result column="industry_id" jdbcType="INTEGER" property="industryId"/>
+        <result column="phone" jdbcType="CHAR" property="phone"/>
+        <result column="is_phone_verified" jdbcType="TINYINT" property="isPhoneVerified"/>
+        <result column="password" jdbcType="CHAR" property="password"/>
+        <result column="telephone" jdbcType="CHAR" property="telephone"/>
+        <result column="telephone_ex" jdbcType="CHAR" property="telephoneEx"/>
+        <result column="brief_intro" jdbcType="VARCHAR" property="briefIntro"/>
+        <result column="business_license_id" jdbcType="BIGINT" property="businessLicenseId"/>
+        <result column="is_shop_verified" jdbcType="TINYINT" property="isShopVerified"/>
+        <result column="wechat_account" jdbcType="VARCHAR" property="wechatAccount"/>
+        <result column="shop_address" jdbcType="VARCHAR" property="shopAddress"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="last_update_time" jdbcType="TIMESTAMP" property="lastUpdateTime"/>
+        <result column="phone_verified_time" jdbcType="TIMESTAMP" property="phoneVerifiedTime"/>
+    </resultMap>
+    <sql id="Base_Column_List">
     id, shop_name, icon_id, industry_id, phone, is_phone_verified, password, telephone, 
     telephone_ex, brief_intro, business_license_id, is_shop_verified, wechat_account, 
     shop_address, create_time, last_update_time, phone_verified_time
   </sql>
-  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
-    select 
-    <include refid="Base_Column_List" />
-    from ety_shop
-    where id = #{id,jdbcType=INTEGER}
-  </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from ety_shop
+        where id = #{id,jdbcType=INTEGER}
+    </select>
+    <select id="selectByPhone" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from ety_shop
+        where phone = #{phone}
+
+    </select>
+
+    <select id="selectListByFilter" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from ety_shop
+
+        <where>
+
+            <if test="verified !=null">
+                and is_shop_verified = #{verified}
+            </if>
+
+        </where>
+
+        order by create_time desc
+
+        <if test="limit !=null">
+            limit #{limit}
+        </if>
+        <if test="offset != null">
+            offset #{offset}
+        </if>
+
+
+    </select>
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from ety_shop
     where id = #{id,jdbcType=INTEGER}
   </delete>
-  <insert id="insert" parameterType="com.masou.coupon.data.models.Shop">
+    <insert id="insert" parameterType="com.masou.coupon.data.models.Shop">
     insert into ety_shop (id, shop_name, icon_id, 
       industry_id, phone, is_phone_verified, 
       password, telephone, telephone_ex, 
       brief_intro, business_license_id, is_shop_verified, 
       wechat_account, shop_address, create_time, 
       last_update_time, phone_verified_time)
-    values (#{id,jdbcType=INTEGER}, #{shopName,jdbcType=VARCHAR}, #{iconId,jdbcType=BIGINT}, 
+    values (#{id,jdbcType=INTEGER}, #{shopName,jdbcType=VARCHAR}, #{iconId,jdbcType=VARCHAR},
       #{industryId,jdbcType=INTEGER}, #{phone,jdbcType=CHAR}, #{isPhoneVerified,jdbcType=TINYINT}, 
       #{password,jdbcType=CHAR}, #{telephone,jdbcType=CHAR}, #{telephoneEx,jdbcType=CHAR}, 
       #{briefIntro,jdbcType=VARCHAR}, #{businessLicenseId,jdbcType=BIGINT}, #{isShopVerified,jdbcType=TINYINT}, 
       #{wechatAccount,jdbcType=VARCHAR}, #{shopAddress,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, 
       #{lastUpdateTime,jdbcType=TIMESTAMP}, #{phoneVerifiedTime,jdbcType=TIMESTAMP})
   </insert>
-  <insert id="insertSelective" parameterType="com.masou.coupon.data.models.Shop">
-    insert into ety_shop
-    <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="id != null">
-        id,
-      </if>
-      <if test="shopName != null">
-        shop_name,
-      </if>
-      <if test="iconId != null">
-        icon_id,
-      </if>
-      <if test="industryId != null">
-        industry_id,
-      </if>
-      <if test="phone != null">
-        phone,
-      </if>
-      <if test="isPhoneVerified != null">
-        is_phone_verified,
-      </if>
-      <if test="password != null">
-        password,
-      </if>
-      <if test="telephone != null">
-        telephone,
-      </if>
-      <if test="telephoneEx != null">
-        telephone_ex,
-      </if>
-      <if test="briefIntro != null">
-        brief_intro,
-      </if>
-      <if test="businessLicenseId != null">
-        business_license_id,
-      </if>
-      <if test="isShopVerified != null">
-        is_shop_verified,
-      </if>
-      <if test="wechatAccount != null">
-        wechat_account,
-      </if>
-      <if test="shopAddress != null">
-        shop_address,
-      </if>
-      <if test="createTime != null">
-        create_time,
-      </if>
-      <if test="lastUpdateTime != null">
-        last_update_time,
-      </if>
-      <if test="phoneVerifiedTime != null">
-        phone_verified_time,
-      </if>
-    </trim>
-    <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="id != null">
-        #{id,jdbcType=INTEGER},
-      </if>
-      <if test="shopName != null">
-        #{shopName,jdbcType=VARCHAR},
-      </if>
-      <if test="iconId != null">
-        #{iconId,jdbcType=BIGINT},
-      </if>
-      <if test="industryId != null">
-        #{industryId,jdbcType=INTEGER},
-      </if>
-      <if test="phone != null">
-        #{phone,jdbcType=CHAR},
-      </if>
-      <if test="isPhoneVerified != null">
-        #{isPhoneVerified,jdbcType=TINYINT},
-      </if>
-      <if test="password != null">
-        #{password,jdbcType=CHAR},
-      </if>
-      <if test="telephone != null">
-        #{telephone,jdbcType=CHAR},
-      </if>
-      <if test="telephoneEx != null">
-        #{telephoneEx,jdbcType=CHAR},
-      </if>
-      <if test="briefIntro != null">
-        #{briefIntro,jdbcType=VARCHAR},
-      </if>
-      <if test="businessLicenseId != null">
-        #{businessLicenseId,jdbcType=BIGINT},
-      </if>
-      <if test="isShopVerified != null">
-        #{isShopVerified,jdbcType=TINYINT},
-      </if>
-      <if test="wechatAccount != null">
-        #{wechatAccount,jdbcType=VARCHAR},
-      </if>
-      <if test="shopAddress != null">
-        #{shopAddress,jdbcType=VARCHAR},
-      </if>
-      <if test="createTime != null">
-        #{createTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="lastUpdateTime != null">
-        #{lastUpdateTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="phoneVerifiedTime != null">
-        #{phoneVerifiedTime,jdbcType=TIMESTAMP},
-      </if>
-    </trim>
-  </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.masou.coupon.data.models.Shop">
-    update ety_shop
-    <set>
-      <if test="shopName != null">
-        shop_name = #{shopName,jdbcType=VARCHAR},
-      </if>
-      <if test="iconId != null">
-        icon_id = #{iconId,jdbcType=BIGINT},
-      </if>
-      <if test="industryId != null">
-        industry_id = #{industryId,jdbcType=INTEGER},
-      </if>
-      <if test="phone != null">
-        phone = #{phone,jdbcType=CHAR},
-      </if>
-      <if test="isPhoneVerified != null">
-        is_phone_verified = #{isPhoneVerified,jdbcType=TINYINT},
-      </if>
-      <if test="password != null">
-        password = #{password,jdbcType=CHAR},
-      </if>
-      <if test="telephone != null">
-        telephone = #{telephone,jdbcType=CHAR},
-      </if>
-      <if test="telephoneEx != null">
-        telephone_ex = #{telephoneEx,jdbcType=CHAR},
-      </if>
-      <if test="briefIntro != null">
-        brief_intro = #{briefIntro,jdbcType=VARCHAR},
-      </if>
-      <if test="businessLicenseId != null">
-        business_license_id = #{businessLicenseId,jdbcType=BIGINT},
-      </if>
-      <if test="isShopVerified != null">
-        is_shop_verified = #{isShopVerified,jdbcType=TINYINT},
-      </if>
-      <if test="wechatAccount != null">
-        wechat_account = #{wechatAccount,jdbcType=VARCHAR},
-      </if>
-      <if test="shopAddress != null">
-        shop_address = #{shopAddress,jdbcType=VARCHAR},
-      </if>
-      <if test="createTime != null">
-        create_time = #{createTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="lastUpdateTime != null">
-        last_update_time = #{lastUpdateTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="phoneVerifiedTime != null">
-        phone_verified_time = #{phoneVerifiedTime,jdbcType=TIMESTAMP},
-      </if>
-    </set>
-    where id = #{id,jdbcType=INTEGER}
-  </update>
-  <update id="updateByPrimaryKey" parameterType="com.masou.coupon.data.models.Shop">
+    <insert id="insertSelective" parameterType="com.masou.coupon.data.models.Shop" useGeneratedKeys="true" keyProperty="id">
+        insert into ety_shop
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="shopName != null">
+                shop_name,
+            </if>
+            <if test="iconId != null">
+                icon_id,
+            </if>
+            <if test="industryId != null">
+                industry_id,
+            </if>
+            <if test="phone != null">
+                phone,
+            </if>
+            <if test="isPhoneVerified != null">
+                is_phone_verified,
+            </if>
+            <if test="password != null">
+                password,
+            </if>
+            <if test="telephone != null">
+                telephone,
+            </if>
+            <if test="telephoneEx != null">
+                telephone_ex,
+            </if>
+            <if test="briefIntro != null">
+                brief_intro,
+            </if>
+            <if test="businessLicenseId != null">
+                business_license_id,
+            </if>
+            <if test="isShopVerified != null">
+                is_shop_verified,
+            </if>
+            <if test="wechatAccount != null">
+                wechat_account,
+            </if>
+            <if test="shopAddress != null">
+                shop_address,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="lastUpdateTime != null">
+                last_update_time,
+            </if>
+            <if test="phoneVerifiedTime != null">
+                phone_verified_time,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=INTEGER},
+            </if>
+            <if test="shopName != null">
+                #{shopName,jdbcType=VARCHAR},
+            </if>
+            <if test="iconId != null">
+                #{iconId,jdbcType=VARCHAR},
+            </if>
+            <if test="industryId != null">
+                #{industryId,jdbcType=INTEGER},
+            </if>
+            <if test="phone != null">
+                #{phone,jdbcType=CHAR},
+            </if>
+            <if test="isPhoneVerified != null">
+                #{isPhoneVerified,jdbcType=TINYINT},
+            </if>
+            <if test="password != null">
+                #{password,jdbcType=CHAR},
+            </if>
+            <if test="telephone != null">
+                #{telephone,jdbcType=CHAR},
+            </if>
+            <if test="telephoneEx != null">
+                #{telephoneEx,jdbcType=CHAR},
+            </if>
+            <if test="briefIntro != null">
+                #{briefIntro,jdbcType=VARCHAR},
+            </if>
+            <if test="businessLicenseId != null">
+                #{businessLicenseId,jdbcType=BIGINT},
+            </if>
+            <if test="isShopVerified != null">
+                #{isShopVerified,jdbcType=TINYINT},
+            </if>
+            <if test="wechatAccount != null">
+                #{wechatAccount,jdbcType=VARCHAR},
+            </if>
+            <if test="shopAddress != null">
+                #{shopAddress,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="lastUpdateTime != null">
+                #{lastUpdateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="phoneVerifiedTime != null">
+                #{phoneVerifiedTime,jdbcType=TIMESTAMP},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.masou.coupon.data.models.Shop">
+        update ety_shop
+        <set>
+            <if test="shopName != null">
+                shop_name = #{shopName,jdbcType=VARCHAR},
+            </if>
+            <if test="iconId != null">
+                icon_id = #{iconId,jdbcType=VARCHAR},
+            </if>
+            <if test="industryId != null">
+                industry_id = #{industryId,jdbcType=INTEGER},
+            </if>
+            <if test="phone != null">
+                phone = #{phone,jdbcType=CHAR},
+            </if>
+            <if test="isPhoneVerified != null">
+                is_phone_verified = #{isPhoneVerified,jdbcType=TINYINT},
+            </if>
+            <if test="password != null">
+                password = #{password,jdbcType=CHAR},
+            </if>
+            <if test="telephone != null">
+                telephone = #{telephone,jdbcType=CHAR},
+            </if>
+            <if test="telephoneEx != null">
+                telephone_ex = #{telephoneEx,jdbcType=CHAR},
+            </if>
+            <if test="briefIntro != null">
+                brief_intro = #{briefIntro,jdbcType=VARCHAR},
+            </if>
+            <if test="businessLicenseId != null">
+                business_license_id = #{businessLicenseId,jdbcType=BIGINT},
+            </if>
+            <if test="isShopVerified != null">
+                is_shop_verified = #{isShopVerified,jdbcType=TINYINT},
+            </if>
+            <if test="wechatAccount != null">
+                wechat_account = #{wechatAccount,jdbcType=VARCHAR},
+            </if>
+            <if test="shopAddress != null">
+                shop_address = #{shopAddress,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="lastUpdateTime != null">
+                last_update_time = #{lastUpdateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="phoneVerifiedTime != null">
+                phone_verified_time = #{phoneVerifiedTime,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.masou.coupon.data.models.Shop">
     update ety_shop
     set shop_name = #{shopName,jdbcType=VARCHAR},
-      icon_id = #{iconId,jdbcType=BIGINT},
+      icon_id = #{iconId,jdbcType=VARCHAR},
       industry_id = #{industryId,jdbcType=INTEGER},
       phone = #{phone,jdbcType=CHAR},
       is_phone_verified = #{isPhoneVerified,jdbcType=TINYINT},

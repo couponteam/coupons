@@ -5,7 +5,7 @@ import com.masou.coupon.common.dto.BaseDTO;
 import com.masou.coupon.common.enums.ErrorCodeEnum;
 
 /**
- * Created by july on 2016/11/2.
+ * Created by Paul on 2016/11/2.
  */
 
 public class Result<T> extends BaseDTO {

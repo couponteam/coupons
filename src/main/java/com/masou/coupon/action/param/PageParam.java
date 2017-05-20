@@ -8,7 +8,7 @@ import lombok.Data;
  * Created by Paul on 16/11/30.
  */
 @Data
-public class AbstractPageParam extends BaseDTO {
+public class PageParam extends BaseDTO {
     /**
      * 当前页码
      */

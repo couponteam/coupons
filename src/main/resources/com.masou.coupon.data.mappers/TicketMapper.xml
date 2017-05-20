@@ -1,42 +1,43 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.masou.coupon.data.mappers.TicketMapper">
-  <resultMap id="BaseResultMap" type="com.masou.coupon.data.models.Ticket">
-    <id column="id" jdbcType="BIGINT" property="id" />
-    <result column="ticket_id" jdbcType="CHAR" property="ticketId" />
-    <result column="ticket_name" jdbcType="VARCHAR" property="ticketName" />
-    <result column="content" jdbcType="VARCHAR" property="content" />
-    <result column="type_id" jdbcType="TINYINT" property="typeId" />
-    <result column="period_of_validity_startTime" jdbcType="TIMESTAMP" property="periodOfValidityStarttime" />
-    <result column="period_of_validity_endTime" jdbcType="TIMESTAMP" property="periodOfValidityEndtime" />
-    <result column="comment" jdbcType="VARCHAR" property="comment" />
-    <result column="status" jdbcType="TINYINT" property="status" />
-    <result column="collecting_method" jdbcType="TINYINT" property="collectingMethod" />
-  </resultMap>
-  <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.masou.coupon.data.models.TicketWithBLOBs">
-    <result column="applicable_scope" jdbcType="LONGVARCHAR" property="applicableScope" />
-    <result column="working_condition" jdbcType="LONGVARCHAR" property="workingCondition" />
-  </resultMap>
-  <sql id="Base_Column_List">
+    <resultMap id="BaseResultMap" type="com.masou.coupon.data.models.Ticket">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="ticket_id" jdbcType="CHAR" property="ticketId"/>
+        <result column="ticket_name" jdbcType="VARCHAR" property="ticketName"/>
+        <result column="content" jdbcType="VARCHAR" property="content"/>
+        <result column="type_id" jdbcType="TINYINT" property="typeId"/>
+        <result column="period_of_validity_startTime" jdbcType="TIMESTAMP" property="periodOfValidityStarttime"/>
+        <result column="period_of_validity_endTime" jdbcType="TIMESTAMP" property="periodOfValidityEndtime"/>
+        <result column="comment" jdbcType="VARCHAR" property="comment"/>
+        <result column="status" jdbcType="TINYINT" property="status"/>
+        <result column="collecting_method" jdbcType="TINYINT" property="collectingMethod"/>
+        <result column="shop_id" property="shopId"/>
+    </resultMap>
+    <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.masou.coupon.data.models.TicketWithBLOBs">
+        <result column="applicable_scope" jdbcType="LONGVARCHAR" property="applicableScope"/>
+        <result column="working_condition" jdbcType="LONGVARCHAR" property="workingCondition"/>
+    </resultMap>
+    <sql id="Base_Column_List">
     id, ticket_id, ticket_name, content, type_id, period_of_validity_startTime, period_of_validity_endTime, 
-    comment, status, collecting_method
+    comment, status, collecting_method ,shop_id
   </sql>
-  <sql id="Blob_Column_List">
+    <sql id="Blob_Column_List">
     applicable_scope, working_condition
   </sql>
-  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="ResultMapWithBLOBs">
-    select 
-    <include refid="Base_Column_List" />
-    ,
-    <include refid="Blob_Column_List" />
-    from ety_ticket
-    where id = #{id,jdbcType=BIGINT}
-  </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="ResultMapWithBLOBs">
+        select
+        <include refid="Base_Column_List"/>
+        ,
+        <include refid="Blob_Column_List"/>
+        from ety_ticket
+        where id = #{id,jdbcType=BIGINT}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     delete from ety_ticket
     where id = #{id,jdbcType=BIGINT}
   </delete>
-  <insert id="insert" parameterType="com.masou.coupon.data.models.TicketWithBLOBs">
+    <insert id="insert" parameterType="com.masou.coupon.data.models.TicketWithBLOBs">
     insert into ety_ticket (id, ticket_id, ticket_name, 
       content, type_id, period_of_validity_startTime, 
       period_of_validity_endTime, comment, status, 
@@ -48,125 +49,134 @@
       #{collectingMethod,jdbcType=TINYINT}, #{applicableScope,jdbcType=LONGVARCHAR}, 
       #{workingCondition,jdbcType=LONGVARCHAR})
   </insert>
-  <insert id="insertSelective" parameterType="com.masou.coupon.data.models.TicketWithBLOBs">
-    insert into ety_ticket
-    <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="id != null">
-        id,
-      </if>
-      <if test="ticketId != null">
-        ticket_id,
-      </if>
-      <if test="ticketName != null">
-        ticket_name,
-      </if>
-      <if test="content != null">
-        content,
-      </if>
-      <if test="typeId != null">
-        type_id,
-      </if>
-      <if test="periodOfValidityStarttime != null">
-        period_of_validity_startTime,
-      </if>
-      <if test="periodOfValidityEndtime != null">
-        period_of_validity_endTime,
-      </if>
-      <if test="comment != null">
-        comment,
-      </if>
-      <if test="status != null">
-        status,
-      </if>
-      <if test="collectingMethod != null">
-        collecting_method,
-      </if>
-      <if test="applicableScope != null">
-        applicable_scope,
-      </if>
-      <if test="workingCondition != null">
-        working_condition,
-      </if>
-    </trim>
-    <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="id != null">
-        #{id,jdbcType=BIGINT},
-      </if>
-      <if test="ticketId != null">
-        #{ticketId,jdbcType=CHAR},
-      </if>
-      <if test="ticketName != null">
-        #{ticketName,jdbcType=VARCHAR},
-      </if>
-      <if test="content != null">
-        #{content,jdbcType=VARCHAR},
-      </if>
-      <if test="typeId != null">
-        #{typeId,jdbcType=TINYINT},
-      </if>
-      <if test="periodOfValidityStarttime != null">
-        #{periodOfValidityStarttime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="periodOfValidityEndtime != null">
-        #{periodOfValidityEndtime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="comment != null">
-        #{comment,jdbcType=VARCHAR},
-      </if>
-      <if test="status != null">
-        #{status,jdbcType=TINYINT},
-      </if>
-      <if test="collectingMethod != null">
-        #{collectingMethod,jdbcType=TINYINT},
-      </if>
-      <if test="applicableScope != null">
-        #{applicableScope,jdbcType=LONGVARCHAR},
-      </if>
-      <if test="workingCondition != null">
-        #{workingCondition,jdbcType=LONGVARCHAR},
-      </if>
-    </trim>
-  </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.masou.coupon.data.models.TicketWithBLOBs">
-    update ety_ticket
-    <set>
-      <if test="ticketId != null">
-        ticket_id = #{ticketId,jdbcType=CHAR},
-      </if>
-      <if test="ticketName != null">
-        ticket_name = #{ticketName,jdbcType=VARCHAR},
-      </if>
-      <if test="content != null">
-        content = #{content,jdbcType=VARCHAR},
-      </if>
-      <if test="typeId != null">
-        type_id = #{typeId,jdbcType=TINYINT},
-      </if>
-      <if test="periodOfValidityStarttime != null">
-        period_of_validity_startTime = #{periodOfValidityStarttime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="periodOfValidityEndtime != null">
-        period_of_validity_endTime = #{periodOfValidityEndtime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="comment != null">
-        comment = #{comment,jdbcType=VARCHAR},
-      </if>
-      <if test="status != null">
-        status = #{status,jdbcType=TINYINT},
-      </if>
-      <if test="collectingMethod != null">
-        collecting_method = #{collectingMethod,jdbcType=TINYINT},
-      </if>
-      <if test="applicableScope != null">
-        applicable_scope = #{applicableScope,jdbcType=LONGVARCHAR},
-      </if>
-      <if test="workingCondition != null">
-        working_condition = #{workingCondition,jdbcType=LONGVARCHAR},
-      </if>
-    </set>
-    where id = #{id,jdbcType=BIGINT}
-  </update>
-  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.masou.coupon.data.models.TicketWithBLOBs">
+    <insert id="insertSelective" parameterType="com.masou.coupon.data.models.TicketWithBLOBs">
+        insert into ety_ticket
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="ticketId != null">
+                ticket_id,
+            </if>
+            <if test="ticketName != null">
+                ticket_name,
+            </if>
+            <if test="content != null">
+                content,
+            </if>
+            <if test="typeId != null">
+                type_id,
+            </if>
+            <if test="periodOfValidityStarttime != null">
+                period_of_validity_startTime,
+            </if>
+            <if test="periodOfValidityEndtime != null">
+                period_of_validity_endTime,
+            </if>
+            <if test="comment != null">
+                comment,
+            </if>
+            <if test="status != null">
+                status,
+            </if>
+            <if test="collectingMethod != null">
+                collecting_method,
+            </if>
+            <if test="applicableScope != null">
+                applicable_scope,
+            </if>
+            <if test="workingCondition != null">
+                working_condition,
+            </if>
+            <if test="shopId!=null">
+                shop_id,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=BIGINT},
+            </if>
+            <if test="ticketId != null">
+                #{ticketId,jdbcType=CHAR},
+            </if>
+            <if test="ticketName != null">
+                #{ticketName,jdbcType=VARCHAR},
+            </if>
+            <if test="content != null">
+                #{content,jdbcType=VARCHAR},
+            </if>
+            <if test="typeId != null">
+                #{typeId,jdbcType=TINYINT},
+            </if>
+            <if test="periodOfValidityStarttime != null">
+                #{periodOfValidityStarttime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="periodOfValidityEndtime != null">
+                #{periodOfValidityEndtime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="comment != null">
+                #{comment,jdbcType=VARCHAR},
+            </if>
+            <if test="status != null">
+                #{status,jdbcType=TINYINT},
+            </if>
+            <if test="collectingMethod != null">
+                #{collectingMethod,jdbcType=TINYINT},
+            </if>
+            <if test="applicableScope != null">
+                #{applicableScope,jdbcType=LONGVARCHAR},
+            </if>
+            <if test="workingCondition != null">
+                #{workingCondition,jdbcType=LONGVARCHAR},
+            </if>
+            <if test="shopId !=null">
+                #{shopId},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.masou.coupon.data.models.TicketWithBLOBs">
+        update ety_ticket
+        <set>
+            <if test="ticketId != null">
+                ticket_id = #{ticketId,jdbcType=CHAR},
+            </if>
+            <if test="ticketName != null">
+                ticket_name = #{ticketName,jdbcType=VARCHAR},
+            </if>
+            <if test="content != null">
+                content = #{content,jdbcType=VARCHAR},
+            </if>
+            <if test="typeId != null">
+                type_id = #{typeId,jdbcType=TINYINT},
+            </if>
+            <if test="periodOfValidityStarttime != null">
+                period_of_validity_startTime = #{periodOfValidityStarttime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="periodOfValidityEndtime != null">
+                period_of_validity_endTime = #{periodOfValidityEndtime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="comment != null">
+                comment = #{comment,jdbcType=VARCHAR},
+            </if>
+            <if test="status != null">
+                status = #{status,jdbcType=TINYINT},
+            </if>
+            <if test="collectingMethod != null">
+                collecting_method = #{collectingMethod,jdbcType=TINYINT},
+            </if>
+            <if test="applicableScope != null">
+                applicable_scope = #{applicableScope,jdbcType=LONGVARCHAR},
+            </if>
+            <if test="workingCondition != null">
+                working_condition = #{workingCondition,jdbcType=LONGVARCHAR},
+            </if>
+            <if test="shopId !=null">
+                shop_id = #{shopId},
+            </if>
+        </set>
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+    <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.masou.coupon.data.models.TicketWithBLOBs">
     update ety_ticket
     set ticket_id = #{ticketId,jdbcType=CHAR},
       ticket_name = #{ticketName,jdbcType=VARCHAR},
@@ -181,7 +191,7 @@
       working_condition = #{workingCondition,jdbcType=LONGVARCHAR}
     where id = #{id,jdbcType=BIGINT}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.masou.coupon.data.models.Ticket">
+    <update id="updateByPrimaryKey" parameterType="com.masou.coupon.data.models.Ticket">
     update ety_ticket
     set ticket_id = #{ticketId,jdbcType=CHAR},
       ticket_name = #{ticketName,jdbcType=VARCHAR},
