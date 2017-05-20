@@ -1,7 +1,7 @@
 package com.masou.coupon.config;
 
 
-import com.masou.coupon.interceptor.CheckSignInterceptor;
+
 import com.masou.coupon.utils.CheckMobile;
 import com.masou.coupon.utils.IPUtil;
 import com.masou.coupon.utils.MD5Util;

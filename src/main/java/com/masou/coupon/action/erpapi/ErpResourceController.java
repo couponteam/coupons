@@ -31,7 +31,8 @@ public class ErpResourceController {
     @ApiOperation("插入图片")
     @RequestMapping(value = "/insert", method = RequestMethod.POST)
     public Result insert(@RequestParam(value = "name") String name,
-                         @RequestParam(value = "file") MultipartFile file) {
+                         @RequestParam(value = "file") MultipartFile file,
+                         @RequestParam(value = "type") MultipartFile type) {
 
         String md5 = null;
         try {

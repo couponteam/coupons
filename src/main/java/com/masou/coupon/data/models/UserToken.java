@@ -24,4 +24,28 @@ public class UserToken implements Serializable {
      * token最近使用的时间
      */
     private Long time;
+
+    public Long getUid() {
+        return uid;
+    }
+
+    public void setUid(Long uid) {
+        this.uid = uid;
+    }
+
+    public Integer getIsVerified() {
+        return isVerified;
+    }
+
+    public void setIsVerified(Integer isVerified) {
+        this.isVerified = isVerified;
+    }
+
+    public Long getTime() {
+        return time;
+    }
+
+    public void setTime(Long time) {
+        this.time = time;
+    }
 }
