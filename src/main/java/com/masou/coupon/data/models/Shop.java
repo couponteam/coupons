@@ -7,7 +7,7 @@ public class Shop {
 
     private String shopName;
 
-    private Long iconId;
+    private String iconId;
 
     private Integer industryId;
 
@@ -53,11 +53,11 @@ public class Shop {
         this.shopName = shopName == null ? null : shopName.trim();
     }
 
-    public Long getIconId() {
+    public String getIconId() {
         return iconId;
     }
 
-    public void setIconId(Long iconId) {
+    public void setIconId(String iconId) {
         this.iconId = iconId;
     }
 

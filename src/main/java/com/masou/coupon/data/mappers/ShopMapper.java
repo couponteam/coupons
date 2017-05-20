@@ -1,7 +1,11 @@
 package com.masou.coupon.data.mappers;
 
+import com.masou.coupon.data.filter.ShopFilter;
 import com.masou.coupon.data.models.Shop;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 @Mapper
 public interface ShopMapper {
@@ -16,4 +20,9 @@ public interface ShopMapper {
     int updateByPrimaryKeySelective(Shop record);
 
     int updateByPrimaryKey(Shop record);
+
+
+    Shop selectByPhone(@Param("phone")String phone);
+
+    List<Shop> selectListByFilter(ShopFilter filter);
 }

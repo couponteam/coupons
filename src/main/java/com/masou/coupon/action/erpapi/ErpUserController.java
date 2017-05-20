@@ -1,7 +1,7 @@
 package com.masou.coupon.action.erpapi;
 
 
-import com.masou.coupon.action.param.AbstractPageParam;
+import com.masou.coupon.action.param.PageParam;
 import com.masou.coupon.common.struct.Result;
 import com.masou.coupon.service.api.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +21,7 @@ public class ErpUserController {
     private UserService userService;
 
     @RequestMapping(value = "/list",method = RequestMethod.GET)
-    public Result list(AbstractPageParam pageParam,
+    public Result list(PageParam pageParam,
                        @RequestParam(value = "fromKey", required = false) String fromKey,
                        @RequestParam(value = "phone", required = false) String phone,
                        @RequestParam(value = "timeBegin", required = false) String timeBegin,

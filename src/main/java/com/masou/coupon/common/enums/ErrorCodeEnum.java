@@ -26,6 +26,9 @@ public enum ErrorCodeEnum {
     TOKEN_INVALID(16,"Token失效"),
 
 
+    DIRECT_APPLY(17,"已经注册，直接申请"),
+
+
 
 
 
