@@ -8,6 +8,11 @@
     <result column="zip_code" jdbcType="CHAR" property="zipCode" />
     <result column="status" jdbcType="TINYINT" property="status" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <!--<collection property="province" ofType="com.masou.coupon.data.models.Province">-->
+      <!--<id column="id" jdbcType="INTEGER" property="id" />-->
+      <!--<result column="province_name" jdbcType="VARCHAR" property="provinceName" />-->
+      <!--<result column="status" jdbcType="TINYINT" property="status" />-->
+    <!--</collection>-->
   </resultMap>
   <sql id="Base_Column_List">
     id, city_name, province_id, zip_code, status, create_time
@@ -16,7 +21,13 @@
     select 
     <include refid="Base_Column_List" />
     from dic_cities
-    where id = #{id,jdbcType=INTEGER}
+    where id = #{id,jdbcType=INTEGER} AND `status`=1 ORDER BY id
+  </select>
+  <select id="selectByProvinceKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    c, dic_provinces p
+    where province_id = #{provinceId,jdbcType=INTEGER} AND `status`=1 ORDER BY id
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from dic_cities

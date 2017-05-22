@@ -23,5 +23,43 @@ public class UserShopVO {
 
     ShopVO shopProfile;
 
+    public Long getUid() {
+        return uid;
+    }
 
+    public void setUid(Long uid) {
+        this.uid = uid;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public boolean isApplyShop() {
+        return isApplyShop;
+    }
+
+    public void setApplyShop(boolean applyShop) {
+        isApplyShop = applyShop;
+    }
+
+    public ShopVO getShopProfile() {
+        return shopProfile;
+    }
+
+    public void setShopProfile(ShopVO shopProfile) {
+        this.shopProfile = shopProfile;
+    }
 }

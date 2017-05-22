@@ -3,7 +3,7 @@ package com.masou.coupon.data.models;
 public class Industry {
     private Integer id;
 
-    private String industry;
+    private String comment;
 
     public Integer getId() {
         return id;
@@ -13,11 +13,11 @@ public class Industry {
         this.id = id;
     }
 
-    public String getIndustry() {
-        return industry;
+    public String getComment() {
+        return comment;
     }
 
-    public void setIndustry(String industry) {
-        this.industry = industry == null ? null : industry.trim();
+    public void setComment(String comment) {
+        this.comment = comment;
     }
 }

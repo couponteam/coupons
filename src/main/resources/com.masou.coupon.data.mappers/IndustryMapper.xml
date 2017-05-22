@@ -14,6 +14,12 @@
     from dic_industry
     where id = #{id,jdbcType=INTEGER}
   </select>
+  <select id="selectList" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from dic_industry
+  </select>
+
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from dic_industry
     where id = #{id,jdbcType=INTEGER}

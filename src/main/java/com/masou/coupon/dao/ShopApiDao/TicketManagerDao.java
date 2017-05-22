@@ -5,10 +5,14 @@ import com.masou.coupon.data.models.TicketWithBLOBs;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
 
 /**
  * Created by jason on 2017/5/19.
  */
+@Repository
 public class TicketManagerDao {
 
     private static Logger log = LoggerFactory.getLogger(TicketManagerDao.class);
@@ -31,6 +35,7 @@ public class TicketManagerDao {
      * @return 返回影响条数
      */
     public int updateTicket(TicketWithBLOBs record){
+
         return ticketMapper.updateByPrimaryKeyWithBLOBs(record);
     }
 
@@ -49,11 +54,12 @@ public class TicketManagerDao {
         return 0;
     }
 
-    public void selectTicket(){
+    public List<TicketWithBLOBs> selectTicket(Long sid){
+       return ticketMapper.selectByLimit(sid);
+    }
 
-//        ticketMapper.se
-
-
+    public TicketWithBLOBs selectByTicketId(Long tid){
+        return ticketMapper.selectByPrimaryKey(tid);
     }
 
 }

@@ -3,6 +3,8 @@ package com.masou.coupon.data.mappers;
 import com.masou.coupon.data.models.Industry;
 import org.apache.ibatis.annotations.Mapper;
 
+import java.util.List;
+
 @Mapper
 public interface IndustryMapper {
     int deleteByPrimaryKey(Integer id);
@@ -16,4 +18,6 @@ public interface IndustryMapper {
     int updateByPrimaryKeySelective(Industry record);
 
     int updateByPrimaryKey(Industry record);
+
+    List<Industry> selectList();
 }

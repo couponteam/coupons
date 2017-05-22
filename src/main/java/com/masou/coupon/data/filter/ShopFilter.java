@@ -10,4 +10,12 @@ import lombok.Data;
 public class ShopFilter extends BaseFilter {
 
     private Integer verified = ShopVerifyEnum.VERIFIED.getCode();
+
+    public Integer getVerified() {
+        return verified;
+    }
+
+    public void setVerified(Integer verified) {
+        this.verified = verified;
+    }
 }

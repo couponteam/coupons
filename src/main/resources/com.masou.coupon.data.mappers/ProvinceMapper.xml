@@ -14,8 +14,15 @@
     select 
     <include refid="Base_Column_List" />
     from dic_provinces
-    where id = #{id,jdbcType=INTEGER}
+    where id = #{id,jdbcType=INTEGER} AND `status`=1 ORDER BY id
   </select>
+  <select id="selectList" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from dic_provinces
+    where `status`=1 ORDER BY id
+  </select>
+
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from dic_provinces
     where id = #{id,jdbcType=INTEGER}

@@ -6,7 +6,11 @@ package com.masou.coupon.common.enums;
 public enum MessageTypeEnum {
     USER_REGISTER(0, "用户注册"),
     USER_LOGIN(1, "用户登陆"),
-    USER_FORGET_PASSWORD(2, "用户忘记密码短信"),;
+    USER_FORGET_PASSWORD(2, "用户忘记密码短信"),
+
+
+
+    ;
 
 
     private int code;

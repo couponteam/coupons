@@ -35,6 +35,9 @@ public enum ErrorCodeEnum {
     TICKET_INSERT_EMPTY_ID(10035, "店铺ID为空"),
 
 
+    DIC_FAIL(10050, "查询字典表出错"),
+
+
     NOT_MANAGER(20000,"权限不够"),
 
 

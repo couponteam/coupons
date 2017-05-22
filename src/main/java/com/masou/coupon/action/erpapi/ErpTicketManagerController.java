@@ -1,4 +1,4 @@
-package com.masou.coupon.action.shopapi;
+package com.masou.coupon.action.erpapi;
 
 import com.masou.coupon.common.enums.ErrorCodeEnum;
 import com.masou.coupon.common.struct.Result;
@@ -19,10 +19,10 @@ import org.springframework.web.bind.annotation.RestController;
  * Created by jason on 2017/5/17.
  */
 @RestController
-@RequestMapping("/manager/api/ticket")
-public class TicketManagerController {
+@RequestMapping("/shop/api/ticket")
+public class ErpTicketManagerController {
 
-    private Logger log = LoggerFactory.getLogger(TicketManagerController.class);
+    private Logger log = LoggerFactory.getLogger(ErpTicketManagerController.class);
 
     @Autowired
     private TicketManagerService ticketManagerService;
@@ -35,18 +35,18 @@ public class TicketManagerController {
      */
     @ApiOperation("新增券")
     @RequestMapping(value = "/insert", method = RequestMethod.POST)
-    public Result insertTicket(@RequestParam("data") TicketWithBLOBs data, @RequestParam("sid") Long sid){
+    public Result insertTicket(@RequestParam("data") String data, @RequestParam("sid") String sid){
         //输入数据为空
         if(data == null){
             return ResultHelper.genResult(ErrorCodeEnum.TICKET_INSERT_EMPTY.getCode(),ErrorCodeEnum.TICKET_INSERT_EMPTY.getMsg());
         }
         //店铺id为空
-        if(sid <= 0){
+        if(sid == null || sid.length() < 0){
             return ResultHelper.genResult(ErrorCodeEnum.TICKET_INSERT_EMPTY_ID.getCode(),ErrorCodeEnum.TICKET_INSERT_EMPTY_ID.getMsg());
         }
 
         try {
-            Ticket ticketMsg = ticketManagerService.insertTicket(data , sid);
+            Ticket ticketMsg = ticketManagerService.insertTicket(data);
             if(ticketMsg != null){
                return ResultHelper.genResult(ticketMsg,ErrorCodeEnum.OK.getCode(),ErrorCodeEnum.OK.getMsg());
             }
@@ -56,26 +56,18 @@ public class TicketManagerController {
         return ResultHelper.genResult(ErrorCodeEnum.TICKET_INSERT_FAILED.getCode(),ErrorCodeEnum.TICKET_INSERT_FAILED.getMsg());
     }
 
-    @ApiOperation("刚登陆展示一定数量票")
-    @RequestMapping(value = "/showlist", method = RequestMethod.GET)
-    public Result showTicketList(@RequestParam("sid") Long sid){
-
-        ticketManagerService.showTicket(sid);
-
-        return null;
-    }
-
     /**
      *
      * @return
      */
-    @ApiOperation("查看券")
+    @ApiOperation("查看单张券")
     @RequestMapping(value = "/select", method = RequestMethod.GET)
     public Result selectTicket(@RequestParam("tid") String tid){
-
-
-        ticketManagerService.selectTicket(tid);
-        return null;
+        TicketWithBLOBs tieket = ticketManagerService.selectSingleTicket(tid);
+        if(tieket != null){
+            return ResultHelper.genResultWithSuccess(tieket);
+        }
+        return ResultHelper.genResult(tieket, ErrorCodeEnum.TICKET_SELECT_FAILED.getCode(), ErrorCodeEnum.TICKET_SELECT_FAILED.getMsg());
     }
 
     /**
@@ -85,8 +77,11 @@ public class TicketManagerController {
     @ApiOperation("删除券")
     @RequestMapping(value = "/delete", method = RequestMethod.GET)
     public Result deleteTicket(@RequestParam("tid") Long tid){
-
-        return ResultHelper.genResultWithSuccessMessage(ticketManagerService.deleteTicket(tid), "删除券成功");
+        int rows = ticketManagerService.deleteTicket(tid);
+        if(rows > 0){
+            return ResultHelper.genResultWithSuccess();
+        }
+        return ResultHelper.genResult(ErrorCodeEnum.TICKET_DELETE_FAILED.getCode(), ErrorCodeEnum.TICKET_DELETE_FAILED.getMsg());
     }
 
     /**
@@ -96,10 +91,10 @@ public class TicketManagerController {
     @ApiOperation("更新/编辑券")
     @RequestMapping(value = "/update", method = RequestMethod.GET)
     public Result updateTicket(@RequestParam("data") String data){
-
-
-        ticketManagerService.updateTicket(data);
-        return null;
-//        return ticketManagerService.updateTicket();
+        int rows = ticketManagerService.updateTicket(data);
+        if(rows > 0){
+            return ResultHelper.genResultWithSuccess();
+        }
+        return ResultHelper.genResult(data, ErrorCodeEnum.TICKET_UPDATE_FAILED.getCode(), ErrorCodeEnum.TICKET_UPDATE_FAILED.getMsg());
     }
 }

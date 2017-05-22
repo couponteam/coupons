@@ -1,4 +1,4 @@
-package com.masou.coupon.action.shopapi;
+package com.masou.coupon.action.erpapi;
 
 import com.masou.coupon.common.enums.RoleEnum;
 import com.masou.coupon.common.struct.Result;
@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.*;
  */
 @RestController
 @RequestMapping("/shop/api")
-public class ShopUserController {
+public class ErpShopUserController {
 
 
     @Autowired

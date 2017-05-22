@@ -10,6 +10,8 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class ShopManagerDao {
 
+
+
     @Autowired
     private ShopMapper shopMapper;
 
