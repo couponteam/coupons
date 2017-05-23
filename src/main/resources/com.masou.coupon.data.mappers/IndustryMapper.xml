@@ -3,10 +3,10 @@
 <mapper namespace="com.masou.coupon.data.mappers.IndustryMapper">
   <resultMap id="BaseResultMap" type="com.masou.coupon.data.models.Industry">
     <id column="id" jdbcType="INTEGER" property="id" />
-    <result column="industry" jdbcType="VARCHAR" property="industry" />
+    <result column="comment" jdbcType="VARCHAR" property="comment" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, industry
+    id, comment
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
@@ -25,8 +25,8 @@
     where id = #{id,jdbcType=INTEGER}
   </delete>
   <insert id="insert" parameterType="com.masou.coupon.data.models.Industry">
-    insert into dic_industry (id, industry)
-    values (#{id,jdbcType=INTEGER}, #{industry,jdbcType=VARCHAR})
+    insert into dic_industry (id, comment)
+    values (#{id,jdbcType=INTEGER}, #{comment,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.masou.coupon.data.models.Industry">
     insert into dic_industry
@@ -34,31 +34,31 @@
       <if test="id != null">
         id,
       </if>
-      <if test="industry != null">
-        industry,
+      <if test="comment != null">
+        comment,
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">
         #{id,jdbcType=INTEGER},
       </if>
-      <if test="industry != null">
-        #{industry,jdbcType=VARCHAR},
+      <if test="comment != null">
+        #{comment,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.masou.coupon.data.models.Industry">
     update dic_industry
     <set>
-      <if test="industry != null">
-        industry = #{industry,jdbcType=VARCHAR},
+      <if test="comment != null">
+        comment = #{comment,jdbcType=VARCHAR},
       </if>
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.masou.coupon.data.models.Industry">
     update dic_industry
-    set industry = #{industry,jdbcType=VARCHAR}
+    set comment = #{comment,jdbcType=VARCHAR}
     where id = #{id,jdbcType=INTEGER}
   </update>
 </mapper>

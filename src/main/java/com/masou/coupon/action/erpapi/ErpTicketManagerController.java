@@ -5,6 +5,7 @@ import com.masou.coupon.common.struct.Result;
 import com.masou.coupon.common.utils.ResultHelper;
 import com.masou.coupon.data.models.Ticket;
 import com.masou.coupon.data.models.TicketWithBLOBs;
+import com.masou.coupon.service.VerifyService;
 import com.masou.coupon.service.shopapi.TicketManagerService;
 import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
@@ -14,6 +15,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 /**
  * Created by jason on 2017/5/17.
@@ -26,6 +29,9 @@ public class ErpTicketManagerController {
 
     @Autowired
     private TicketManagerService ticketManagerService;
+
+    @Autowired
+    private VerifyService verifyService;
 
     /**
      * 新增券
@@ -70,6 +76,16 @@ public class ErpTicketManagerController {
         return ResultHelper.genResult(tieket, ErrorCodeEnum.TICKET_SELECT_FAILED.getCode(), ErrorCodeEnum.TICKET_SELECT_FAILED.getMsg());
     }
 
+    @ApiOperation("根据shop id查看店铺的券列表")
+    @RequestMapping(value = "/selectlist", method = RequestMethod.GET)
+    public Result selectTicketList(@RequestParam("tid") String sid, int page){
+        List<TicketWithBLOBs> ticketList = ticketManagerService.showTicketList(sid, page);
+        if(ticketList != null && ticketList.size() > 0){
+            return ResultHelper.genResultWithSuccess(ticketList);
+        }
+        return ResultHelper.genResult(ticketList, ErrorCodeEnum.TICKET_SELECT_FAILED.getCode(), ErrorCodeEnum.TICKET_SELECT_FAILED.getMsg());
+    }
+
     /**
      *
      * @return
@@ -79,7 +95,7 @@ public class ErpTicketManagerController {
     public Result deleteTicket(@RequestParam("tid") Long tid){
         int rows = ticketManagerService.deleteTicket(tid);
         if(rows > 0){
-            return ResultHelper.genResultWithSuccess();
+            return ResultHelper.genResultWithSuccess("删除券"+tid+"成功");
         }
         return ResultHelper.genResult(ErrorCodeEnum.TICKET_DELETE_FAILED.getCode(), ErrorCodeEnum.TICKET_DELETE_FAILED.getMsg());
     }

@@ -31,7 +31,7 @@ public class TicketManagerService {
     public TicketWithBLOBs insertTicket(String data){
         try {
 
-            TicketWithBLOBs tdata = ModelConvertUtil.convert(TicketWithBLOBs.class, data);
+            TicketWithBLOBs tdata = JSON.toJavaObject((JSON)JSON.parse(data), TicketWithBLOBs.class);
 
             //生成券id
             tdata.setTicketId(GenTicketIdUtil.genTicketId());
@@ -52,9 +52,9 @@ public class TicketManagerService {
      * @param sid
      * @return
      */
-    public  List<Ticket> showTicketList(String sid){
+    public  List<TicketWithBLOBs> showTicketList(String sid, int page){
 
-
+        ticketManagerDao.selectTicket()
 
 
         return null;

@@ -54,8 +54,8 @@ public class TicketManagerDao {
         return 0;
     }
 
-    public List<TicketWithBLOBs> selectTicket(Long sid){
-       return ticketMapper.selectByLimit(sid);
+    public List<TicketWithBLOBs> selectTicket(Long sid, int page){
+       return ticketMapper.selectByLimit(sid, page);
     }
 
     public TicketWithBLOBs selectByTicketId(Long tid){

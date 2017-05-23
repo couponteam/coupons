@@ -23,7 +23,7 @@ public interface TicketMapper {
     int updateByPrimaryKey(Ticket record);
 
     //根据店铺的id，获取
-    List<TicketWithBLOBs> selectByLimit(Long sid);
+    List<TicketWithBLOBs> selectByLimit(Long sid, int page);
 
 
 }

@@ -14,7 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 /**
  * Created by july on 2016/10/27.
  */
-@Order(99)
+
 public class LogInterceptor implements HandlerInterceptor {
 
     private Logger logger = LoggerFactory.getLogger(LogInterceptor.class.getName());

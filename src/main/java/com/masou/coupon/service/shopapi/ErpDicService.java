@@ -48,10 +48,10 @@ public class ErpDicService {
             List<Province> rs = erpDicDao.provinceType();
             if (rs != null && rs.size() > 0){
                 for (Province p: rs) {
-                    ProvinceListVO provinceList = new ProvinceListVO();
-                    provinceList.setProvince(p);
-                    provinceList.setCityList(erpDicDao.cityType(p.getId()));
-                    distList.add(provinceList);
+                    ProvinceListVO provinceVO = new ProvinceListVO();
+                    provinceVO.setProvince(p);
+                    provinceVO.setCityList(erpDicDao.cityType(p.getId()));
+                    distList.add(provinceVO);
                 }
             }
             return distList;

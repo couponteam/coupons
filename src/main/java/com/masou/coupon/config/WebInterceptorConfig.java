@@ -2,11 +2,13 @@ package com.masou.coupon.config;
 
 
 
+import com.masou.coupon.interceptor.CharsetInterceptor;
 import com.masou.coupon.utils.CheckMobile;
 import com.masou.coupon.utils.IPUtil;
 import com.masou.coupon.utils.MD5Util;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.filter.CharacterEncodingFilter;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
@@ -40,6 +42,10 @@ public class WebInterceptorConfig extends WebMvcConfigurerAdapter {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         super.addInterceptors(registry);
+
+        //用于编码转换
+        registry.addInterceptor(new CharsetInterceptor())
+                .addPathPatterns("/**");
 
         // 用于日志记录
 

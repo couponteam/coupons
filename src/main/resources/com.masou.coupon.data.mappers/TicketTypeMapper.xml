@@ -3,11 +3,11 @@
 <mapper namespace="com.masou.coupon.data.mappers.TicketTypeMapper">
   <resultMap id="BaseResultMap" type="com.masou.coupon.data.models.TicketType">
     <id column="id" jdbcType="BIGINT" property="id" />
-    <result column="type_id" jdbcType="TINYINT" property="typeId" />
+    <!--<result column="type_id" jdbcType="TINYINT" property="typeId" />-->
     <result column="comment" jdbcType="VARCHAR" property="comment" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, type_id, comment
+    id, comment
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
@@ -19,16 +19,15 @@
     select
     <include refid="Base_Column_List" />
     from dic_ticket_type
-    where `status`= 1
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     delete from dic_ticket_type
     where id = #{id,jdbcType=BIGINT}
   </delete>
   <insert id="insert" parameterType="com.masou.coupon.data.models.TicketType">
-    insert into dic_ticket_type (id, type_id, comment
+    insert into dic_ticket_type (id, comment
       )
-    values (#{id,jdbcType=BIGINT}, #{typeId,jdbcType=TINYINT}, #{comment,jdbcType=VARCHAR}
+    values (#{id,jdbcType=BIGINT}, #{comment,jdbcType=VARCHAR}
       )
   </insert>
   <insert id="insertSelective" parameterType="com.masou.coupon.data.models.TicketType">
@@ -36,9 +35,6 @@
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
         id,
-      </if>
-      <if test="typeId != null">
-        type_id,
       </if>
       <if test="comment != null">
         comment,
@@ -48,9 +44,6 @@
       <if test="id != null">
         #{id,jdbcType=BIGINT},
       </if>
-      <if test="typeId != null">
-        #{typeId,jdbcType=TINYINT},
-      </if>
       <if test="comment != null">
         #{comment,jdbcType=VARCHAR},
       </if>
@@ -59,9 +52,6 @@
   <update id="updateByPrimaryKeySelective" parameterType="com.masou.coupon.data.models.TicketType">
     update dic_ticket_type
     <set>
-      <if test="typeId != null">
-        type_id = #{typeId,jdbcType=TINYINT},
-      </if>
       <if test="comment != null">
         comment = #{comment,jdbcType=VARCHAR},
       </if>
@@ -70,7 +60,7 @@
   </update>
   <update id="updateByPrimaryKey" parameterType="com.masou.coupon.data.models.TicketType">
     update dic_ticket_type
-    set type_id = #{typeId,jdbcType=TINYINT},
+    set
       comment = #{comment,jdbcType=VARCHAR}
     where id = #{id,jdbcType=BIGINT}
   </update>

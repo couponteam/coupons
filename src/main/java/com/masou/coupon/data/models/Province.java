@@ -24,7 +24,7 @@ public class Province {
     }
 
     public void setProvinceName(String provinceName) {
-        this.provinceName = provinceName == null ? null : provinceName.trim();
+        this.provinceName = provinceName;
     }
 
     public Byte getStatus() {

@@ -26,7 +26,7 @@
   <select id="selectByProvinceKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List" />
-    c, dic_provinces p
+    from dic_cities
     where province_id = #{provinceId,jdbcType=INTEGER} AND `status`=1 ORDER BY id
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
