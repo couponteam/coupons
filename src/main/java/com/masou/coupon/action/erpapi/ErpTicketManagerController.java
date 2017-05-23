@@ -62,6 +62,15 @@ public class ErpTicketManagerController {
         return ResultHelper.genResult(ErrorCodeEnum.TICKET_INSERT_FAILED.getCode(),ErrorCodeEnum.TICKET_INSERT_FAILED.getMsg());
     }
 
+    @ApiOperation("刚登陆展示一定数量票")
+    @RequestMapping(value = "/showlist", method = RequestMethod.GET)
+    public Result showTicketList(@RequestParam("sid") Long sid){
+
+//        ticketManagerService.showTicket(sid);
+
+        return null;
+    }
+
     /**
      *
      * @return

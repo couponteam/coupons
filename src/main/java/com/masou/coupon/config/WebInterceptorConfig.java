@@ -3,6 +3,7 @@ package com.masou.coupon.config;
 
 
 import com.masou.coupon.interceptor.CharsetInterceptor;
+import com.masou.coupon.interceptor.LogInterceptor;
 import com.masou.coupon.utils.CheckMobile;
 import com.masou.coupon.utils.IPUtil;
 import com.masou.coupon.utils.MD5Util;
@@ -27,7 +28,6 @@ public class WebInterceptorConfig extends WebMvcConfigurerAdapter {
     private MD5Util md5Util;
 
 
-
     /**
      * 允许跨域
      * @param registry
@@ -48,6 +48,8 @@ public class WebInterceptorConfig extends WebMvcConfigurerAdapter {
                 .addPathPatterns("/**");
 
         // 用于日志记录
+        // 用于日志记录
+        registry.addInterceptor(new LogInterceptor(ipUtil)).addPathPatterns("/**");
 
 //		 优化跳转
 //        registry.addInterceptor(new RedirectInterceptor())
