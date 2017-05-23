@@ -78,8 +78,10 @@ public class ErpTicketManagerController {
 
     @ApiOperation("根据shop id查看店铺的券列表")
     @RequestMapping(value = "/selectlist", method = RequestMethod.GET)
-    public Result selectTicketList(@RequestParam("tid") String sid, int page){
-        List<TicketWithBLOBs> ticketList = ticketManagerService.showTicketList(sid, page);
+    public Result selectTicketList(@RequestParam("sid") Long sid,
+                                   @RequestParam("page") Integer page,
+                                   @RequestParam("pageSize") Integer pageSize){
+        List<TicketWithBLOBs> ticketList = ticketManagerService.showTicketList(sid, page, pageSize);
         if(ticketList != null && ticketList.size() > 0){
             return ResultHelper.genResultWithSuccess(ticketList);
         }

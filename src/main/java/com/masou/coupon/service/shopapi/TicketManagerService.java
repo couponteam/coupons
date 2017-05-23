@@ -1,6 +1,8 @@
 package com.masou.coupon.service.shopapi;
 
 import com.alibaba.fastjson.JSON;
+import com.masou.coupon.action.erpapi.vo.TicketPageParam;
+import com.masou.coupon.action.param.PageParam;
 import com.masou.coupon.dao.BannerDao;
 import com.masou.coupon.dao.ShopApiDao.TicketManagerDao;
 import com.masou.coupon.data.models.Shop;
@@ -52,12 +54,18 @@ public class TicketManagerService {
      * @param sid
      * @return
      */
-    public  List<TicketWithBLOBs> showTicketList(String sid, int page){
+    public  List<TicketWithBLOBs> showTicketList(Long sid, Integer page, Integer pageSize){
+        try {
+            TicketPageParam tdata = new TicketPageParam();
+            tdata.setShop_id(sid);
+            tdata.setPage(page);
+            tdata.setPageSize(pageSize);
 
-        ticketManagerDao.selectTicket()
-
-
-        return null;
+            return ticketManagerDao.selectTicket(tdata);
+        }catch (Exception e){
+            e.printStackTrace();
+            throw new UserException();
+        }
     }
 
     /**
