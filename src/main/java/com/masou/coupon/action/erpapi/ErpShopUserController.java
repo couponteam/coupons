@@ -37,8 +37,10 @@ public class ErpShopUserController {
     @ApiImplicitParam(name = "industryId", value = "店铺所属行业类型",paramType = "query",dataType = "String")
     @PostMapping("/apply")
     public Result apply(@RequestParam("token") String token,
+                        @RequestParam("shopId")Integer shopId,
                         @RequestParam("briefIntro") String briefIntro,
                         @RequestParam("phone") String phone,
+                        @RequestParam("iconImage")String iconImage,
                         @RequestParam("shopName") String shopName,
                         @RequestParam("shopAddress") String shopAddress,
                         @RequestParam("industryId") Integer industryId) {
@@ -47,6 +49,10 @@ public class ErpShopUserController {
         Long uid = userTokenService.getUid(token);
         Shop record = new Shop();
 
+        if (shopId!=null){
+            record.setId(shopId);
+        }
+        record.setIconId(iconImage);
         record.setBriefIntro(briefIntro);
         record.setPhone(phone);
         record.setShopName(shopName);

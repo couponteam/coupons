@@ -7,10 +7,7 @@ import com.masou.coupon.exception.UserException;
 import com.masou.coupon.service.api.BannerService;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * Created by Paul on 2017/5/3.
@@ -53,14 +50,14 @@ public class ErpBannerController {
 
 
     @ApiOperation("删除广告位")
-    @RequestMapping("/delete")
+    @PostMapping("/delete")
     public Result delete(@RequestParam("id") Integer id) {
         bannerService.deleteByPrimaryKey(id);
         return ResultHelper.genResultWithSuccess();
     }
 
     @ApiOperation("广告位列表")
-    @RequestMapping("/list")
+    @GetMapping("/list")
     public Result list(@RequestParam("section") String section) {
         return ResultHelper.genResultWithSuccess(bannerService.selectListBySection(section));
     }

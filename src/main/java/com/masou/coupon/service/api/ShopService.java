@@ -50,6 +50,7 @@ public class ShopService {
         return shopDao.deleteByPrimaryKey(id);
     }
 
+
     /**
      * 申请店铺
      *
