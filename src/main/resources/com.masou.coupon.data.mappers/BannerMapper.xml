@@ -14,29 +14,29 @@
     <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List"/>
-        from b_banner
+        from ety_banner
         where id = #{id,jdbcType=INTEGER}
     </select>
 
     <select id="selectListBySection" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List"/>
-        from b_banner
+        from ety_banner
         where section=#{section}
     </select>
 
     <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
-    delete from b_banner
+    delete from ety_banner
     where id = #{id,jdbcType=INTEGER}
   </delete>
     <insert id="insert" parameterType="com.masou.coupon.data.models.Banner">
-    insert into b_banner (id, section, action, 
+    insert into ety_banner (id, section, action,
       image, weight)
     values (#{id,jdbcType=INTEGER}, #{section,jdbcType=VARCHAR}, #{action,jdbcType=VARCHAR}, 
       #{image,jdbcType=VARCHAR}, #{weight,jdbcType=INTEGER})
   </insert>
     <insert id="insertSelective" parameterType="com.masou.coupon.data.models.Banner">
-        insert into b_banner
+        insert into ety_banner
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="id != null">
                 id,
@@ -73,7 +73,7 @@
         </trim>
     </insert>
     <update id="updateByPrimaryKeySelective" parameterType="com.masou.coupon.data.models.Banner">
-        update b_banner
+        update ety_banner
         <set>
             <if test="section != null">
                 section = #{section,jdbcType=VARCHAR},
@@ -91,7 +91,7 @@
         where id = #{id,jdbcType=INTEGER}
     </update>
     <update id="updateByPrimaryKey" parameterType="com.masou.coupon.data.models.Banner">
-    update b_banner
+    update ety_banner
     set section = #{section,jdbcType=VARCHAR},
       action = #{action,jdbcType=VARCHAR},
       image = #{image,jdbcType=VARCHAR},

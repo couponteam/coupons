@@ -54,7 +54,7 @@ public class TicketManagerService {
      */
     public  List<TicketWithBLOBs> showTicketList(String sid, int page){
 
-        ticketManagerDao.selectTicket()
+//        ticketManagerDao.selectTicket();
 
 
         return null;

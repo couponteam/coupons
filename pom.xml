@@ -218,12 +218,12 @@
 		</dependency>
 
 		<!-- 用来测试接口的爬虫程序 -->
-		<dependency>
-			<groupId>com.timerchina.spider</groupId>
-			<artifactId>spider-zz</artifactId>
-			<!-- <version>1.1.141-SNAPSHOT</version> -->
-			<version>1.1.13-SNAPSHOT</version>
-		</dependency>
+		<!--<dependency>-->
+			<!--<groupId>com.timerchina.spider</groupId>-->
+			<!--<artifactId>spider-zz</artifactId>-->
+			<!--&lt;!&ndash; <version>1.1.141-SNAPSHOT</version> &ndash;&gt;-->
+			<!--<version>1.1.13-SNAPSHOT</version>-->
+		<!--</dependency>-->
 
 		<!-- https://mvnrepository.com/artifact/net.kencochrane.raven/raven-log4j -->
 		<dependency>
