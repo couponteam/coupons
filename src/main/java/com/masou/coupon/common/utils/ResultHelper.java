@@ -25,6 +25,15 @@ public class ResultHelper {
         return ret;
     }
 
+    public static Result genResult(Object obj, int retCode, String msg, String userMessage) {
+        Result ret = new Result();
+        ret.setData(obj);
+        ret.setMessage(msg);
+        ret.setCode(retCode);
+        ret.setUserMessage(userMessage);
+        return ret;
+    }
+
     public static Result genMessageResult(Object obj, int code, String userMessage) {
         Result ret = new Result();
         ret.setData(obj);

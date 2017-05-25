@@ -1,7 +1,13 @@
 package com.masou.coupon.service.shopapi;
 
+import com.alibaba.fastjson.JSON;
+import com.masou.coupon.common.struct.Result;
 import com.masou.coupon.data.models.Shop;
+import com.masou.coupon.data.models.TicketWithBLOBs;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestParam;
+
+import java.util.List;
 
 /**
  * Created by jason on 2017/5/18.
@@ -9,8 +15,22 @@ import org.springframework.stereotype.Service;
 @Service
 public class ShopManagerService {
 
+    /**
+     * 查询店铺列表
+     * @param uid
+     * @return
+     */
+    public List<Shop> shopList(Long uid){
 
-    public String login(String account, String password){
+        return null;
+    }
+
+    /**
+     * 查看单个店铺
+     * @param sid
+     * @return
+     */
+    public Shop shopBysid(Long sid){
 
 
         return null;
@@ -22,7 +42,7 @@ public class ShopManagerService {
      * @param uid 用户id
      * @return
      */
-    public String regis(String data, String uid){
+    public Shop regis(String data, Long uid){
 
 
         return null;
@@ -33,9 +53,8 @@ public class ShopManagerService {
      * @param data 更新的数据
      * @return 返回修改后的数据
      */
-    public Shop update(String data){
-
-
+    public Shop update(String data, Long sid){
+        Shop shp = JSON.toJavaObject((JSON)JSON.parse(data), Shop.class);
 
         return null;
     }

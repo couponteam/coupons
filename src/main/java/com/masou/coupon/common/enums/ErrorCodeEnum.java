@@ -34,6 +34,10 @@ public enum ErrorCodeEnum {
     TICKET_INSERT_EMPTY(10034, "输入内容为空"),
     TICKET_INSERT_EMPTY_ID(10035, "店铺ID为空"),
 
+    SHOP_REGIS_FAILED(10050, "注册店铺失败"),
+    SHOP_UPDATE_FAILED(10051, "更新店铺失败"),
+    SHOP_DELETE_FAILED(10052, "删除店铺失败"),
+
 
     DIC_FAIL(10050, "查询字典表出错"),
 
