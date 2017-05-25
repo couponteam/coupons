@@ -1,6 +1,7 @@
 package com.masou.coupon.common.utils;
 
 
+import com.masou.coupon.common.enums.ErrorCodeEnum;
 import com.masou.coupon.common.exception.BaseException;
 import com.masou.coupon.common.struct.Result;
 
@@ -22,6 +23,13 @@ public class ResultHelper {
         Result ret = new Result();
         ret.setMessage(msg);
         ret.setCode(retCode);
+        return ret;
+    }
+
+    public static Result genResult(ErrorCodeEnum errorCodeEnum){
+        Result ret = new Result();
+        ret.setMessage(errorCodeEnum.getMsg());
+        ret.setCode(errorCodeEnum.getCode());
         return ret;
     }
 
