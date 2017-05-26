@@ -37,6 +37,9 @@ public enum ErrorCodeEnum {
     SHOP_REGIS_FAILED(10050, "注册店铺失败"),
     SHOP_UPDATE_FAILED(10051, "更新店铺失败"),
     SHOP_DELETE_FAILED(10052, "删除店铺失败"),
+    SHOP_BEST_FAILED(10053,"精选店铺加载失败"),
+    SHOP_NECESSERY(10054, "今日必领列表加载失败"),
+    SHOP_SEL_BY_TYPE_FAILED(10055, "筛选失败"),
 
     SEARCH_FAILED(10080,"查询失败"),
     SEARCH_EMPTY_RESULT(10081, "暂无数据"),

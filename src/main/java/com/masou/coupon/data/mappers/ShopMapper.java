@@ -25,4 +25,6 @@ public interface ShopMapper {
     Shop selectByPhone(@Param("phone")String phone);
 
     List<Shop> selectListByFilter(ShopFilter filter);
+
+    List<Shop> selectByType(Integer industry, Integer page, Integer pageSize);
 }

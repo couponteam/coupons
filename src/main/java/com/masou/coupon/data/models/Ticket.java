@@ -7,6 +7,8 @@ public class Ticket {
 
     private String ticketId;
 
+    private Long shopId;
+
     private String ticketName;
 
     private String content;
@@ -23,27 +25,11 @@ public class Ticket {
 
     private Byte collectingMethod;
 
-    private Integer shopId;
+    private Byte isRetaken;
 
-    private String applicableScope;
+    private Byte isReUse;
 
-    private String workingCondition;
-
-    public String getApplicableScope() {
-        return applicableScope;
-    }
-
-    public void setApplicableScope(String applicableScope) {
-        this.applicableScope = applicableScope == null ? null : applicableScope.trim();
-    }
-
-    public String getWorkingCondition() {
-        return workingCondition;
-    }
-
-    public void setWorkingCondition(String workingCondition) {
-        this.workingCondition = workingCondition == null ? null : workingCondition.trim();
-    }
+    private Date createTime;
 
     public Long getId() {
         return id;
@@ -59,6 +45,14 @@ public class Ticket {
 
     public void setTicketId(String ticketId) {
         this.ticketId = ticketId == null ? null : ticketId.trim();
+    }
+
+    public Long getShopId() {
+        return shopId;
+    }
+
+    public void setShopId(Long shopId) {
+        this.shopId = shopId;
     }
 
     public String getTicketName() {
@@ -125,11 +119,27 @@ public class Ticket {
         this.collectingMethod = collectingMethod;
     }
 
-    public Integer getShopId() {
-        return shopId;
+    public Byte getIsRetaken() {
+        return isRetaken;
     }
 
-    public void setShopId(Integer shopId) {
-        this.shopId = shopId;
+    public void setIsRetaken(Byte isRetaken) {
+        this.isRetaken = isRetaken;
+    }
+
+    public Byte getIsReUse() {
+        return isReUse;
+    }
+
+    public void setIsReUse(Byte isReUse) {
+        this.isReUse = isReUse;
+    }
+
+    public Date getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(Date createTime) {
+        this.createTime = createTime;
     }
 }
