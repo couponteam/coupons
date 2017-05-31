@@ -48,8 +48,10 @@ public class WebInterceptorConfig extends WebMvcConfigurerAdapter {
                 .addPathPatterns("/**");
 
         // 用于日志记录
-        // 用于日志记录
+
         registry.addInterceptor(new LogInterceptor(ipUtil)).addPathPatterns("/**");
+
+
 
 //		 优化跳转
 //        registry.addInterceptor(new RedirectInterceptor())

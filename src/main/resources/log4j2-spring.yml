@@ -77,3 +77,10 @@ Configuration:
         - ref: infoRollingFile
         - ref: errorRollingFile
         - ref: accessRollingFile
+
+    Logger:
+      AppenderRef:
+        - ref: CONSOLE
+      name: 'com.masou.coupon.data.mappers'
+      level: TRACE
+      additivity: false

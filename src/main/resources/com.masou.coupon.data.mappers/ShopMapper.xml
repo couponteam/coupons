@@ -8,7 +8,6 @@
         <result column="industry_id" jdbcType="INTEGER" property="industryId"/>
         <result column="phone" jdbcType="CHAR" property="phone"/>
         <result column="is_phone_verified" jdbcType="TINYINT" property="isPhoneVerified"/>
-        <result column="password" jdbcType="CHAR" property="password"/>
         <result column="telephone" jdbcType="CHAR" property="telephone"/>
         <result column="telephone_ex" jdbcType="CHAR" property="telephoneEx"/>
         <result column="brief_intro" jdbcType="VARCHAR" property="briefIntro"/>
@@ -21,7 +20,7 @@
         <result column="phone_verified_time" jdbcType="TIMESTAMP" property="phoneVerifiedTime"/>
     </resultMap>
     <sql id="Base_Column_List">
-    id, shop_name, icon_id, industry_id, phone, is_phone_verified, password, telephone, 
+    id, shop_name, icon_id, industry_id, phone, is_phone_verified, telephone,
     telephone_ex, brief_intro, business_license_id, is_shop_verified, wechat_account, 
     shop_address, create_time, last_update_time, phone_verified_time
   </sql>
@@ -71,13 +70,13 @@
     <insert id="insert" parameterType="com.masou.coupon.data.models.Shop">
     insert into ety_shop (id, shop_name, icon_id, 
       industry_id, phone, is_phone_verified, 
-      password, telephone, telephone_ex, 
+       telephone, telephone_ex,
       brief_intro, business_license_id, is_shop_verified, 
       wechat_account, shop_address, create_time, 
       last_update_time, phone_verified_time)
     values (#{id,jdbcType=INTEGER}, #{shopName,jdbcType=VARCHAR}, #{iconId,jdbcType=VARCHAR},
       #{industryId,jdbcType=INTEGER}, #{phone,jdbcType=CHAR}, #{isPhoneVerified,jdbcType=TINYINT}, 
-      #{password,jdbcType=CHAR}, #{telephone,jdbcType=CHAR}, #{telephoneEx,jdbcType=CHAR}, 
+      #{telephone,jdbcType=CHAR}, #{telephoneEx,jdbcType=CHAR},
       #{briefIntro,jdbcType=VARCHAR}, #{businessLicenseId,jdbcType=BIGINT}, #{isShopVerified,jdbcType=TINYINT}, 
       #{wechatAccount,jdbcType=VARCHAR}, #{shopAddress,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, 
       #{lastUpdateTime,jdbcType=TIMESTAMP}, #{phoneVerifiedTime,jdbcType=TIMESTAMP})
@@ -103,9 +102,7 @@
             <if test="isPhoneVerified != null">
                 is_phone_verified,
             </if>
-            <if test="password != null">
-                password,
-            </if>
+
             <if test="telephone != null">
                 telephone,
             </if>
@@ -156,9 +153,7 @@
             <if test="isPhoneVerified != null">
                 #{isPhoneVerified,jdbcType=TINYINT},
             </if>
-            <if test="password != null">
-                #{password,jdbcType=CHAR},
-            </if>
+
             <if test="telephone != null">
                 #{telephone,jdbcType=CHAR},
             </if>
@@ -209,9 +204,7 @@
             <if test="isPhoneVerified != null">
                 is_phone_verified = #{isPhoneVerified,jdbcType=TINYINT},
             </if>
-            <if test="password != null">
-                password = #{password,jdbcType=CHAR},
-            </if>
+
             <if test="telephone != null">
                 telephone = #{telephone,jdbcType=CHAR},
             </if>
@@ -252,7 +245,6 @@
       industry_id = #{industryId,jdbcType=INTEGER},
       phone = #{phone,jdbcType=CHAR},
       is_phone_verified = #{isPhoneVerified,jdbcType=TINYINT},
-      password = #{password,jdbcType=CHAR},
       telephone = #{telephone,jdbcType=CHAR},
       telephone_ex = #{telephoneEx,jdbcType=CHAR},
       brief_intro = #{briefIntro,jdbcType=VARCHAR},

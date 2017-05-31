@@ -55,11 +55,10 @@ public class ShopService {
      * 申请店铺
      *
      * @param record
-     * @param uid
      * @return
      */
     @Transactional
-    public Result apply(Shop record, Long uid) {
+    public Result apply(Shop record) {
         if (!phoneUtil.isPhone(record.getPhone())) {
             throw new UserException("手机号不正确");
         }
@@ -67,12 +66,16 @@ public class ShopService {
             throw new UserException("手机号已经注册");
         }
 
+        User user = userService.selectByPhone(record.getPhone());
+        if (user == null) {
+            throw new UserException("请先注册再进行申请");
+        }
 
         if (shopDao.insertSelective(record) == 1) {
 
             ShopChief shopChief = new ShopChief();
             shopChief.setShopId(record.getId());
-            shopChief.setUid(uid);
+            shopChief.setUid(user.getId());
             shopChief.setType(ShopOwnerTypeEnum.CHIEF_MANAGER.getRole());
 
             if (shopChiefService.insertSelective(shopChief) == 1) {
