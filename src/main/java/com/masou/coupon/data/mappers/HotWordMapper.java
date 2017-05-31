@@ -2,9 +2,11 @@ package com.masou.coupon.data.mappers;
 
 
 import com.masou.coupon.data.models.HotWord;
+import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
 
+@Mapper
 public interface HotWordMapper {
     int deleteByPrimaryKey(Long id);
 

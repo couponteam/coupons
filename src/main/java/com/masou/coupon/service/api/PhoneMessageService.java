@@ -7,11 +7,13 @@ import com.masou.coupon.common.enums.ErrorCodeEnum;
 import com.masou.coupon.dao.PhoneMessageDao;
 import com.masou.coupon.data.models.PhoneMessage;
 import com.masou.coupon.exception.UserException;
-import com.masou.coupon.service.SmsClientService;
+import com.masou.coupon.service.sms.SMSResult;
+import com.masou.coupon.service.sms.SmsClientService;
 import com.masou.coupon.utils.PhoneUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -67,6 +69,7 @@ public class PhoneMessageService {
     }
 
 
+    @Transactional
     public Result sendMessage(String phone, String verify, String message, Integer type, Integer source) {
         if (!phoneUtil.isPhone(phone)) {
             throw new UserException(ErrorCodeEnum.SYS_ERROR, "手机号不正确");
@@ -99,10 +102,14 @@ public class PhoneMessageService {
 
         phoneMessageDao.insertSelective(msg);
 
-        Result vo = smsClientService.sendMessage();
+        SMSResult vo = smsClientService.sendMessage(phone, message);
 
-        return ResultHelper.genResultWithSuccess(vo);
+        if (vo!=null) {
+            return ResultHelper.genResultWithSuccess();
 
+        }else {
+            throw new UserException("短信发送失败");
+        }
 
     }
 

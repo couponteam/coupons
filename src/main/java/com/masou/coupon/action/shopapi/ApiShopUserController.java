@@ -1,4 +1,4 @@
-package com.masou.coupon.action.erpapi;
+package com.masou.coupon.action.shopapi;
 
 import com.masou.coupon.common.enums.RoleEnum;
 import com.masou.coupon.common.struct.Result;
@@ -19,8 +19,8 @@ import org.springframework.web.bind.annotation.*;
  * Created by jason on 2017/5/16.
  */
 @RestController
-@RequestMapping("/shop/api")
-public class ErpShopUserController {
+@RequestMapping("/shop/api/user")
+public class ApiShopUserController {
 
 
     @Autowired
@@ -34,22 +34,21 @@ public class ErpShopUserController {
     private UserTokenService userTokenService;
 
     @ApiOperation("商家申请")
-    @ApiImplicitParam(name = "industryId", value = "店铺所属行业类型",paramType = "query",dataType = "String")
+    @ApiImplicitParam(name = "industryId", value = "店铺所属行业类型", paramType = "query", dataType = "String")
     @PostMapping("/apply")
-    public Result apply(@RequestParam("token") String token,
-                        @RequestParam("shopId")Integer shopId,
-                        @RequestParam("briefIntro") String briefIntro,
+    public Result apply(
+                        @RequestParam(value = "shopId", required = false) Integer shopId,
+                        @RequestParam(value = "briefIntro", required = false) String briefIntro,
                         @RequestParam("phone") String phone,
-                        @RequestParam("iconImage")String iconImage,
+                        @RequestParam("iconImage") String iconImage,
                         @RequestParam("shopName") String shopName,
                         @RequestParam("shopAddress") String shopAddress,
                         @RequestParam("industryId") Integer industryId) {
 
 
-        Long uid = userTokenService.getUid(token);
         Shop record = new Shop();
 
-        if (shopId!=null){
+        if (shopId != null) {
             record.setId(shopId);
         }
         record.setIconId(iconImage);
@@ -60,7 +59,7 @@ public class ErpShopUserController {
         record.setIndustryId(industryId);
 
 
-        return shopService.apply(record, uid);
+        return shopService.apply(record);
 
 
     }

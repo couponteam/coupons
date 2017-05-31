@@ -14,7 +14,7 @@ public class ShopVO {
 
     private String shopName;
 
-    private Integer iconId;
+    private String iconId;
 
     private Integer industryId;
 
