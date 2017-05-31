@@ -5,10 +5,9 @@ import com.masou.coupon.action.shopapi.vo.ShopVO;
 import com.masou.coupon.action.shopapi.vo.UserShopVO;
 import com.masou.coupon.common.enums.ErrorCodeEnum;
 import com.masou.coupon.common.enums.ShopOwnerTypeEnum;
-import com.masou.coupon.common.enums.ShopVerifyEnum;
 import com.masou.coupon.common.struct.Result;
 import com.masou.coupon.common.utils.ResultHelper;
-import com.masou.coupon.dao.ShopDao;
+import com.masou.coupon.dao.Shop2Dao;
 import com.masou.coupon.data.filter.ShopFilter;
 import com.masou.coupon.data.models.Shop;
 import com.masou.coupon.data.models.ShopChief;
@@ -30,7 +29,7 @@ import java.util.List;
 public class ShopService {
 
     @Autowired
-    private ShopDao shopDao;
+    private Shop2Dao shop2Dao;
 
     @Autowired
     private PhoneUtil phoneUtil;
@@ -47,7 +46,7 @@ public class ShopService {
 
 
     public int deleteByPrimaryKey(Integer id) {
-        return shopDao.deleteByPrimaryKey(id);
+        return shop2Dao.deleteByPrimaryKey(id);
     }
 
 
@@ -62,7 +61,7 @@ public class ShopService {
         if (!phoneUtil.isPhone(record.getPhone())) {
             throw new UserException("手机号不正确");
         }
-        if (shopDao.selectByPhone(record.getPhone()) != null) {
+        if (shop2Dao.selectByPhone(record.getPhone()) != null) {
             throw new UserException("手机号已经注册");
         }
 
@@ -71,7 +70,7 @@ public class ShopService {
             throw new UserException("请先注册再进行申请");
         }
 
-        if (shopDao.insertSelective(record) == 1) {
+        if (shop2Dao.insertSelective(record) == 1) {
 
             ShopChief shopChief = new ShopChief();
             shopChief.setShopId(record.getId());
@@ -106,7 +105,7 @@ public class ShopService {
         }
 
 
-        Shop shop = shopDao.selectByPhone(phone);
+        Shop shop = shop2Dao.selectByPhone(phone);
 
         userTokenService.updateByLogin(token, user.getId());
         UserShopVO vo = new UserShopVO();
@@ -139,13 +138,13 @@ public class ShopService {
         filter.setOffset(pageParam.getOffset());
         filter.setLimit(pageParam.getPageSize());
         filter.setVerified(verifyType);
-        return ResultHelper.genResultWithSuccess(buildList(shopDao.selectListByFilter(filter)));
+        return ResultHelper.genResultWithSuccess(buildList(shop2Dao.selectListByFilter(filter)));
     }
 
     public Result approve(Integer shopId, Integer shopVerifyType) {
-        Shop shop = shopDao.selectByPrimaryKey(shopId);
+        Shop shop = shop2Dao.selectByPrimaryKey(shopId);
         shop.setIsShopVerified(shopVerifyType.byteValue());
-        if (shopDao.updateByPrimaryKeySelective(shop) == 1) {
+        if (shop2Dao.updateByPrimaryKeySelective(shop) == 1) {
             return ResultHelper.genResultWithSuccess();
         } else {
             throw new UserException("审核失败");
@@ -153,11 +152,11 @@ public class ShopService {
     }
 
     public Shop selectByPrimaryKey(Integer id) {
-        return shopDao.selectByPrimaryKey(id);
+        return shop2Dao.selectByPrimaryKey(id);
     }
 
     public int updateByPrimaryKeySelective(Shop record) {
-        return shopDao.updateByPrimaryKeySelective(record);
+        return shop2Dao.updateByPrimaryKeySelective(record);
     }
 
     public List<ShopVO> buildList(List<Shop> list) {

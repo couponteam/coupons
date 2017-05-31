@@ -13,11 +13,11 @@
         <result column="create_at" jdbcType="TIMESTAMP" property="createAt"/>
         <result column="update_at" jdbcType="TIMESTAMP" property="updateAt"/>
         <result column="channel_id" jdbcType="VARCHAR" property="channelId"/>
-        <result column="avatar_id" property="avatarId" />
+        <result column="avatar" property="avatar" />
     </resultMap>
     <sql id="Base_Column_List">
     id, nickname, phone, invite_code, be_invite_code, uid, gender, from_key, create_at, 
-    update_at, channel_id,avatar_id
+    update_at, channel_id,avatar
   </sql>
     <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
         select
@@ -91,8 +91,8 @@
             <if test="channelId != null">
                 channel_id,
             </if>
-            <if test="avatarId!=null">
-                avatar_id,
+            <if test="avatar!=null">
+                avatar,
             </if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
@@ -129,8 +129,8 @@
             <if test="channelId != null">
                 #{channelId,jdbcType=VARCHAR},
             </if>
-            <if test="avatarId!=null">
-                #{avatarId},
+            <if test="avatar!=null">
+                #{avatar},
             </if>
         </trim>
     </insert>
@@ -167,8 +167,8 @@
             <if test="channelId != null">
                 channel_id = #{channelId,jdbcType=VARCHAR},
             </if>
-            <if test="avatarId!=null">
-                avatar_id = #{avatarId},
+            <if test="avatar!=null">
+                avatar = #{avatar},
             </if>
         </set>
         where id = #{id,jdbcType=INTEGER}

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.bestexpress.webyb.data.mappers.HotWordMapper">
-  <resultMap id="BaseResultMap" type="com.bestexpress.webyb.data.models.HotWord">
+<mapper namespace="com.masou.coupon.data.mappers.HotWordMapper">
+  <resultMap id="BaseResultMap" type="com.masou.coupon.data.models.HotWord">
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="word" jdbcType="VARCHAR" property="word" />
     <result column="frequence" jdbcType="INTEGER" property="frequence" />
@@ -27,13 +27,13 @@
     delete from ety_hot_word
     where id = #{id,jdbcType=BIGINT}
   </delete>
-  <insert id="insert" parameterType="com.bestexpress.webyb.data.models.HotWord">
+  <insert id="insert" parameterType="com.masou.coupon.data.models.HotWord">
     insert into ety_hot_word (id, word, frequence, 
       create_time)
     values (#{id,jdbcType=BIGINT}, #{word,jdbcType=VARCHAR}, #{frequence,jdbcType=INTEGER}, 
       #{createTime,jdbcType=DATE})
   </insert>
-  <insert id="insertSelective" parameterType="com.bestexpress.webyb.data.models.HotWord">
+  <insert id="insertSelective" parameterType="com.masou.coupon.data.models.HotWord">
     insert into ety_hot_word
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -64,7 +64,7 @@
       </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.bestexpress.webyb.data.models.HotWord">
+  <update id="updateByPrimaryKeySelective" parameterType="com.masou.coupon.data.models.HotWord">
     update ety_hot_word
     <set>
       <if test="word != null">
@@ -79,7 +79,7 @@
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.bestexpress.webyb.data.models.HotWord">
+  <update id="updateByPrimaryKey" parameterType="com.masou.coupon.data.models.HotWord">
     update ety_hot_word
     set word = #{word,jdbcType=VARCHAR},
       frequence = #{frequence,jdbcType=INTEGER},

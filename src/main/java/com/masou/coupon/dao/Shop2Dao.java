@@ -13,7 +13,7 @@ import java.util.List;
  * Created by Paul on 2017/5/20.
  */
 @Repository
-public class ShopDao {
+public class Shop2Dao {
 
     @Autowired
     private ShopMapper shopMapper;

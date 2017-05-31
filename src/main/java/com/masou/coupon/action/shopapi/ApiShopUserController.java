@@ -65,15 +65,15 @@ public class ApiShopUserController {
     }
 
 
-//    @ApiOperation("商家注册")
-//    @PostMapping("/register")
-//    public Result register(@RequestParam("phone") String phone,
-//                           @RequestParam("verify") String verify,
-//                           @RequestParam("password") String password) {
-//
-//        return userService.register(phone, verify, password, "shop", null, false, RoleEnum.SHOP_OWNER.getRole());
-//
-//    }
+    @ApiOperation("商家注册")
+    @PostMapping("/register")
+    public Result register(@RequestParam("phone") String phone,
+                           @RequestParam("verify") String verify,
+                           @RequestParam("password") String password) {
+
+        return userService.register(phone, verify, password, "shop", null, false, RoleEnum.SHOP_OWNER.getRole());
+
+    }
 
 
     @ApiOperation("商家登陆")

@@ -38,11 +38,10 @@ public class ApiCommonController {
                                    @RequestParam(value = "type", defaultValue = "0") Integer type) {
 
 
-//        String verify = phoneMessageService.generateVerify();
-        String verify = "111111";
+        String verify = phoneMessageService.generateVerify();
+//        String verify = "111111";
         String tpl = "您的验证码是%s。";
         String message = String.format(tpl, verify);
-
 
         return phoneMessageService.sendMessage(phone, verify, message, type);
     }
