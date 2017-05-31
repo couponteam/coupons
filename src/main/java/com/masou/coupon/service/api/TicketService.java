@@ -1,7 +1,7 @@
 package com.masou.coupon.service.api;
 
 import com.masou.coupon.action.param.PageParam;
-import com.masou.coupon.dao.api.ShopDao;
+import com.masou.coupon.dao.ShopDao;
 import com.masou.coupon.dao.api.TicketDao;
 import com.masou.coupon.data.models.Shop;
 import com.masou.coupon.data.models.Ticket;

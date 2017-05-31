@@ -48,7 +48,6 @@ public class ApiSearchController {
         }else{
 
         }
-
         return ResultHelper.genResult(ErrorCodeEnum.SYS_ERROR);
     }
 
@@ -56,7 +55,8 @@ public class ApiSearchController {
     @RequestMapping(value = "/hotword", method = RequestMethod.GET)
     public Result hotword(@RequestParam("limit") Integer limit){
         try {
-            List<HotWord> hotword = searchService.hotword(limit);
+//            List<HotWord> hotword = searchService.hotword(limit);
+            List<HotWord> hotword = null;
             if(hotword != null && hotword.size() > 0){
                 return ResultHelper.genResultWithSuccess(hotword);
             }

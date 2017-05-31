@@ -27,6 +27,8 @@ public class ErpShopManagerController {
     @RequestMapping(value = "/shoplist", method = RequestMethod.GET)
     public Result shopList(@RequestParam("uid") Long uid){
 
+
+
         return null;
     }
 

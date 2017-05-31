@@ -66,7 +66,7 @@ public class JedisDemo {
         t.setId(183719237L);
         t.setPeriodOfValidityStarttime(new Date());
         t.setPeriodOfValidityEndtime(new Date());
-        t.setShopId(123918231);
+//        t.setShopId(123918231);
         t.setStatus(b);
         t.setTicketName("");
         t.setTypeId(b);

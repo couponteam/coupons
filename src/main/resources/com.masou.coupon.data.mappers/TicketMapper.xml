@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.bestexpress.webyb.data.mappers.TicketMapper">
-    <resultMap id="BaseResultMap" type="com.bestexpress.webyb.data.models.Ticket">
+<mapper namespace="com.masou.coupon.data.mappers.TicketMapper">
+    <resultMap id="BaseResultMap" type="com.masou.coupon.data.models.Ticket">
         <id column="id" jdbcType="BIGINT" property="id" />
         <result column="ticket_id" jdbcType="CHAR" property="ticketId" />
         <result column="shop_id" jdbcType="BIGINT" property="shopId" />
@@ -17,7 +17,7 @@
         <result column="is_re_use" jdbcType="TINYINT" property="isReUse" />
         <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     </resultMap>
-    <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.bestexpress.webyb.data.models.TicketWithBLOBs">
+    <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.masou.coupon.data.models.TicketWithBLOBs">
         <result column="applicable_scope" jdbcType="LONGVARCHAR" property="applicableScope" />
         <result column="working_condition" jdbcType="LONGVARCHAR" property="workingCondition" />
         <result column="validity_comment" jdbcType="LONGVARCHAR" property="validityComment" />
@@ -64,7 +64,7 @@
         delete from ety_ticket
         where id = #{id,jdbcType=BIGINT}
     </delete>
-    <insert id="insert" parameterType="com.bestexpress.webyb.data.models.TicketWithBLOBs">
+    <insert id="insert" parameterType="com.masou.coupon.data.models.TicketWithBLOBs">
         insert into ety_ticket (id, ticket_id, shop_id,
         ticket_name, content, type_id,
         period_of_validity_startTime, period_of_validity_endTime,
@@ -80,7 +80,7 @@
         #{applicableScope,jdbcType=LONGVARCHAR}, #{workingCondition,jdbcType=LONGVARCHAR},
         #{validityComment,jdbcType=LONGVARCHAR})
     </insert>
-    <insert id="insertSelective" parameterType="com.bestexpress.webyb.data.models.TicketWithBLOBs">
+    <insert id="insertSelective" parameterType="com.masou.coupon.data.models.TicketWithBLOBs">
         insert into ety_ticket
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="id != null">
@@ -189,7 +189,7 @@
             </if>
         </trim>
     </insert>
-    <update id="updateByPrimaryKeySelective" parameterType="com.bestexpress.webyb.data.models.TicketWithBLOBs">
+    <update id="updateByPrimaryKeySelective" parameterType="com.masou.coupon.data.models.TicketWithBLOBs">
         update ety_ticket
         <set>
             <if test="ticketId != null">
@@ -243,7 +243,7 @@
         </set>
         where id = #{id,jdbcType=BIGINT}
     </update>
-    <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.bestexpress.webyb.data.models.TicketWithBLOBs">
+    <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.masou.coupon.data.models.TicketWithBLOBs">
         update ety_ticket
         set ticket_id = #{ticketId,jdbcType=CHAR},
         shop_id = #{shopId,jdbcType=BIGINT},
@@ -263,7 +263,7 @@
         validity_comment = #{validityComment,jdbcType=LONGVARCHAR}
         where id = #{id,jdbcType=BIGINT}
     </update>
-    <update id="updateByPrimaryKey" parameterType="com.bestexpress.webyb.data.models.Ticket">
+    <update id="updateByPrimaryKey" parameterType="com.masou.coupon.data.models.Ticket">
     update ety_ticket
     set ticket_id = #{ticketId,jdbcType=CHAR},
       shop_id = #{shopId,jdbcType=BIGINT},

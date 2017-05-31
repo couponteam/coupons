@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.bestexpress.webyb.data.mappers.ShopMapper">
-    <resultMap id="BaseResultMap" type="com.bestexpress.webyb.data.models.Shop">
+<mapper namespace="com.masou.coupon.data.mappers.ShopMapper">
+    <resultMap id="BaseResultMap" type="com.masou.coupon.data.models.Shop">
         <id column="id" jdbcType="INTEGER" property="id" />
         <result column="shop_name" jdbcType="VARCHAR" property="shopName" />
         <result column="icon_id" jdbcType="VARCHAR" property="iconId" />
@@ -68,7 +68,7 @@
         delete from ety_shop
         where id = #{id,jdbcType=INTEGER}
     </delete>
-    <insert id="insert" parameterType="com.bestexpress.webyb.data.models.Shop">
+    <insert id="insert" parameterType="com.masou.coupon.data.models.Shop">
         insert into ety_shop (id, shop_name, icon_id,
         industry_id, phone, is_phone_verified,
         telephone, telephone_ex, brief_intro,
@@ -84,7 +84,7 @@
         #{rank,jdbcType=TINYINT}, #{createTime,jdbcType=TIMESTAMP}, #{lastUpdateTime,jdbcType=TIMESTAMP},
         #{phoneVerifiedTime,jdbcType=TIMESTAMP})
     </insert>
-    <insert id="insertSelective" parameterType="com.bestexpress.webyb.data.models.Shop">
+    <insert id="insertSelective" parameterType="com.masou.coupon.data.models.Shop">
         insert into ety_shop
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="id != null">
@@ -205,7 +205,7 @@
             </if>
         </trim>
     </insert>
-    <update id="updateByPrimaryKeySelective" parameterType="com.bestexpress.webyb.data.models.Shop">
+    <update id="updateByPrimaryKeySelective" parameterType="com.masou.coupon.data.models.Shop">
         update ety_shop
         <set>
             <if test="shopName != null">
@@ -265,7 +265,7 @@
         </set>
         where id = #{id,jdbcType=INTEGER}
     </update>
-    <update id="updateByPrimaryKey" parameterType="com.bestexpress.webyb.data.models.Shop">
+    <update id="updateByPrimaryKey" parameterType="com.masou.coupon.data.models.Shop">
     update ety_shop
     set shop_name = #{shopName,jdbcType=VARCHAR},
       icon_id = #{iconId,jdbcType=VARCHAR},
