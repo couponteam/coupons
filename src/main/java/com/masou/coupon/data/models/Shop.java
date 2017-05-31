@@ -15,8 +15,6 @@ public class Shop {
 
     private Byte isPhoneVerified;
 
-    private String password;
-
     private String telephone;
 
     private String telephoneEx;
@@ -25,11 +23,17 @@ public class Shop {
 
     private Long businessLicenseId;
 
+    private float longitude;
+
+    private float dimensionality;
+
     private Byte isShopVerified;
 
     private String wechatAccount;
 
     private String shopAddress;
+
+    private Integer rank;
 
     private Date createTime;
 
@@ -83,14 +87,6 @@ public class Shop {
 
     public void setIsPhoneVerified(Byte isPhoneVerified) {
         this.isPhoneVerified = isPhoneVerified;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password == null ? null : password.trim();
     }
 
     public String getTelephone() {
@@ -171,5 +167,29 @@ public class Shop {
 
     public void setPhoneVerifiedTime(Date phoneVerifiedTime) {
         this.phoneVerifiedTime = phoneVerifiedTime;
+    }
+
+    public float getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(float longitude) {
+        this.longitude = longitude;
+    }
+
+    public float getDimensionality() {
+        return dimensionality;
+    }
+
+    public void setDimensionality(float dimensionality) {
+        this.dimensionality = dimensionality;
+    }
+
+    public Integer getRank() {
+        return rank;
+    }
+
+    public void setRank(Integer rank) {
+        this.rank = rank;
     }
 }

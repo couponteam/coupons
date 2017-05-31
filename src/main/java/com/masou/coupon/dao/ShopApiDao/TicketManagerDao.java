@@ -1,5 +1,7 @@
 package com.masou.coupon.dao.ShopApiDao;
 
+import com.masou.coupon.action.erpapi.vo.TicketPageParam;
+import com.masou.coupon.action.param.PageParam;
 import com.masou.coupon.data.mappers.TicketMapper;
 import com.masou.coupon.data.models.TicketWithBLOBs;
 import org.slf4j.Logger;
@@ -54,8 +56,8 @@ public class TicketManagerDao {
         return 0;
     }
 
-    public List<TicketWithBLOBs> selectTicket(Long sid, int page){
-       return ticketMapper.selectByLimit(sid, page);
+    public List<TicketWithBLOBs> selectTicket( TicketPageParam param){
+       return ticketMapper.selectByLimit(param);
     }
 
     public TicketWithBLOBs selectByTicketId(Long tid){
