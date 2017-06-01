@@ -76,6 +76,28 @@ public class ApiShopUserController {
     }
 
 
+
+    @ApiOperation("修改密码")
+    @RequestMapping(value = "/changePassword", method = RequestMethod.POST)
+    public Result changePassword(@RequestParam("token") String token,
+                                 @RequestParam("oldPassword") String oldPassword,
+                                 @RequestParam("newPassword") String newPassword) {
+        Long uid = userTokenService.getUid(token);
+
+        return userService.changePassword(uid, oldPassword, newPassword);
+
+    }
+
+    @ApiOperation("忘记密码")
+    @RequestMapping(value = "/forgetPassword", method = RequestMethod.POST)
+    public Result forgetPassword(@RequestParam("phone") String phone,
+                                 @RequestParam("verify") String verify,
+                                 @RequestParam("newPassword") String password) {
+
+        return userService.forgetPassword(phone, verify, password);
+    }
+
+
     @ApiOperation("商家登陆")
     @PostMapping("/login")
     public Result login(@RequestParam("token") String token,
