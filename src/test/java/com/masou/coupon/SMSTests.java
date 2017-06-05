@@ -15,11 +15,10 @@ public class SMSTests {
 	@Autowired
 	private SmsClientService smsClientService;
 
-
 	@Test
 	public void send() {
 
-		SMSResult result = smsClientService.sendMessage("18667179291","【码艘科技】您的验证码是123456");
+		SMSResult result = smsClientService.sendMessage("18758327040","【码艘科技】您的验证码是123456");
 
 		System.out.println(result.toString());
 	}

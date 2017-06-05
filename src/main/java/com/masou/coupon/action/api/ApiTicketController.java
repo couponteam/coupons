@@ -1,11 +1,11 @@
 package com.masou.coupon.action.api;
 
+import com.masou.coupon.action.erpapi.vo.ShopTicketVO;
 import com.masou.coupon.common.enums.ErrorCodeEnum;
 import com.masou.coupon.common.struct.Result;
 import com.masou.coupon.common.utils.ResultHelper;
 import com.masou.coupon.data.models.Shop;
 import com.masou.coupon.exception.UserException;
-import com.masou.coupon.service.api.BannerService;
 import com.masou.coupon.service.api.TicketService;
 import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
@@ -15,8 +15,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -31,15 +29,29 @@ public class ApiTicketController {
 
     private Logger logger = LoggerFactory.getLogger(ApiTicketController.class);
 
-
     @ApiOperation("券筛选，根据行业类型，券类型筛选")
     @RequestMapping(value = "/sel_by_type", method = RequestMethod.GET)
     public Result selectByType(@RequestParam("industry") Integer industry,
                                @RequestParam("type") Integer type,
                                @RequestParam("page") Integer page){
         try {
-            List<Shop> list = ticketService.selectByType(industry,type,page);
-            if(list != null && list.size() > 0){
+            List<ShopTicketVO> list = ticketService.selectByType(industry,type,page);
+            if(list != null && list.size() > 0) {
+                return ResultHelper.genResultWithSuccess(list);
+            }
+        }catch(UserException e){
+            logger.error("筛选券失败：" + e.getLocalizedMessage());
+        }
+        return ResultHelper.genResult(ErrorCodeEnum.SHOP_SEL_BY_TYPE_FAILED);
+    }
+
+    @ApiOperation("根据行业类型筛选")
+    @RequestMapping(value = "/sel_by_industry", method = RequestMethod.GET)
+    public Result selectByIndustry(@RequestParam("industry") Integer industry,
+                               @RequestParam("page") Integer page){
+        try {
+            List<Shop> list = ticketService.selectByIndustry(industry, page);
+            if(list != null && list.size() > 0) {
                 return ResultHelper.genResultWithSuccess(list);
             }
         }catch(UserException e){

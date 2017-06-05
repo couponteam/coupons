@@ -1,5 +1,6 @@
 package com.masou.coupon.data.mappers;
 
+import com.masou.coupon.action.erpapi.vo.ShopTicketVO;
 import com.masou.coupon.data.filter.ShopFilter;
 import com.masou.coupon.data.models.Shop;
 import org.apache.ibatis.annotations.Mapper;
@@ -21,10 +22,10 @@ public interface ShopMapper {
 
     int updateByPrimaryKey(Shop record);
 
-
     Shop selectByPhone(@Param("phone")String phone);
 
     List<Shop> selectListByFilter(ShopFilter filter);
 
-    List<Shop> selectByType(Integer industry, Integer page, Integer pageSize);
+    List<ShopTicketVO> selectByType(Integer industry, Integer type, Integer page, Integer pageSize);
+
 }

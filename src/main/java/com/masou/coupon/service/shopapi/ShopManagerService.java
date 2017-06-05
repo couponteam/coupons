@@ -42,7 +42,7 @@ public class ShopManagerService {
      * @param uid 用户id
      * @return
      */
-    public Shop regis(String data, Long uid){
+    public Shop regis(String data){
 
 
         return null;

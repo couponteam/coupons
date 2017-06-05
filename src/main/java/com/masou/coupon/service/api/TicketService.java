@@ -1,7 +1,8 @@
 package com.masou.coupon.service.api;
 
+import com.masou.coupon.action.erpapi.vo.ShopTicketVO;
 import com.masou.coupon.action.param.PageParam;
-import com.masou.coupon.dao.ShopDao;
+//import com.masou.coupon.dao.ShopDao;
 import com.masou.coupon.dao.api.TicketDao;
 import com.masou.coupon.data.models.Shop;
 import com.masou.coupon.data.models.Ticket;
@@ -20,25 +21,18 @@ public class TicketService {
     @Autowired
     private TicketDao ticketDao;
 
-    @Autowired
-    private ShopDao shopDao;
+//    @Autowired
+//    private ShopDao shopDao;
 
-    public List<Shop> selectByType(Integer industry, Integer type, Integer page){
-
+    public List<ShopTicketVO> selectByType(Integer industry, Integer type, Integer page){
         PageParam param = new PageParam();
         param.setPage(page);
-        List<Ticket> rs = ticketDao.selectByType(industry, param);
-        if(rs != null && rs.size() > 0){
+        return ticketDao.selectByType(industry,type, param);
+    }
 
-
-
-
-        }
-
-
+    public  List<Shop> selectByIndustry(Integer industry, Integer page){
 
         return null;
-//        return shopDao.selectBySType(industry, limit);
     }
 
 

@@ -93,3 +93,19 @@ spring:
         testOnReturn: false
         poolPreparedStatements: true
         maxOpenPreparedStatements: 20
+
+Loggers:
+    Root:
+      level: info
+      AppenderRef:
+        - ref: CONSOLE
+        - ref: infoRollingFile
+        - ref: errorRollingFile
+        - ref: accessRollingFile
+
+    Logger:
+      AppenderRef:
+        - ref: CONSOLE
+      name: 'com.masou.coupon.data.mappers'
+      level: TRACE
+      additivity: false

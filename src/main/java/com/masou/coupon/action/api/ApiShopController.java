@@ -22,7 +22,6 @@ public class ApiShopController {
 
     /**
      * 请求banner列表
-     *
      * @param section
      * @return
      */
@@ -31,8 +30,4 @@ public class ApiShopController {
     public Result section(@RequestParam("section") String section) {
         return ResultHelper.genResultWithSuccess(bannerService.selectListBySection(section));
     }
-
-
-
-
 }

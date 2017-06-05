@@ -34,7 +34,7 @@ public class ErpShopManagerController {
 
     @ApiOperation("查看单个店铺")
     @RequestMapping(value = "/shop", method = RequestMethod.GET)
-    public Result shopBysid(@RequestParam("uid") Long sid){
+    public Result shopBysid(@RequestParam("sid") Long sid){
 
 
         return null;
@@ -43,14 +43,14 @@ public class ErpShopManagerController {
 
     @ApiOperation("注册店铺")
     @RequestMapping(value = "/regis", method = RequestMethod.POST)
-    public Result regisShop(@RequestParam("data") String data, @RequestParam("uid") Long uid){
+    public Result regisShop(@RequestParam("data") String data){
         String errorMsg = ErrorCodeEnum.SHOP_UPDATE_FAILED.getMsg();
-        if(uid != null && uid > 0){
-            Shop shop = shopManagerService.regis(data, uid);
-            if(shop != null && shop.getId() > 0){
-                return ResultHelper.genResultWithSuccess(shop);
-            }
-        }
+//        if(uid != null && uid > 0){
+//            Shop shop = shopManagerService.regis(data);
+//            if(shop != null && shop.getId() > 0){
+//                return ResultHelper.genResultWithSuccess(shop);
+//            }
+//        }
         return ResultHelper.genResult(ErrorCodeEnum.SHOP_REGIS_FAILED.getCode(), ErrorCodeEnum.SHOP_REGIS_FAILED.getMsg());
     }
 
