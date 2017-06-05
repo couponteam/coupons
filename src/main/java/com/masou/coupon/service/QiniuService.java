@@ -16,17 +16,18 @@ import java.io.IOException;
 @Service
 public class QiniuService {
 
-    private String accessKey = "LI93y8HnnKqwLA0pz33PyR0_9B0VGVPJXW5QeWBt";
+    private String accessKey = "O5J4bt2_maG3AEWUujacIW4ZCMaBcvlPf3-x212n";
 
-    private String secretKey = "_opb8UhXgKB1-XD-prRqUD9ntZz29T1sqHY6iO8E";
+    private String secretKey = "IxZ74MAFn4MnYR3mvbhE9WGQUIZr7v249QutpDX-";
 
-    //要上传的空间
-    String bucketname = "linghuiquan";
-    //密钥配置
-    Auth auth = Auth.create(accessKey, secretKey);
 
     //简单上传，使用默认策略，只需要设置上传的空间名就可以了
     public String getUpToken(){
+
+        //要上传的空间
+        String bucketname = "welin";
+        //密钥配置
+        Auth auth = Auth.create(accessKey, secretKey);
         return auth.uploadToken(bucketname);
     }
 
@@ -34,6 +35,8 @@ public class QiniuService {
         try {
             //创建上传对象
             UploadManager uploadManager = new UploadManager();
+
+            System.out.println("token:"+getUpToken());
             //调用put方法上传
             Response res = uploadManager.put(data, fileKey, getUpToken());
             //打印返回的信息
@@ -53,20 +56,6 @@ public class QiniuService {
         return false;
     }
 
-    public boolean delete(String fileKey) {
-        //实例化一个BucketManager对象
-        BucketManager bucketManager = new BucketManager(auth);
-        //要测试的空间和key，并且这个key在你空间中存在
-        try {
-            //调用delete方法移动文件
-            bucketManager.delete(bucketname, fileKey);
-            return true;
-        } catch (QiniuException e) {
-            //捕获异常信息
-            Response r = e.response;
-            System.out.println(r.toString());
-            return false;
-        }
-    }
+
 
 }
