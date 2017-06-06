@@ -41,6 +41,8 @@ public class Shop {
 
     private Date phoneVerifiedTime;
 
+    private String shopMD5;
+
     public Integer getId() {
         return id;
     }
@@ -191,5 +193,13 @@ public class Shop {
 
     public void setRank(Integer rank) {
         this.rank = rank;
+    }
+
+    public String getShopMD5() {
+        return shopMD5;
+    }
+
+    public void setShopMD5(String shopMD5) {
+        this.shopMD5 = shopMD5;
     }
 }

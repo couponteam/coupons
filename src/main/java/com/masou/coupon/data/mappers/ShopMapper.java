@@ -16,7 +16,7 @@ public interface ShopMapper {
 
     int insertSelective(Shop record);
 
-    Shop selectByPrimaryKey(Integer id);
+    Shop selectByPrimaryKey(Long id);
 
     int updateByPrimaryKeySelective(Shop record);
 
@@ -27,5 +27,9 @@ public interface ShopMapper {
     List<Shop> selectListByFilter(ShopFilter filter);
 
     List<ShopTicketVO> selectByType(Integer industry, Integer type, Integer page, Integer pageSize);
+
+    List<Shop> shopList(Long uid, Integer page, Integer pageSize);
+
+    Shop shopMD5(String shopMD5);
 
 }

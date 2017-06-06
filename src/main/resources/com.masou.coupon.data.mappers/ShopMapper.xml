@@ -53,11 +53,25 @@
         GROUP BY id ORDER BY create_time
         limit #{page, jdbcType=INTEGER}, #{pageSize, jdbcType=INTEGER};
     </select>
+    <select id="shopList" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from ety_shop
+        where uid=#{uid,jdbcType=BIGINT} ORDER  BY create_time DESC
+        limit #{page, jdbcType=INTEGER}, #{pageSize, jdbcType=INTEGER};
+    </select>
+    <!-- 通过MD5查询数据 -->
+    <select id="shopMD5" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from ety_shop
+        where shophash=#{shophash,jdbcType=CHAR};
+    </select>
     <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List" />
         from ety_shop
-        where id = #{id,jdbcType=INTEGER}
+        where id = #{id,jdbcType=BIGINT}
     </select>
     <select id="selectByPhone" resultMap="BaseResultMap">
         select

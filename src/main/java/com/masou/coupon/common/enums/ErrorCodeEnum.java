@@ -4,8 +4,9 @@ package com.masou.coupon.common.enums;
  * Created by Paul on 2017/2/23.
  */
 public enum ErrorCodeEnum {
-    UNKNOW(-1, "未知错误"),
+    UNKNOW(-2, "未知错误"),
     OK(0, "成功"),
+    FAILED(-1,"操作失败"),
 
     REGISTER_FAILED(10001, "注册失败"),
 

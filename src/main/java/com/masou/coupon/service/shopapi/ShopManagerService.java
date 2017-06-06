@@ -2,8 +2,11 @@ package com.masou.coupon.service.shopapi;
 
 import com.alibaba.fastjson.JSON;
 import com.masou.coupon.common.struct.Result;
+import com.masou.coupon.dao.ShopApiDao.ShopManagerDao;
 import com.masou.coupon.data.models.Shop;
 import com.masou.coupon.data.models.TicketWithBLOBs;
+import com.masou.coupon.utils.GenTicketIdUtil;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -15,14 +18,16 @@ import java.util.List;
 @Service
 public class ShopManagerService {
 
+    @Autowired
+    private ShopManagerDao shopManagerDao;
+
     /**
      * 查询店铺列表
      * @param uid
      * @return
      */
-    public List<Shop> shopList(Long uid){
-
-        return null;
+    public List<Shop> shopList(Long uid,Integer page, Integer pageSize){
+        return shopManagerDao.shopList(uid,page,pageSize);
     }
 
     /**
@@ -31,20 +36,22 @@ public class ShopManagerService {
      * @return
      */
     public Shop shopBysid(Long sid){
-
-
-        return null;
+        return shopManagerDao.shopBysid(sid);
     }
 
     /**
      *
      * @param data 店铺基本信息
-     * @param uid 用户id
      * @return
      */
     public Shop regis(String data){
-
-
+        try {
+            Shop shop = JSON.toJavaObject((JSON)JSON.parse(data), Shop.class);
+            shop.setShopMD5(GenTicketIdUtil.genTicketId());
+            return shopManagerDao.regis(shop);
+        }catch(Exception e){
+            e.printStackTrace();
+        }
         return null;
     }
 

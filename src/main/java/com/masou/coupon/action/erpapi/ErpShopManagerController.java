@@ -4,14 +4,19 @@ import com.masou.coupon.common.enums.ErrorCodeEnum;
 import com.masou.coupon.common.struct.Result;
 import com.masou.coupon.common.utils.ResultHelper;
 import com.masou.coupon.data.models.Shop;
+import com.masou.coupon.service.api.UserTokenService;
 import com.masou.coupon.service.shopapi.ShopManagerService;
 import com.masou.coupon.utils.StringUtil;
 import io.swagger.annotations.ApiOperation;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 /**
  * Created by jason on 2017/5/16.
@@ -23,21 +28,45 @@ public class ErpShopManagerController {
     @Autowired
     private ShopManagerService shopManagerService;
 
+    @Autowired
+    private UserTokenService userTokenService;
+
+    private Logger logger = LoggerFactory.getLogger(ErpShopManagerController.class);
+
     @ApiOperation("查看店铺列表")
     @RequestMapping(value = "/shoplist", method = RequestMethod.GET)
-    public Result shopList(@RequestParam("uid") Long uid){
+    public Result shopList(@RequestParam("token") String token,
+                           @RequestParam("page") Integer page){
 
+        Long uid = userTokenService.getUid(token);
 
-
-        return null;
+        if(uid != null && uid > 0){
+            List<Shop> shopList = shopManagerService.shopList(uid,page,pageSize);
+            if(shopList != null && shopList.size() > 0){
+                return ResultHelper.genResultWithSuccess(shopList);
+            }else{
+                logger.info("[无数据]当前用户 " + uid + " 无店铺信息");
+            }
+        }else{
+            logger.error("【空数据错误】uid为空");
+        }
+        return ResultHelper.genResult(ErrorCodeEnum.FAILED);
     }
 
     @ApiOperation("查看单个店铺")
     @RequestMapping(value = "/shop", method = RequestMethod.GET)
     public Result shopBysid(@RequestParam("sid") Long sid){
-
-
-        return null;
+        if(sid != null && sid > 0){
+            Shop shop = shopManagerService.shopBysid(sid);
+            if(shop != null){
+                return ResultHelper.genResultWithSuccess(shop);
+            }else{
+                logger.error("【空数据错误】获取店铺 " + sid + " 数据失败.");
+            }
+        }else{
+            logger.error("【传入空值】uid为空");
+        }
+        return ResultHelper.genResult(ErrorCodeEnum.FAILED);
     }
 
 
