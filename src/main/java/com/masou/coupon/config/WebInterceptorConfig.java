@@ -1,8 +1,8 @@
 package com.masou.coupon.config;
 
 
-
 import com.masou.coupon.interceptor.CharsetInterceptor;
+import com.masou.coupon.interceptor.CheckTokenInterceptor;
 import com.masou.coupon.interceptor.LogInterceptor;
 import com.masou.coupon.utils.CheckMobile;
 import com.masou.coupon.utils.IPUtil;
@@ -27,9 +27,12 @@ public class WebInterceptorConfig extends WebMvcConfigurerAdapter {
     @Autowired
     private MD5Util md5Util;
 
+    @Autowired
+    private CheckTokenInterceptor checkTokenInterceptor;
 
     /**
      * 允许跨域
+     *
      * @param registry
      */
     @Override
@@ -53,7 +56,6 @@ public class WebInterceptorConfig extends WebMvcConfigurerAdapter {
         registry.addInterceptor(new LogInterceptor(ipUtil)).addPathPatterns("/**");
 
 
-
 //		 优化跳转
 //        registry.addInterceptor(new RedirectInterceptor())
 //                .addPathPatterns("/**");
@@ -61,27 +63,25 @@ public class WebInterceptorConfig extends WebMvcConfigurerAdapter {
 //        registry.addInterceptor(new GlobalComposerInterceptor(pageService, authService)).addPathPatterns("/**");
 
 
-
-
-		// sign校验
+        // sign校验
 //		registry.addInterceptor(new CheckSignInterceptor(md5Util))
 //				.addPathPatterns(
 //						"/api/**"
 //				);
 
-		// token 校验
-//		registry.addInterceptor(checkTokenInterceptor)
-//				.addPathPatterns(
-//						"/api/**",
-//                        "/management/api/**"
-//				);
+        // token 校验
+        registry.addInterceptor(checkTokenInterceptor)
+                .addPathPatterns(
+                        "/api/**",
+                        "/management/api/**"
+                );
 
         // 管理后台权限验证
 //        registry.addInterceptor(managementAuthInterceptor)
 //                .addPathPatterns("/management/api/admin/**")
 //                .excludePathPatterns("/management/api/admin/manager/login");
 
-		// 登陆 校验
+        // 登陆 校验
 //		registry.addInterceptor(loginCheckInterceptor)
 //                .addPathPatterns("/api/user/**")
 //                .excludePathPatterns("/api/user/token/create",

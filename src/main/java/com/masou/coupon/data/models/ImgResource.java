@@ -15,6 +15,9 @@ public class ImgResource {
 
     private String filePath;
 
+    public ImgResource() {
+    }
+
     public ImgResource(Integer shopId, Byte status, Byte type, String filePath) {
         this.shopId = shopId;
         this.status = status;
