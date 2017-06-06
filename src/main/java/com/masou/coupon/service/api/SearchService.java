@@ -26,12 +26,12 @@ public class SearchService {
         return null;
     }
 
-    /**
-     * 查询热词
-     * @param limit
-     * @return
-     */
-    public List<HotWord> hotword(Integer limit){
-        return searchDao.hotWords(limit);
-    }
+//    /**
+//     * 查询热词
+//     * @param limit
+//     * @return
+//     */
+//    public List<HotWord> hotword(Integer limit){
+//        return searchDao.hotWords(limit);
+//    }
 }

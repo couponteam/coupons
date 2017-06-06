@@ -21,12 +21,38 @@
         <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
         <result column="last_update_time" jdbcType="TIMESTAMP" property="lastUpdateTime" />
         <result column="phone_verified_time" jdbcType="TIMESTAMP" property="phoneVerifiedTime" />
+        <association property="ticket" javaType="com.masou.coupon.data.models.Ticket">
+            <id column="id" jdbcType="BIGINT" property="id" />
+            <result column="ticket_name" jdbcType="VARCHAR" property="ticketName" />
+            <result column="shop_id" jdbcType="BIGINT" property="shopId" />
+            <result column="ticket_id" jdbcType="CHAR" property="ticketId" />
+            <result column="type_id" jdbcType="TINYINT" property="typeId" />
+            <result column="status" jdbcType="TINYINT" property="status" />
+            <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+            <result column="status" jdbcType="TINYINT" property="status" />
+        </association>
     </resultMap>
+
     <sql id="Base_Column_List">
         id, shop_name, icon_id, industry_id, phone, is_phone_verified, telephone, telephone_ex,
         brief_intro, business_license_id, longitude, dimensionality, is_shop_verified, wechat_account,
         shop_address, rank, create_time, last_update_time, phone_verified_time
     </sql>
+    <select id="selectByType" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        select * from
+        (SELECT s.shop_name,s.id,s.shop_address,s.icon_id,t.ticket_id,t.ticket_name,t.create_time
+        from ety_shop s, ety_ticket t
+        WHERE s.id=t.shop_id
+        <if test="industry != null">
+            and s.industry_id=#{industry, jdbcType=INTEGER}
+        </if>
+        <if test="type != null">
+            AND t.type_id=#{type, jdbcType=INTEGER}
+        </if>
+          AND s.is_shop_verified=1 AND t.`status`=1 ORDER BY t.create_time DESC) tmp
+        GROUP BY id ORDER BY create_time
+        limit #{page, jdbcType=INTEGER}, #{pageSize, jdbcType=INTEGER};
+    </select>
     <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List" />

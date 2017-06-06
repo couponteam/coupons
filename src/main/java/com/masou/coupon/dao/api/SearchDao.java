@@ -14,19 +14,20 @@ import java.util.List;
 @Repository
 public class SearchDao {
 
-    @Autowired
-    private HotWordMapper hotWordMapper;
+//    @Autowired
+//    private HotWordMapper hotWordMapper;
 
     /**
      * 查询热词
      * @param limit
      * @return
      */
-    public List<HotWord> hotWords(Integer limit){
-        try {
-            return hotWordMapper.selectList(limit);
-        }catch (Exception e){
-            throw new UserException(e);
-        }
-    }
+//    public List<HotWord> hotWords(Integer limit){
+//        try {
+//            return null;
+//            return hotWordMapper.selectList(limit);
+//        }catch (Exception e){
+//            throw new UserException(e);
+//        }
+//    }
 }
