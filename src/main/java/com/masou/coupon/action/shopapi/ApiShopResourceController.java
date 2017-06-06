@@ -34,8 +34,10 @@ public class ApiShopResourceController {
     @ApiOperation("插入图片")
     @RequestMapping(value = "/insert", method = RequestMethod.POST)
     public Result insert(@RequestParam(value = "name") String name,
-                         @RequestParam(value = "group") String group,
+                         @RequestParam(value = "shopId", required = false) Integer shopId,
+                         @RequestParam(value = "type", required = false) Integer type,
                          @RequestParam(value = "file") MultipartFile file) {
+
 
         String md5 = null;
         try {
@@ -57,15 +59,14 @@ public class ApiShopResourceController {
             }
             String fileKey = String.format("%s.%s", md5, extension);
             boolean uploadResult = qiniuService.upload(file.getBytes(), fileKey);
-            if (!uploadResult){
-                throw new UserException("七牛上传失败");
-            }
             //保存
-            ImgResource resource = new ImgResource();
-            resource.setFilePath(fileKey);
-//            resource.setShopId(shopId);
+            if (!uploadResult) {
+                throw new UserException("上传失败");
+            }
+            ImgResource record = new ImgResource(shopId, (byte) 0, type != null ? type.byteValue() : 0, fileKey);
 
-            return imageResourceService.insertSelective(resource);
+            return imageResourceService.insertSelective(record);
+
         } catch (IOException e) {
             throw new UserException("异常错误");
         }
