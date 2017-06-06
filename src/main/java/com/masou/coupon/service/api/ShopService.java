@@ -61,28 +61,28 @@ public class ShopService {
         if (!phoneUtil.isPhone(record.getPhone())) {
             throw new UserException("手机号不正确");
         }
-        if (shop2Dao.selectByPhone(record.getPhone()) != null) {
-            throw new UserException("手机号已经注册");
-        }
+//        if (shop2Dao.selectByPhone(record.getPhone()) != null) {
+//            throw new UserException("手机号已经注册");
+//        }
 
-        User user = userService.selectByPhone(record.getPhone());
-        if (user == null) {
-            throw new UserException("请先注册再进行申请");
-        }
+//        User user = userService.selectByPhone(record.getPhone());
+//        if (user == null) {
+//            throw new UserException("请先注册再进行申请");
+//        }
 
         if (shop2Dao.insertSelective(record) == 1) {
 
-            ShopChief shopChief = new ShopChief();
-            shopChief.setShopId(record.getId());
-            shopChief.setUid(user.getId());
-            shopChief.setType(ShopOwnerTypeEnum.CHIEF_MANAGER.getRole());
+//            ShopChief shopChief = new ShopChief();
+//            shopChief.setShopId(record.getId());
+//            shopChief.setUid(user.getId());
+//            shopChief.setType(ShopOwnerTypeEnum.CHIEF_MANAGER.getRole());
 
-            if (shopChiefService.insertSelective(shopChief) == 1) {
+//            if (shopChiefService.insertSelective(shopChief) == 1) {
                 return ResultHelper.genResultWithSuccess();
 
-            } else {
-                throw new UserException("申请失败");
-            }
+//            } else {
+//                throw new UserException("申请失败");
+//            }
         } else {
             throw new UserException("申请失败");
         }
@@ -141,7 +141,7 @@ public class ShopService {
         return ResultHelper.genResultWithSuccess(buildList(shop2Dao.selectListByFilter(filter)));
     }
 
-    public Result approve(Integer shopId, Integer shopVerifyType) {
+    public Result approve(Long shopId, Integer shopVerifyType) {
         Shop shop = shop2Dao.selectByPrimaryKey(shopId);
         shop.setIsShopVerified(shopVerifyType.byteValue());
         if (shop2Dao.updateByPrimaryKeySelective(shop) == 1) {
@@ -151,7 +151,7 @@ public class ShopService {
         }
     }
 
-    public Shop selectByPrimaryKey(Integer id) {
+    public Shop selectByPrimaryKey(Long id) {
         return shop2Dao.selectByPrimaryKey(id);
     }
 

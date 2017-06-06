@@ -1,7 +1,9 @@
 package com.masou.coupon.action.shopapi;
 
+import com.masou.coupon.common.enums.ErrorCodeEnum;
 import com.masou.coupon.common.enums.RoleEnum;
 import com.masou.coupon.common.struct.Result;
+import com.masou.coupon.common.utils.ResultHelper;
 import com.masou.coupon.data.models.Shop;
 import com.masou.coupon.exception.UserException;
 import com.masou.coupon.service.api.ShopService;
@@ -43,8 +45,12 @@ public class ApiShopUserController {
                         @RequestParam("iconImage") String iconImage,
                         @RequestParam("shopName") String shopName,
                         @RequestParam("shopAddress") String shopAddress,
-                        @RequestParam("industryId") Integer industryId) {
-
+                        @RequestParam("industryId") Integer industryId,
+                        @RequestParam("token") String token) {
+        Long uid = userTokenService.getUid(token);
+        if(uid == null || uid <= 0){
+            return ResultHelper.genResult(ErrorCodeEnum.TOKEN_INVALID);
+        }
 
         Shop record = new Shop();
 
@@ -57,7 +63,7 @@ public class ApiShopUserController {
         record.setShopName(shopName);
         record.setShopAddress(shopAddress);
         record.setIndustryId(industryId);
-
+        record.setUid(uid);
 
         return shopService.apply(record);
 

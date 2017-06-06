@@ -36,26 +36,31 @@ public class ErpShopManagerController {
     @ApiOperation("查看店铺列表")
     @RequestMapping(value = "/shoplist", method = RequestMethod.GET)
     public Result shopList(@RequestParam("token") String token,
-                           @RequestParam("page") Integer page){
-
+                           @RequestParam("page") Integer page,
+                           @RequestParam("pageSize") Integer pageSize){
         Long uid = userTokenService.getUid(token);
-
-        if(uid != null && uid > 0){
-            List<Shop> shopList = shopManagerService.shopList(uid,page,pageSize);
-            if(shopList != null && shopList.size() > 0){
-                return ResultHelper.genResultWithSuccess(shopList);
-            }else{
-                logger.info("[无数据]当前用户 " + uid + " 无店铺信息");
-            }
-        }else{
-            logger.error("【空数据错误】uid为空");
+        if(uid == null || uid <= 0){
+            return ResultHelper.genResult(ErrorCodeEnum.TOKEN_INVALID);
         }
-        return ResultHelper.genResult(ErrorCodeEnum.FAILED);
+
+        List<Shop> shopList = shopManagerService.shopList(uid,page,pageSize);
+        if(shopList != null && shopList.size() > 0){
+            return ResultHelper.genResultWithSuccess(shopList);
+        }else{
+            logger.info("[无数据]当前用户 " + uid + " 无店铺信息");
+            return ResultHelper.genResult(ErrorCodeEnum.FAILED);
+        }
     }
 
     @ApiOperation("查看单个店铺")
     @RequestMapping(value = "/shop", method = RequestMethod.GET)
-    public Result shopBysid(@RequestParam("sid") Long sid){
+    public Result shopBysid(@RequestParam("sid") Long sid,
+                            @RequestParam("token") String token){
+        Long uid = userTokenService.getUid(token);
+        if(uid == null || uid <= 0){
+            return ResultHelper.genResult(ErrorCodeEnum.TOKEN_INVALID);
+        }
+
         if(sid != null && sid > 0){
             Shop shop = shopManagerService.shopBysid(sid);
             if(shop != null){
@@ -69,23 +74,17 @@ public class ErpShopManagerController {
         return ResultHelper.genResult(ErrorCodeEnum.FAILED);
     }
 
-
-    @ApiOperation("注册店铺")
-    @RequestMapping(value = "/regis", method = RequestMethod.POST)
-    public Result regisShop(@RequestParam("data") String data){
-        String errorMsg = ErrorCodeEnum.SHOP_UPDATE_FAILED.getMsg();
-//        if(uid != null && uid > 0){
-//            Shop shop = shopManagerService.regis(data);
-//            if(shop != null && shop.getId() > 0){
-//                return ResultHelper.genResultWithSuccess(shop);
-//            }
-//        }
-        return ResultHelper.genResult(ErrorCodeEnum.SHOP_REGIS_FAILED.getCode(), ErrorCodeEnum.SHOP_REGIS_FAILED.getMsg());
-    }
-
     @ApiOperation("更新店铺信息")
     @RequestMapping(value = "/update", method = RequestMethod.POST)
-    public Result updateShop(@RequestParam("data") String data, @RequestParam("sid") Long sid){
+    public Result updateShop(@RequestParam("data") String data,
+                             @RequestParam("sid") Long sid,
+                             @RequestParam("token") String token){
+
+        Long uid = userTokenService.getUid(token);
+        if(uid == null || uid <= 0){
+            return ResultHelper.genResult(ErrorCodeEnum.TOKEN_INVALID);
+        }
+
         String errorMsg = "";
         if(StringUtil.areNotEmpty(data)){
             if((sid != null && sid > 0 )){

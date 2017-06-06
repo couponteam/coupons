@@ -30,7 +30,7 @@ public class ErpApproveController {
     @ApiOperation("审核店铺")
     @PostMapping("/approve")
     @ApiImplicitParam(name = "verifyType",value = "1-通过；2-未通过",dataType = "String")
-    public Result approve(@RequestParam("shopId") Integer shopId,
+    public Result approve(@RequestParam("shopId") Long shopId,
                           @RequestParam("verifyType")Integer verifyType){
 
         return shopService.approve(shopId,verifyType);

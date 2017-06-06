@@ -28,7 +28,7 @@ public class Shop2Dao {
         return shopMapper.insertSelective(record);
     }
 
-    public Shop selectByPrimaryKey(Integer id) {
+    public Shop selectByPrimaryKey(Long id) {
         return shopMapper.selectByPrimaryKey(id);
     }
 

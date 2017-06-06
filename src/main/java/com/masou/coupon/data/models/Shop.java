@@ -5,6 +5,8 @@ import java.util.Date;
 public class Shop {
     private Integer id;
 
+    private Long uid;
+
     private String shopName;
 
     private String iconId;
@@ -201,5 +203,13 @@ public class Shop {
 
     public void setShopMD5(String shopMD5) {
         this.shopMD5 = shopMD5;
+    }
+
+    public Long getUid() {
+        return uid;
+    }
+
+    public void setUid(Long uid) {
+        this.uid = uid;
     }
 }
