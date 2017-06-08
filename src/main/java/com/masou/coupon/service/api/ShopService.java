@@ -45,7 +45,7 @@ public class ShopService {
     private ShopChiefService shopChiefService;
 
 
-    public int deleteByPrimaryKey(Integer id) {
+    public int deleteByPrimaryKey(Long id) {
         return shop2Dao.deleteByPrimaryKey(id);
     }
 

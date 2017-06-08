@@ -6,6 +6,7 @@ import com.masou.coupon.common.utils.ResultHelper;
 import com.masou.coupon.data.models.Ticket;
 import com.masou.coupon.data.models.TicketWithBLOBs;
 import com.masou.coupon.service.VerifyService;
+import com.masou.coupon.service.api.UserTokenService;
 import com.masou.coupon.service.shopapi.TicketManagerService;
 import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
@@ -32,6 +33,8 @@ public class ErpTicketManagerController {
 
     @Autowired
     private VerifyService verifyService;
+    @Autowired
+    private UserTokenService userTokenService;
 
     /**
      * 新增券
@@ -41,7 +44,14 @@ public class ErpTicketManagerController {
      */
     @ApiOperation("新增券")
     @RequestMapping(value = "/insert", method = RequestMethod.POST)
-    public Result insertTicket(@RequestParam("data") String data, @RequestParam("sid") String sid){
+    public Result insertTicket(@RequestParam("data") String data,
+                               @RequestParam("sid") String sid,
+                               @RequestParam("token") String token){
+
+        Long uid = userTokenService.getUid(token);
+        if(uid == null || uid <= 0){
+            return ResultHelper.genResult(ErrorCodeEnum.TOKEN_INVALID);
+        }
         //输入数据为空
         if(data == null){
             return ResultHelper.genResult(ErrorCodeEnum.TICKET_INSERT_EMPTY.getCode(),ErrorCodeEnum.TICKET_INSERT_EMPTY.getMsg());
@@ -68,7 +78,12 @@ public class ErpTicketManagerController {
      */
     @ApiOperation("查看单张券")
     @RequestMapping(value = "/select", method = RequestMethod.GET)
-    public Result selectTicket(@RequestParam("tid") String tid){
+    public Result selectTicket(@RequestParam("tid") Long tid,
+                               @RequestParam("token") String token){
+        Long uid = userTokenService.getUid(token);
+        if(uid == null || uid <= 0){
+            return ResultHelper.genResult(ErrorCodeEnum.TOKEN_INVALID);
+        }
         TicketWithBLOBs tieket = ticketManagerService.selectSingleTicket(tid);
         if(tieket != null){
             return ResultHelper.genResultWithSuccess(tieket);
@@ -80,7 +95,12 @@ public class ErpTicketManagerController {
     @RequestMapping(value = "/selectlist", method = RequestMethod.GET)
     public Result selectTicketList(@RequestParam("sid") Long sid,
                                    @RequestParam("page") Integer page,
-                                   @RequestParam("pageSize") Integer pageSize){
+                                   @RequestParam("pageSize") Integer pageSize,
+                                   @RequestParam("token") String token){
+        Long uid = userTokenService.getUid(token);
+        if(uid == null || uid <= 0){
+            return ResultHelper.genResult(ErrorCodeEnum.TOKEN_INVALID);
+        }
         List<TicketWithBLOBs> ticketList = ticketManagerService.showTicketList(sid, page, pageSize);
         if(ticketList != null && ticketList.size() > 0){
             return ResultHelper.genResultWithSuccess(ticketList);
@@ -94,7 +114,12 @@ public class ErpTicketManagerController {
      */
     @ApiOperation("删除券")
     @RequestMapping(value = "/delete", method = RequestMethod.GET)
-    public Result deleteTicket(@RequestParam("tid") Long tid){
+    public Result deleteTicket(@RequestParam("tid") Long tid,
+                               @RequestParam("token") String token){
+        Long uid = userTokenService.getUid(token);
+        if(uid == null || uid <= 0){
+            return ResultHelper.genResult(ErrorCodeEnum.TOKEN_INVALID);
+        }
         int rows = ticketManagerService.deleteTicket(tid);
         if(rows > 0){
             return ResultHelper.genResultWithSuccess("删除券"+tid+"成功");
@@ -108,7 +133,12 @@ public class ErpTicketManagerController {
      */
     @ApiOperation("更新/编辑券")
     @RequestMapping(value = "/update", method = RequestMethod.GET)
-    public Result updateTicket(@RequestParam("data") String data){
+    public Result updateTicket(@RequestParam(" 5月") String data,
+                               @RequestParam("token") String token){
+        Long uid = userTokenService.getUid(token);
+        if(uid == null || uid <= 0){
+            return ResultHelper.genResult(ErrorCodeEnum.TOKEN_INVALID);
+        }
         int rows = ticketManagerService.updateTicket(data);
         if(rows > 0){
             return ResultHelper.genResultWithSuccess();

@@ -42,7 +42,7 @@ public class ApiShopUserController {
                         @RequestParam(value = "shopId", required = false) Integer shopId,
                         @RequestParam(value = "briefIntro", required = false) String briefIntro,
                         @RequestParam("phone") String phone,
-                        @RequestParam("iconImage") String iconImage,
+                        @RequestParam("businessLicenseId") String businessLicenseId,
                         @RequestParam("shopName") String shopName,
                         @RequestParam("shopAddress") String shopAddress,
                         @RequestParam("industryId") Integer industryId,
@@ -57,7 +57,7 @@ public class ApiShopUserController {
         if (shopId != null) {
             record.setId(shopId);
         }
-        record.setIconId(iconImage);
+        record.setBusinessLicenseId(businessLicenseId);
         record.setBriefIntro(briefIntro);
         record.setPhone(phone);
         record.setShopName(shopName);

@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.masou.coupon.data.mappers.ShopMapper">
     <resultMap id="BaseResultMap" type="com.masou.coupon.data.models.Shop">
-        <id column="id" jdbcType="INTEGER" property="id" />
+        <id column="id" jdbcType="BIGINT" property="id" />
         <result column="uid" jdbcType="BIGINT" property="uid"></result>
         <result column="shop_name" jdbcType="VARCHAR" property="shopName" />
         <result column="icon_id" jdbcType="VARCHAR" property="iconId" />
@@ -12,7 +12,7 @@
         <result column="telephone" jdbcType="CHAR" property="telephone" />
         <result column="telephone_ex" jdbcType="CHAR" property="telephoneEx" />
         <result column="brief_intro" jdbcType="VARCHAR" property="briefIntro" />
-        <result column="business_license_id" jdbcType="BIGINT" property="businessLicenseId" />
+        <result column="business_license_id" jdbcType="VARCHAR" property="businessLicenseId" />
         <result column="longitude" jdbcType="DECIMAL" property="longitude" />
         <result column="dimensionality" jdbcType="DECIMAL" property="dimensionality" />
         <result column="is_shop_verified" jdbcType="TINYINT" property="isShopVerified" />
@@ -22,6 +22,7 @@
         <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
         <result column="last_update_time" jdbcType="TIMESTAMP" property="lastUpdateTime" />
         <result column="phone_verified_time" jdbcType="TIMESTAMP" property="phoneVerifiedTime" />
+        <result column="comment" jdbcType="VARCHAR" property="comment" />
         <association property="ticket" javaType="com.masou.coupon.data.models.Ticket">
             <id column="id" jdbcType="BIGINT" property="id" />
             <result column="ticket_name" jdbcType="VARCHAR" property="ticketName" />
@@ -37,7 +38,7 @@
     <sql id="Base_Column_List">
         id,uid, shop_name, icon_id, industry_id, phone, is_phone_verified, telephone, telephone_ex,
         brief_intro, business_license_id, longitude, dimensionality, is_shop_verified, wechat_account,
-        shop_address, rank, create_time, last_update_time, phone_verified_time
+        shop_address, rank, create_time, last_update_time, phone_verified_time, `comment`
     </sql>
     <select id="selectByType" parameterType="java.lang.Integer" resultMap="BaseResultMap">
         select * from
@@ -54,12 +55,12 @@
         GROUP BY id ORDER BY create_time
         limit #{page, jdbcType=INTEGER}, #{pageSize, jdbcType=INTEGER};
     </select>
-    <select id="shopList" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    <select id="shopList" parameterType="com.masou.coupon.data.filter.BaseFilter" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List"/>
         from ety_shop
         where uid=#{uid,jdbcType=BIGINT} ORDER  BY create_time DESC
-        limit #{page, jdbcType=INTEGER}, #{pageSize, jdbcType=INTEGER};
+        limit #{limit,jdbcType=INTEGER}, #{offset, jdbcType=INTEGER};
     </select>
     <!-- 通过MD5查询数据 -->
     <select id="shopMD5" parameterType="java.lang.String" resultMap="BaseResultMap">
@@ -68,7 +69,7 @@
         from ety_shop
         where shophash=#{shophash,jdbcType=CHAR};
     </select>
-    <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List" />
         from ety_shop
@@ -105,9 +106,9 @@
 
 
     </select>
-    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
         delete from ety_shop
-        where id = #{id,jdbcType=INTEGER}
+        where id = #{id,jdbcType=BIGINT}
     </delete>
     <insert id="insert" parameterType="com.masou.coupon.data.models.Shop">
         insert into ety_shop (id,uid, shop_name, icon_id,
@@ -116,14 +117,14 @@
         business_license_id, longitude, dimensionality,
         is_shop_verified, wechat_account, shop_address,
         rank, create_time, last_update_time,
-        phone_verified_time)
-        values (#{id,jdbcType=INTEGER},#{uid,jdbcType=BIGINT} #{shopName,jdbcType=VARCHAR}, #{iconId,jdbcType=VARCHAR},
+        phone_verified_time,comment)
+        values (#{id,jdbcType=BIGINT},#{uid,jdbcType=BIGINT} #{shopName,jdbcType=VARCHAR}, #{iconId,jdbcType=VARCHAR},
         #{industryId,jdbcType=INTEGER}, #{phone,jdbcType=CHAR}, #{isPhoneVerified,jdbcType=TINYINT},
         #{telephone,jdbcType=CHAR}, #{telephoneEx,jdbcType=CHAR}, #{briefIntro,jdbcType=VARCHAR},
-        #{businessLicenseId,jdbcType=BIGINT}, #{longitude,jdbcType=DECIMAL}, #{dimensionality,jdbcType=DECIMAL},
+        #{businessLicenseId,jdbcType=VARCHAR}, #{longitude,jdbcType=DECIMAL}, #{dimensionality,jdbcType=DECIMAL},
         #{isShopVerified,jdbcType=TINYINT}, #{wechatAccount,jdbcType=VARCHAR}, #{shopAddress,jdbcType=VARCHAR},
         #{rank,jdbcType=TINYINT}, #{createTime,jdbcType=TIMESTAMP}, #{lastUpdateTime,jdbcType=TIMESTAMP},
-        #{phoneVerifiedTime,jdbcType=TIMESTAMP})
+        #{phoneVerifiedTime,jdbcType=TIMESTAMP},#{comment,jdbcType=VARCHAR})
     </insert>
     <insert id="insertSelective" parameterType="com.masou.coupon.data.models.Shop">
         insert into ety_shop
@@ -132,7 +133,7 @@
                 id,
             </if>
             <if test="uid != null">
-                uid
+                uid,
             </if>
             <if test="shopName != null">
                 shop_name,
@@ -188,13 +189,16 @@
             <if test="phoneVerifiedTime != null">
                 phone_verified_time,
             </if>
+            <if test="comment != null">
+                comment,
+            </if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="id != null">
-                #{id,jdbcType=INTEGER},
+                #{id,jdbcType=BIGINT},
             </if>
             <if test="uid != null">
-                #{uid, jdbcType=BIGINT}
+                #{uid, jdbcType=BIGINT},
             </if>
             <if test="shopName != null">
                 #{shopName,jdbcType=VARCHAR},
@@ -221,7 +225,7 @@
                 #{briefIntro,jdbcType=VARCHAR},
             </if>
             <if test="businessLicenseId != null">
-                #{businessLicenseId,jdbcType=BIGINT},
+                #{businessLicenseId,jdbcType=VARCHAR},
             </if>
             <if test="longitude != null">
                 #{longitude,jdbcType=DECIMAL},
@@ -250,6 +254,10 @@
             <if test="phoneVerifiedTime != null">
                 #{phoneVerifiedTime,jdbcType=TIMESTAMP},
             </if>
+            <if test="comment != null">
+                #{comment,jdbcType=VARCHAR},
+            </if>
+
         </trim>
     </insert>
     <update id="updateByPrimaryKeySelective" parameterType="com.masou.coupon.data.models.Shop">
@@ -280,7 +288,7 @@
                 brief_intro = #{briefIntro,jdbcType=VARCHAR},
             </if>
             <if test="businessLicenseId != null">
-                business_license_id = #{businessLicenseId,jdbcType=BIGINT},
+                business_license_id = #{businessLicenseId,jdbcType=VARCHAR},
             </if>
             <if test="longitude != null">
                 longitude = #{longitude,jdbcType=DECIMAL},
@@ -309,8 +317,12 @@
             <if test="phoneVerifiedTime != null">
                 phone_verified_time = #{phoneVerifiedTime,jdbcType=TIMESTAMP},
             </if>
+            <if test="comment != null">
+                comment = #{comment,jdbcType=VARCHAR},
+            </if>
+
         </set>
-        where id = #{id,jdbcType=INTEGER}
+        where id = #{id,jdbcType=BIGINT}
     </update>
     <update id="updateByPrimaryKey" parameterType="com.masou.coupon.data.models.Shop">
     update ety_shop
@@ -322,7 +334,7 @@
       telephone = #{telephone,jdbcType=CHAR},
       telephone_ex = #{telephoneEx,jdbcType=CHAR},
       brief_intro = #{briefIntro,jdbcType=VARCHAR},
-      business_license_id = #{businessLicenseId,jdbcType=BIGINT},
+      business_license_id = #{businessLicenseId,jdbcType=VARCHAR},
       longitude = #{longitude,jdbcType=DECIMAL},
       dimensionality = #{dimensionality,jdbcType=DECIMAL},
       is_shop_verified = #{isShopVerified,jdbcType=TINYINT},
@@ -331,7 +343,8 @@
       rank = #{rank,jdbcType=TINYINT},
       create_time = #{createTime,jdbcType=TIMESTAMP},
       last_update_time = #{lastUpdateTime,jdbcType=TIMESTAMP},
-      phone_verified_time = #{phoneVerifiedTime,jdbcType=TIMESTAMP}
-    where id = #{id,jdbcType=INTEGER}
+      phone_verified_time = #{phoneVerifiedTime,jdbcType=TIMESTAMP},
+      comment = #{comment, jdbcType=VARCHAR}
+    where id = #{id,jdbcType=BIGINT}
   </update>
 </mapper>

@@ -23,7 +23,7 @@ public class Shop {
 
     private String briefIntro;
 
-    private Long businessLicenseId;
+    private String businessLicenseId;
 
     private float longitude;
 
@@ -44,6 +44,10 @@ public class Shop {
     private Date phoneVerifiedTime;
 
     private String shopMD5;
+
+    private Ticket ticket;
+
+    private String comment;
 
     public Integer getId() {
         return id;
@@ -117,11 +121,11 @@ public class Shop {
         this.briefIntro = briefIntro == null ? null : briefIntro.trim();
     }
 
-    public Long getBusinessLicenseId() {
+    public String getBusinessLicenseId() {
         return businessLicenseId;
     }
 
-    public void setBusinessLicenseId(Long businessLicenseId) {
+    public void setBusinessLicenseId(String businessLicenseId) {
         this.businessLicenseId = businessLicenseId;
     }
 
@@ -211,5 +215,21 @@ public class Shop {
 
     public void setUid(Long uid) {
         this.uid = uid;
+    }
+
+    public Ticket getTicket() {
+        return ticket;
+    }
+
+    public void setTicket(Ticket ticket) {
+        this.ticket = ticket;
+    }
+
+    public String getComment() {
+        return comment;
+    }
+
+    public void setComment(String comment) {
+        this.comment = comment;
     }
 }

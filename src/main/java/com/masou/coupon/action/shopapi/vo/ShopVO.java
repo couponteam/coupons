@@ -28,7 +28,7 @@ public class ShopVO {
 
     private String briefIntro;
 
-    private Long businessLicenseId;
+    private String businessLicenseId;
 
     private Byte isShopVerified;
 

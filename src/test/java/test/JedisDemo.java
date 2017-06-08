@@ -45,7 +45,7 @@ public class JedisDemo {
         s.setPhone("187");
         s.setShopAddress("");
         s.setShopName("");
-        s.setBusinessLicenseId(18181L);
+//        s.setBusinessLicenseId(18181L);
         s.setIconId("127313");
         Byte b = new Byte("1");
         s.setIsShopVerified(b);

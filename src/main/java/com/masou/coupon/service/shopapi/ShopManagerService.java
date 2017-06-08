@@ -3,6 +3,7 @@ package com.masou.coupon.service.shopapi;
 import com.alibaba.fastjson.JSON;
 import com.masou.coupon.common.struct.Result;
 import com.masou.coupon.dao.ShopApiDao.ShopManagerDao;
+import com.masou.coupon.data.filter.BaseFilter;
 import com.masou.coupon.data.models.Shop;
 import com.masou.coupon.data.models.TicketWithBLOBs;
 import com.masou.coupon.utils.GenTicketIdUtil;
@@ -27,7 +28,12 @@ public class ShopManagerService {
      * @return
      */
     public List<Shop> shopList(Long uid,Integer page, Integer pageSize){
-        return shopManagerDao.shopList(uid,page,pageSize);
+
+        BaseFilter b = new BaseFilter();
+        b.setUid(uid);
+        b.setOffset(pageSize);
+        b.setLimit(page);
+        return shopManagerDao.shopList(b);
     }
 
     /**
@@ -44,16 +50,16 @@ public class ShopManagerService {
      * @param data 店铺基本信息
      * @return
      */
-    public Shop regis(String data){
-        try {
-            Shop shop = JSON.toJavaObject((JSON)JSON.parse(data), Shop.class);
-            shop.setShopMD5(GenTicketIdUtil.genTicketId());
-            return shopManagerDao.regis(shop);
-        }catch(Exception e){
-            e.printStackTrace();
-        }
-        return null;
-    }
+//    public Shop regis(String data){
+//        try {
+//            Shop shop = JSON.toJavaObject((JSON)JSON.parse(data), Shop.class);
+//            shop.setShopMD5(GenTicketIdUtil.genTicketId());
+//            return shopManagerDao.regis(shop);
+//        }catch(Exception e){
+//            e.printStackTrace();
+//        }
+//        return null;
+//    }
 
     /**
      * 更新店铺信息
@@ -67,9 +73,8 @@ public class ShopManagerService {
     }
 
 
-    public String delete(String sid){
-
-        return null;
+    public int delete(Long sid){
+        return shopManagerDao.delete(sid);
     }
 
 }

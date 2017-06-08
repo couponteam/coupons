@@ -2,11 +2,7 @@ package com.masou.coupon.service.shopapi;
 
 import com.alibaba.fastjson.JSON;
 import com.masou.coupon.action.erpapi.vo.TicketPageParam;
-import com.masou.coupon.action.param.PageParam;
-import com.masou.coupon.dao.BannerDao;
 import com.masou.coupon.dao.ShopApiDao.TicketManagerDao;
-import com.masou.coupon.data.models.Shop;
-import com.masou.coupon.data.models.Ticket;
 import com.masou.coupon.data.models.TicketWithBLOBs;
 import com.masou.coupon.exception.UserException;
 import com.masou.coupon.utils.GenTicketIdUtil;
@@ -71,8 +67,8 @@ public class TicketManagerService {
      * @param tid
      * @return
      */
-    public TicketWithBLOBs selectSingleTicket(String tid){
-        return ticketManagerDao.selectByTicketId(Long.parseLong(tid));
+    public TicketWithBLOBs selectSingleTicket(Long tid){
+        return ticketManagerDao.selectByTicketId(tid);
     }
 
     public int updateTicket(String data){

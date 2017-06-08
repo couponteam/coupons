@@ -43,6 +43,7 @@ public class ErpShopManagerController {
             return ResultHelper.genResult(ErrorCodeEnum.TOKEN_INVALID);
         }
 
+
         List<Shop> shopList = shopManagerService.shopList(uid,page,pageSize);
         if(shopList != null && shopList.size() > 0){
             return ResultHelper.genResultWithSuccess(shopList);
@@ -98,9 +99,20 @@ public class ErpShopManagerController {
 
     @ApiOperation("删除店铺")
     @RequestMapping(value = "/delete", method = RequestMethod.POST)
-    public Result deleteShop(String sid){
+    public Result deleteShop(@RequestParam("token") String token,
+                             @RequestParam("sid") Long sid){
+        Long uid = userTokenService.getUid(token);
+        if(uid == null || uid <= 0){
+            return ResultHelper.genResult(ErrorCodeEnum.TOKEN_INVALID);
+        }
 
-
-        return null;
+        if(sid != null && sid > 0){
+            if(shopManagerService.delete(sid) > 0){
+                return ResultHelper.genResultWithSuccess();
+            }
+            return ResultHelper.genResult(ErrorCodeEnum.SHOP_DELETE_FAILED);
+        }else{
+            return ResultHelper.genResult(ErrorCodeEnum.NULL_VALUE_ERROR.getCode(), "传入的店铺id"+ErrorCodeEnum.NULL_VALUE_ERROR.getMsg());
+        }
     }
 }

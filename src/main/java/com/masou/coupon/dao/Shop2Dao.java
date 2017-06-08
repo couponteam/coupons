@@ -19,7 +19,7 @@ public class Shop2Dao {
     private ShopMapper shopMapper;
 
 
-    public int deleteByPrimaryKey(Integer id) {
+    public int deleteByPrimaryKey(Long id) {
         return shopMapper.deleteByPrimaryKey(id);
     }
 

@@ -7,6 +7,7 @@ public enum ErrorCodeEnum {
     UNKNOW(-2, "未知错误"),
     OK(0, "成功"),
     FAILED(-1,"操作失败"),
+    NULL_VALUE_ERROR(-1000,"为空"),
 
     REGISTER_FAILED(10001, "注册失败"),
 
