@@ -42,7 +42,6 @@ public class ApiSearchController {
     public Result search(@RequestParam("keyword") String keyword){
 
         List<Shop> shopList = searchService.search(keyword);
-
         if(shopList == null || shopList.size() < 1){
             return ResultHelper.genResult(ErrorCodeEnum.SEARCH_EMPTY_RESULT);
         }else{

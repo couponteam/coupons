@@ -1,10 +1,13 @@
-package com.masou.coupon.action.erpapi;
+package com.masou.coupon.action.shopapi;
 
+import com.masou.coupon.action.api.vo.TicketResultVO;
+import com.masou.coupon.action.api.vo.TicketVO;
 import com.masou.coupon.common.enums.ErrorCodeEnum;
 import com.masou.coupon.common.struct.Result;
 import com.masou.coupon.common.utils.ResultHelper;
 import com.masou.coupon.data.models.Ticket;
 import com.masou.coupon.data.models.TicketWithBLOBs;
+import com.masou.coupon.exception.UserException;
 import com.masou.coupon.service.VerifyService;
 import com.masou.coupon.service.api.UserTokenService;
 import com.masou.coupon.service.shopapi.TicketManagerService;
@@ -47,11 +50,11 @@ public class ErpTicketManagerController {
     public Result insertTicket(@RequestParam("data") String data,
                                @RequestParam("sid") String sid,
                                @RequestParam("token") String token){
-
         Long uid = userTokenService.getUid(token);
         if(uid == null || uid <= 0){
             return ResultHelper.genResult(ErrorCodeEnum.TOKEN_INVALID);
         }
+
         //输入数据为空
         if(data == null){
             return ResultHelper.genResult(ErrorCodeEnum.TICKET_INSERT_EMPTY.getCode(),ErrorCodeEnum.TICKET_INSERT_EMPTY.getMsg());
@@ -66,6 +69,9 @@ public class ErpTicketManagerController {
             if(ticketMsg != null){
                return ResultHelper.genResult(ticketMsg,ErrorCodeEnum.OK.getCode(),ErrorCodeEnum.OK.getMsg());
             }
+        }catch(UserException e){
+            log.error(e.getMsg());
+            return ResultHelper.genResult(ErrorCodeEnum.TICKET_INSERT_FAILED.getCode(),e.getMsg());
         }catch(Exception e){
             log.error("插入券失败，原因：" + e.getLocalizedMessage());
         }
@@ -84,7 +90,7 @@ public class ErpTicketManagerController {
         if(uid == null || uid <= 0){
             return ResultHelper.genResult(ErrorCodeEnum.TOKEN_INVALID);
         }
-        TicketWithBLOBs tieket = ticketManagerService.selectSingleTicket(tid);
+        TicketVO tieket = ticketManagerService.selectSingleTicket(tid);
         if(tieket != null){
             return ResultHelper.genResultWithSuccess(tieket);
         }
@@ -101,11 +107,11 @@ public class ErpTicketManagerController {
         if(uid == null || uid <= 0){
             return ResultHelper.genResult(ErrorCodeEnum.TOKEN_INVALID);
         }
-        List<TicketWithBLOBs> ticketList = ticketManagerService.showTicketList(sid, page, pageSize);
-        if(ticketList != null && ticketList.size() > 0){
-            return ResultHelper.genResultWithSuccess(ticketList);
+        TicketResultVO ticketResultVO = ticketManagerService.showTicketList(sid, page, pageSize);
+        if(ticketResultVO != null){
+            return ResultHelper.genResultWithSuccess(ticketResultVO);
         }
-        return ResultHelper.genResult(ticketList, ErrorCodeEnum.TICKET_SELECT_FAILED.getCode(), ErrorCodeEnum.TICKET_SELECT_FAILED.getMsg());
+        return ResultHelper.genResult(ticketResultVO, ErrorCodeEnum.TICKET_SELECT_FAILED.getCode(), ErrorCodeEnum.TICKET_SELECT_FAILED.getMsg());
     }
 
     /**

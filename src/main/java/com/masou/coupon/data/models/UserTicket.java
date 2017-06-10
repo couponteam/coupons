@@ -5,9 +5,9 @@ import java.util.Date;
 public class UserTicket {
     private Long id;
 
-    private String userId;
+    private Long userId;
 
-    private String ticketId;
+    private Long ticketId;
 
     private Byte status;
 
@@ -23,20 +23,20 @@ public class UserTicket {
         this.id = id;
     }
 
-    public String getUserId() {
+    public Long getUserId() {
         return userId;
     }
 
-    public void setUserId(String userId) {
-        this.userId = userId == null ? null : userId.trim();
+    public void setUserId(Long userId) {
+        this.userId = userId;
     }
 
-    public String getTicketId() {
+    public Long getTicketId() {
         return ticketId;
     }
 
-    public void setTicketId(String ticketId) {
-        this.ticketId = ticketId == null ? null : ticketId.trim();
+    public void setTicketId(Long ticketId) {
+        this.ticketId = ticketId;
     }
 
     public Byte getStatus() {

@@ -50,6 +50,21 @@
         from ety_ticket
         where shop_id = #{shop_id,jdbcType=BIGINT} ORDER BY create_time DESC limit #{page, jdbcType=BIGINT},#{pageSize,jdbcType=BIGINT}
     </select>
+    <select id="selectCount" parameterType="com.masou.coupon.action.erpapi.vo.TicketPageParam" resultType="java.lang.Integer">
+        select
+        COUNT(id)
+        from ety_ticket
+        where shop_id = #{shop_id,jdbcType=BIGINT} ORDER BY create_time DESC limit #{page, jdbcType=BIGINT},#{pageSize,jdbcType=BIGINT}
+    </select>
+
+    <select id="selectByShopId" parameterType="com.masou.coupon.data.filter.ShopFilter" resultMap="ResultMapWithBLOBs">
+        select
+        <include refid="Base_Column_List"/>
+        ,
+        <include refid="Blob_Column_List"/>
+        from ety_ticket
+        where shop_id = #{sid,jdbcType=BIGINT} ORDER BY create_time DESC;
+    </select>
 
     <select id="selectByType" parameterType="com.masou.coupon.action.param.PageParam" resultMap="ResultMapWithBLOBs">
         select

@@ -29,10 +29,18 @@ public class JedisDemo {
 
     public static void main(String[] args){
 
-        UUID uuid = UUID.randomUUID();
-        System.out.println(uuid.toString().replaceAll("-", ""));
-        System.out.println(uuid.toString().length());
+//        UUID uuid = UUID.randomUUID();
+//        System.out.println(uuid.toString().replaceAll("-", ""));
+//        System.out.println(uuid.toString().length());
+//        JedisDemo.ticket();
 
+
+//        String data = "{\"shop_id\": 8, \"ticket_name\": 一点点优惠券, \"content\": 9折优惠券, \"type_id\": 1, \"applicable_scope\": 杭州, \"working_condition\": 无, \"period_of_validity_startTime\": 2017-06-08 19:20:53, \"period_of_validity_endTime\": 2017-06-14 19:20:54, \"validity_comment\": 周一至周五可用, \"status\": 0, \"collecting_method\": 0, \"is_retaken\": 0, \"is_re_use\": 0}";
+//
+//        TicketWithBLOBs tdata = JSON.toJavaObject((JSON)JSON.parse(data), TicketWithBLOBs.class);
+//
+//        System.out.println(tdata.getContent());
+        JedisDemo.ticket();
 
     }
 
@@ -56,7 +64,7 @@ public class JedisDemo {
     }
 
 
-    public void ticket(){
+    public static void ticket(){
         TicketWithBLOBs t = new TicketWithBLOBs();
 
         Byte b = new Byte("1");
@@ -75,9 +83,11 @@ public class JedisDemo {
 
         String data = JSON.toJSONString(t);
 
-        Ticket tb = ModelConvertUtil.convert(Ticket.class, data);
+        System.out.println(data);
 
-        System.out.println(tb.getContent());
+        TicketWithBLOBs tdata = JSON.toJavaObject((JSON)JSON.parse(data), TicketWithBLOBs.class);
+
+        System.out.println(tdata.getContent());
     }
 
 }

@@ -1,7 +1,8 @@
 package com.masou.coupon.data.mappers;
 
-import com.masou.coupon.action.erpapi.vo.ShopTicketVO;
+import com.masou.coupon.action.api.vo.ShopTicketVO;
 import com.masou.coupon.data.filter.BaseFilter;
+import com.masou.coupon.data.filter.LocaltionFilter;
 import com.masou.coupon.data.filter.ShopFilter;
 import com.masou.coupon.data.models.Shop;
 import org.apache.ibatis.annotations.Mapper;
@@ -27,9 +28,11 @@ public interface ShopMapper {
 
     List<Shop> selectListByFilter(ShopFilter filter);
 
-    List<ShopTicketVO> selectByType(Integer industry, Integer type, Integer page, Integer pageSize);
+    List<ShopTicketVO> selectByType(ShopFilter shopFilter);
 
     List<Shop> shopList(BaseFilter baseFilter);
+
+    List<Shop> findByLocation(LocaltionFilter filter);
 
     Shop shopMD5(String shopMD5);
 

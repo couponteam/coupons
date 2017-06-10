@@ -2,6 +2,7 @@ package com.masou.coupon.data.mappers;
 
 import com.masou.coupon.action.erpapi.vo.TicketPageParam;
 import com.masou.coupon.action.param.PageParam;
+import com.masou.coupon.data.filter.ShopFilter;
 import com.masou.coupon.data.models.Shop;
 import com.masou.coupon.data.models.Ticket;
 import com.masou.coupon.data.models.TicketWithBLOBs;
@@ -27,6 +28,10 @@ public interface TicketMapper {
 
     //根据店铺的id，获取
     List<TicketWithBLOBs> selectByLimit(TicketPageParam page);
+
+    int selectCount(TicketPageParam pageParam);
+
+    List<TicketWithBLOBs> selectByShopId(ShopFilter shopFilter);
 
     List<Ticket> selectByType(Integer type, PageParam param);
 

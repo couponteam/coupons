@@ -28,6 +28,7 @@ public enum ErrorCodeEnum {
     TOKEN_INVALID(10016,"Token失效"),
 
 
+    IMAGE_UPLOAD_FAILED(10020,"图片上传失败"),
 
     TICKET_INSERT_FAILED(10030, "新增券失败"),
     TICKET_SELECT_FAILED(10031, "查询券失败"),
@@ -42,6 +43,8 @@ public enum ErrorCodeEnum {
     SHOP_BEST_FAILED(10053,"精选店铺加载失败"),
     SHOP_NECESSERY(10054, "今日必领列表加载失败"),
     SHOP_SEL_BY_TYPE_FAILED(10055, "筛选失败"),
+
+    USER_TICKET_OPEATE_FAILED(10060, "失败"),
 
     SEARCH_FAILED(10080,"查询失败"),
     SEARCH_EMPTY_RESULT(10081, "暂无数据"),

@@ -45,9 +45,9 @@ public class Shop {
 
     private String shopMD5;
 
-    private Ticket ticket;
-
     private String comment;
+
+    private Ticket ticket;
 
     public Integer getId() {
         return id;

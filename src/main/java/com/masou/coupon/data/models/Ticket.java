@@ -31,6 +31,7 @@ public class Ticket {
 
     private Date createTime;
 
+
     public Long getId() {
         return id;
     }

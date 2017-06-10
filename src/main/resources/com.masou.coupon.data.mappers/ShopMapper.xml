@@ -40,7 +40,7 @@
         brief_intro, business_license_id, longitude, dimensionality, is_shop_verified, wechat_account,
         shop_address, rank, create_time, last_update_time, phone_verified_time, `comment`
     </sql>
-    <select id="selectByType" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    <select id="selectByType" parameterType="com.masou.coupon.data.filter.ShopFilter" resultMap="BaseResultMap">
         select * from
         (SELECT s.shop_name,s.id,s.shop_address,s.icon_id,t.ticket_id,t.ticket_name,t.create_time
         from ety_shop s, ety_ticket t
@@ -53,7 +53,23 @@
         </if>
           AND s.is_shop_verified=1 AND t.`status`=1 ORDER BY t.create_time DESC) tmp
         GROUP BY id ORDER BY create_time
-        limit #{page, jdbcType=INTEGER}, #{pageSize, jdbcType=INTEGER};
+        limit #{offset, jdbcType=INTEGER}, #{limit, jdbcType=INTEGER};
+    </select>
+
+    <select id="findByLocation" parameterType="com.masou.coupon.data.filter.LocaltionFilter" resultMap="BaseResultMap">
+        select * from
+        (SELECT s.shop_name,s.id,s.shop_address,s.icon_id,t.ticket_id,t.ticket_name,t.create_time
+        from ety_shop s, ety_ticket t
+        WHERE s.id=t.shop_id
+        <if test="industry != null">
+            and s.industry_id=#{industry, jdbcType=INTEGER}
+        </if>
+        <if test="type != null">
+            AND t.type_id=#{type, jdbcType=INTEGER}
+        </if>
+        AND s.is_shop_verified=1 AND t.`status`=1 ORDER BY t.create_time DESC) tmp
+        GROUP BY id ORDER BY create_time
+        limit #{offset, jdbcType=INTEGER}, #{limit, jdbcType=INTEGER};
     </select>
     <select id="shopList" parameterType="com.masou.coupon.data.filter.BaseFilter" resultMap="BaseResultMap">
         select

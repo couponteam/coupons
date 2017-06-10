@@ -19,6 +19,8 @@ public class PageParam extends BaseDTO {
      */
     protected Integer pageSize = 20;
 
+    private Integer totalPage ;
+
     public Integer getOffset() {
         if (pageSize == null || page == null) {
             return 0;
@@ -27,7 +29,7 @@ public class PageParam extends BaseDTO {
     }
 
     public Integer getPage() {
-        return page;
+        return page - 1;
     }
 
     public void setPage(Integer page) {

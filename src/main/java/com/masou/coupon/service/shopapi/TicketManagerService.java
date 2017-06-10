@@ -1,8 +1,13 @@
 package com.masou.coupon.service.shopapi;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONException;
+import com.masou.coupon.action.api.vo.TicketResultVO;
+import com.masou.coupon.action.api.vo.TicketVO;
 import com.masou.coupon.action.erpapi.vo.TicketPageParam;
 import com.masou.coupon.dao.ShopApiDao.TicketManagerDao;
+import com.masou.coupon.data.mappers.TicketTypeMapper;
+import com.masou.coupon.data.models.TicketType;
 import com.masou.coupon.data.models.TicketWithBLOBs;
 import com.masou.coupon.exception.UserException;
 import com.masou.coupon.utils.GenTicketIdUtil;
@@ -11,6 +16,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -23,6 +30,9 @@ public class TicketManagerService {
 
     @Autowired
     private TicketManagerDao ticketManagerDao;
+
+    @Autowired
+    private TicketTypeMapper ticketTypeMapper;
 
     public TicketWithBLOBs insertTicket(String data){
         try {
@@ -37,6 +47,8 @@ public class TicketManagerService {
                 //查询票信息
                 return tdata;
             }
+        }catch (JSONException e){
+            throw new UserException("请求参数字段不符合规范");
         }catch(Exception e){
             log.error(e.getLocalizedMessage());
         }
@@ -48,27 +60,54 @@ public class TicketManagerService {
      * @param sid
      * @return
      */
-    public  List<TicketWithBLOBs> showTicketList(Long sid, Integer page, Integer pageSize){
+    public  TicketResultVO showTicketList(Long sid, Integer page, Integer pageSize){
         try {
             TicketPageParam tdata = new TicketPageParam();
             tdata.setShop_id(sid);
             tdata.setPage(page);
             tdata.setPageSize(pageSize);
+            List<TicketWithBLOBs> list = ticketManagerDao.selectTicket(tdata);
 
-            return ticketManagerDao.selectTicket(tdata);
+            TicketResultVO resultVo = new TicketResultVO();
+            List<TicketVO> listVo = new ArrayList<TicketVO>();
+            for (TicketWithBLOBs ticket: list) {
+                TicketVO vo = new TicketVO();
+                vo.setTicketWithBLOBs(ticket);
+                vo.setTicketType(getTicketType(Long.parseLong(vo.getTicketWithBLOBs().getTypeId().toString())));
+                listVo.add(vo);
+            }
+            resultVo.setTicketVO(listVo);
+            resultVo.setTotal(selectCount(tdata));
+            return resultVo;
         }catch (Exception e){
             e.printStackTrace();
             throw new UserException();
         }
     }
 
+    private int selectCount(TicketPageParam tdata){
+        return ticketManagerDao.selectCount(tdata);
+    };
+
     /**
      * 查询单张券
      * @param tid
      * @return
      */
-    public TicketWithBLOBs selectSingleTicket(Long tid){
-        return ticketManagerDao.selectByTicketId(tid);
+    public TicketVO selectSingleTicket(Long tid){
+        TicketVO ticketVO = new TicketVO();
+        ticketVO.setTicketWithBLOBs(ticketManagerDao.selectByTicketId(tid));
+        ticketVO.setTicketType(getTicketType(Long.parseLong(ticketVO.getTicketWithBLOBs().getTicketId().toString())));
+        return ticketVO;
+    }
+
+    /**
+     * 获取券类型和中文名称
+     * @param id
+     * @return
+     */
+    public TicketType getTicketType(Long id){
+        return ticketTypeMapper.selectByPrimaryKey(id);
     }
 
     public int updateTicket(String data){

@@ -56,6 +56,10 @@ public class TicketManagerDao {
         return 0;
     }
 
+    public int selectCount(TicketPageParam pageParam){
+        return ticketMapper.selectCount(pageParam);
+    }
+
     public List<TicketWithBLOBs> selectTicket( TicketPageParam param){
        return ticketMapper.selectByLimit(param);
     }

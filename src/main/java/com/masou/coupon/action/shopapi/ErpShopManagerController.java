@@ -1,4 +1,4 @@
-package com.masou.coupon.action.erpapi;
+package com.masou.coupon.action.shopapi;
 
 import com.masou.coupon.common.enums.ErrorCodeEnum;
 import com.masou.coupon.common.struct.Result;
@@ -42,7 +42,6 @@ public class ErpShopManagerController {
         if(uid == null || uid <= 0){
             return ResultHelper.genResult(ErrorCodeEnum.TOKEN_INVALID);
         }
-
 
         List<Shop> shopList = shopManagerService.shopList(uid,page,pageSize);
         if(shopList != null && shopList.size() > 0){

@@ -23,14 +23,8 @@ public class ImageResourceService {
     }
 
 
-    public Result insertSelective(ImgResource record) {
-        if (imageResourceDao.insertSelective(record)==1){
-            return ResultHelper.genResultWithSuccess(record);
-        }else {
-            throw new UserException("添加失败");
-        }
-
-
+    public int insertSelective(ImgResource record) {
+        return imageResourceDao.insertSelective(record);
     }
 
     public ImgResource selectByPrimaryKey(Long id) {
