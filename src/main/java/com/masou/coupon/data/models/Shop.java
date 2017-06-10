@@ -3,7 +3,7 @@ package com.masou.coupon.data.models;
 import java.util.Date;
 
 public class Shop {
-    private Integer id;
+    private Long id;
 
     private Long uid;
 
@@ -49,11 +49,12 @@ public class Shop {
 
     private String comment;
 
-    public Integer getId() {
+    private String profilePicture;
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -231,5 +232,13 @@ public class Shop {
 
     public void setComment(String comment) {
         this.comment = comment;
+    }
+
+    public String getProfilePicture() {
+        return profilePicture;
+    }
+
+    public void setProfilePicture(String profilePicture) {
+        this.profilePicture = profilePicture;
     }
 }

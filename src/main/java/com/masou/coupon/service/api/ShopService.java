@@ -155,8 +155,12 @@ public class ShopService {
         return shop2Dao.selectByPrimaryKey(id);
     }
 
-    public int updateByPrimaryKeySelective(Shop record) {
-        return shop2Dao.updateByPrimaryKeySelective(record);
+    public Result updateByPrimaryKeySelective(Shop record) {
+        if (shop2Dao.updateByPrimaryKeySelective(record)==1){
+            return ResultHelper.genResultWithSuccess();
+        }else{
+            throw new UserException("更新失败");
+        }
     }
 
     public List<ShopVO> buildList(List<Shop> list) {
