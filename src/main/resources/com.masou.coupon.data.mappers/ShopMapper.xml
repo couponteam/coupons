@@ -23,6 +23,7 @@
         <result column="last_update_time" jdbcType="TIMESTAMP" property="lastUpdateTime" />
         <result column="phone_verified_time" jdbcType="TIMESTAMP" property="phoneVerifiedTime" />
         <result column="comment" jdbcType="VARCHAR" property="comment" />
+        <result column="profile_picture" jdbcType="VARCHAR" property="profilePicture"/>
         <association property="ticket" javaType="com.masou.coupon.data.models.Ticket">
             <id column="id" jdbcType="BIGINT" property="id" />
             <result column="ticket_name" jdbcType="VARCHAR" property="ticketName" />
@@ -38,7 +39,7 @@
     <sql id="Base_Column_List">
         id,uid, shop_name, icon_id, industry_id, phone, is_phone_verified, telephone, telephone_ex,
         brief_intro, business_license_id, longitude, dimensionality, is_shop_verified, wechat_account,
-        shop_address, rank, create_time, last_update_time, phone_verified_time, `comment`
+        shop_address, rank, create_time, last_update_time, phone_verified_time, `comment`,profile_picture
     </sql>
     <select id="selectByType" parameterType="com.masou.coupon.data.filter.ShopFilter" resultMap="BaseResultMap">
         select * from
@@ -335,6 +336,10 @@
             </if>
             <if test="comment != null">
                 comment = #{comment,jdbcType=VARCHAR},
+            </if>
+
+            <if test="profilePicture!=null">
+                profile_picture=#{profilePicture},
             </if>
 
         </set>

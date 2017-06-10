@@ -2,6 +2,7 @@ package com.masou.coupon.action.shopapi;
 
 import com.masou.coupon.common.enums.ErrorCodeEnum;
 import com.masou.coupon.common.enums.RoleEnum;
+import com.masou.coupon.common.enums.ShopVerifyEnum;
 import com.masou.coupon.common.struct.Result;
 import com.masou.coupon.common.utils.ResultHelper;
 import com.masou.coupon.data.models.Shop;
@@ -39,16 +40,16 @@ public class ApiShopUserController {
     @ApiImplicitParam(name = "industryId", value = "店铺所属行业类型", paramType = "query", dataType = "String")
     @PostMapping("/apply")
     public Result apply(
-                        @RequestParam(value = "shopId", required = false) Integer shopId,
-                        @RequestParam(value = "briefIntro", required = false) String briefIntro,
-                        @RequestParam("phone") String phone,
-                        @RequestParam("businessLicenseId") String businessLicenseId,
-                        @RequestParam("shopName") String shopName,
-                        @RequestParam("shopAddress") String shopAddress,
-                        @RequestParam("industryId") Integer industryId,
-                        @RequestParam("token") String token) {
+            @RequestParam(value = "shopId", required = false) Long shopId,
+            @RequestParam(value = "briefIntro", required = false) String briefIntro,
+            @RequestParam("phone") String phone,
+            @RequestParam("businessLicenseId") String businessLicenseId,
+            @RequestParam("shopName") String shopName,
+            @RequestParam("shopAddress") String shopAddress,
+            @RequestParam("industryId") Integer industryId,
+            @RequestParam("token") String token) {
         Long uid = userTokenService.getUid(token);
-        if(uid == null || uid <= 0){
+        if (uid == null || uid <= 0) {
             return ResultHelper.genResult(ErrorCodeEnum.TOKEN_INVALID);
         }
 
@@ -66,10 +67,36 @@ public class ApiShopUserController {
         record.setUid(uid);
 
         return shopService.apply(record);
+    }
+
+    @ApiOperation("商家更新店铺信息")
+    @PostMapping("/update")
+    public Result update(@RequestParam(value = "shopId") Long shopId,
+                         @RequestParam(value = "iconId",required = false)String iconId,
+                         @RequestParam(value = "briefIntro", required = false) String briefIntro,
+                         @RequestParam(value = "profilePicture",required = false) String profilePicture,
+                         @RequestParam(value = "shopName",required = false) String shopName,
+                         @RequestParam(value = "shopAddress",required = false) String shopAddress) {
+
+        Shop shop = shopService.selectByPrimaryKey(shopId);
+        if (shop==null){
+            throw new UserException("店铺不存在");
+        }
+        if (shop.getIsShopVerified()!= ShopVerifyEnum.PASSED.getCode()){
+            throw new UserException("店铺未通过");
+        }
+
+        shop.setIconId(iconId);
+        shop.setBriefIntro(briefIntro);
+        shop.setProfilePicture(profilePicture);
+        shop.setShopName(shopName);
+        shop.setShopAddress(shopAddress);
+
+        return shopService.updateByPrimaryKeySelective(shop);
+
 
 
     }
-
 
     @ApiOperation("商家注册")
     @PostMapping("/register")
@@ -80,7 +107,6 @@ public class ApiShopUserController {
         return userService.register(phone, verify, password, "shop", null, false, RoleEnum.SHOP_OWNER.getRole());
 
     }
-
 
 
     @ApiOperation("修改密码")

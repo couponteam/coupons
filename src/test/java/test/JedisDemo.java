@@ -47,7 +47,7 @@ public class JedisDemo {
     public void shop(){
         Shop s = new Shop();
 
-        s.setId(10810);
+        s.setId(10810L);
         s.setBriefIntro("");
         s.setIndustryId(1);
         s.setPhone("187");
