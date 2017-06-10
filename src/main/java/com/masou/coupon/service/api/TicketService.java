@@ -1,11 +1,10 @@
 package com.masou.coupon.service.api;
 
-import com.masou.coupon.action.api.vo.ShopResultVO;
-import com.masou.coupon.action.api.vo.ShopTicketListVO;
-import com.masou.coupon.action.api.vo.ShopTicketVO;
+import com.masou.coupon.action.api.vo.*;
 //import com.masou.coupon.dao.ShopDao;
 import com.masou.coupon.dao.api.ShopDao;
 import com.masou.coupon.dao.api.TicketDao;
+import com.masou.coupon.data.filter.LngAndLatParam;
 import com.masou.coupon.data.filter.LocaltionFilter;
 import com.masou.coupon.data.filter.ShopFilter;
 import com.masou.coupon.data.models.Shop;
@@ -17,6 +16,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -101,22 +102,33 @@ public class TicketService {
      * @param longitude
      * @param latitude
      */
-    public ShopResultVO selectList(float longitude, float latitude, double radius){
-        LocaltionFilter filter = localtionCalcService.lbsCalc(longitude, latitude, radius);
-        shopDao.findByLocation(filter);
+    public ShopResultVO selectList(LocaltionFilter params, double longitude, double latitude, double radius){
+        LocaltionFilter filter = localtionCalcService.lbsCalc(params, longitude, latitude, radius);
+        ShopResultVO shopResultVO = new ShopResultVO();
 
+        //筛选出方形区域内的店铺
+        List<Shop> shopList = shopDao.findByLocation(filter);
+        if(shopList != null && shopList.size() > 0){
+            List<ShopVO> shopVOList = new ArrayList<ShopVO>();
+            for ( Shop shop : shopList ) {
+                ShopVO shopVO = new ShopVO();
+                //计算店铺与用户位置的距离
+                double distance=localtionCalcService.getEarthRadius(
+                        new LngAndLatParam(shop.getLongitude(),shop.getDimensionality()),
+                        new LngAndLatParam(longitude, latitude));
+                if(distance < radius){
+                    shopVO.setShop(shop);
+                    shopVO.setDistance(distance);
+                    shopVOList.add(shopVO);
+                }
+            }
 
-        return null;
-    }
-
-    /**
-     * 当没有用户位置信息时，默认展示最新的数据
-     */
-    public ShopResultVO selectList(){
-
-
-
-
+            //对结果进行排序
+            Collections.sort(shopVOList);
+            shopResultVO.setShopVOList(shopVOList);
+            shopResultVO.setTotal(shopVOList.size());
+            return shopResultVO;
+        }
         return null;
     }
 

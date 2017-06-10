@@ -91,11 +91,7 @@ public class ApiShopUserController {
         shop.setProfilePicture(profilePicture);
         shop.setShopName(shopName);
         shop.setShopAddress(shopAddress);
-
         return shopService.updateByPrimaryKeySelective(shop);
-
-
-
     }
 
     @ApiOperation("商家注册")

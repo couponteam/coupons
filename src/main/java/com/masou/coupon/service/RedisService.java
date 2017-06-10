@@ -6,6 +6,7 @@ import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 import org.springframework.stereotype.Component;
 import redis.clients.jedis.Jedis;
 
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -61,6 +62,27 @@ public class RedisService {
     public void set(String key, String value, int liveTime) {
         this.set(key, value);
         this.getJedis().expire(key, liveTime);
+    }
+
+    /**
+     * 存入数组
+     * @param key
+     * @param map
+     * @param expire
+     */
+    public void mapSet(String key, Map<String, String> map, int expire){
+        this.getJedis().hmset(key, map);
+        this.getJedis().expire(key, expire);
+    }
+
+    /**
+     * 从redis的map中获取一个值
+     * @param key
+     * @param field
+     * @return
+     */
+    public String mapGet(String key, String field){
+        return this.getJedis().hget(key, field);
     }
 
     /**

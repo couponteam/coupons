@@ -1,6 +1,7 @@
 package test;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.masou.coupon.data.models.Shop;
 import com.masou.coupon.data.models.Ticket;
 import com.masou.coupon.data.models.TicketWithBLOBs;
@@ -29,18 +30,15 @@ public class JedisDemo {
 
     public static void main(String[] args){
 
-//        UUID uuid = UUID.randomUUID();
-//        System.out.println(uuid.toString().replaceAll("-", ""));
-//        System.out.println(uuid.toString().length());
-//        JedisDemo.ticket();
+        Ticket t = new Ticket();
 
+        t.set_isRetaken(new Byte("1"));
+        t.set_status(new Byte("2"));
+        t.set_isReUse(new Byte("3"));
 
-//        String data = "{\"shop_id\": 8, \"ticket_name\": 一点点优惠券, \"content\": 9折优惠券, \"type_id\": 1, \"applicable_scope\": 杭州, \"working_condition\": 无, \"period_of_validity_startTime\": 2017-06-08 19:20:53, \"period_of_validity_endTime\": 2017-06-14 19:20:54, \"validity_comment\": 周一至周五可用, \"status\": 0, \"collecting_method\": 0, \"is_retaken\": 0, \"is_re_use\": 0}";
-//
-//        TicketWithBLOBs tdata = JSON.toJavaObject((JSON)JSON.parse(data), TicketWithBLOBs.class);
-//
-//        System.out.println(tdata.getContent());
-        JedisDemo.ticket();
+        JSONObject obj = JSON.parseObject(JSON.toJSONString(t));
+//        obj.
+
 
     }
 
@@ -75,9 +73,9 @@ public class JedisDemo {
         t.setPeriodOfValidityStarttime(new Date());
         t.setPeriodOfValidityEndtime(new Date());
 //        t.setShopId(123918231);
-        t.setStatus(b);
+//        t.setStatus(b);
         t.setTicketName("");
-        t.setTypeId(b);
+//        t.setTypeId(b);
         t.setApplicableScope("");
         t.setWorkingCondition("");
 

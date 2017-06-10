@@ -6,25 +6,45 @@ import com.masou.coupon.data.models.TicketWithBLOBs;
 /**
  * Created by jason on 2017/6/9.
  */
-public class TicketVO {
+public class TicketVO extends TicketWithBLOBs{
 
-    private TicketWithBLOBs ticketWithBLOBs;
+    private String typeId;
 
-    private TicketType ticketType;
+    private String status;
 
-    public TicketType getTicketType() {
-        return ticketType;
+    private String isRetaken;
+
+    private String isReUse;
+
+    public String getTypeId() {
+        return typeId;
     }
 
-    public void setTicketType(TicketType ticketType) {
-        this.ticketType = ticketType;
+    public void setTypeId(String typeId) {
+        this.typeId = typeId;
     }
 
-    public TicketWithBLOBs getTicketWithBLOBs() {
-        return ticketWithBLOBs;
+    public String getStatus() {
+        return status;
     }
 
-    public void setTicketWithBLOBs(TicketWithBLOBs ticketWithBLOBs) {
-        this.ticketWithBLOBs = ticketWithBLOBs;
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public String getIsRetaken() {
+        return isRetaken;
+    }
+
+    public void setIsRetaken(String isRetaken) {
+        this.isRetaken = isRetaken;
+    }
+
+    public String getIsReUse() {
+        return isReUse;
+    }
+
+    public void setIsReUse(String isReUse) {
+        this.isReUse = isReUse;
     }
 }

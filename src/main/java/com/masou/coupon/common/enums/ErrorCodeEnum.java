@@ -26,6 +26,7 @@ public enum ErrorCodeEnum {
     MISSING_CAPTCHA(10014, "需要图形验证码，但用户未提交"),
     WRONG_SIGN(10015, "签名错误"),
     TOKEN_INVALID(10016,"Token失效"),
+    LOCATION_FAILED(10017,"定位失败"),
 
 
     IMAGE_UPLOAD_FAILED(10020,"图片上传失败"),

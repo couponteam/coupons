@@ -29,11 +29,6 @@ public class LocaltionCalcService {
      **/
     private static final double EARTH_RADIUS = 6378137;
 
-    /**
-     * 计算在用户当前位置范围1000米内的有效店铺
-     **/
-    private static final double USER_LOCALTION_REDIUS = 1000;
-
     private Logger logger = LoggerFactory.getLogger(LocaltionCalcService.class);
 
     /**
@@ -43,9 +38,9 @@ public class LocaltionCalcService {
      * @param latitude            纬度
      * @param userLocaltionRadius 区域范围，单位m
      */
-    public LocaltionFilter lbsCalc(float longitude, float latitude, double userLocaltionRadius) {
+    public LocaltionFilter lbsCalc(LocaltionFilter params, double longitude, double latitude, double userLocaltionRadius) {
 
-        LocaltionFilter localtionFilter = new LocaltionFilter();
+//        LocaltionFilter localtionFilter = new LocaltionFilter();
 
         //获取经度的弧度值
         double dlng = Math.toDegrees(2 * Math.asin(Math.sin((userLocaltionRadius / (2 * EARTH_RADIUS)) / Math.cos(Math.toRadians(latitude)))));
@@ -53,14 +48,14 @@ public class LocaltionCalcService {
         //获取纬度的弧度值
         double dlat = Math.toDegrees(userLocaltionRadius / EARTH_RADIUS);
 
-        localtionFilter.setLeftTop(new LngAndLatParam((float) (longitude - dlng), (float) (latitude + dlat)));
-        localtionFilter.setRightTop(new LngAndLatParam((float) (longitude + dlng), (float) (latitude + dlat)));
-        localtionFilter.setLeftBottom(new LngAndLatParam((float) (longitude - dlng), (float) (latitude - dlat)));
-        localtionFilter.setRightBottom(new LngAndLatParam((float) (longitude + dlng), (float) (latitude - dlat)));
+        params.setLeftTop(new LngAndLatParam((float) (longitude - dlng), (float) (latitude + dlat)));
+        params.setRightTop(new LngAndLatParam((float) (longitude + dlng), (float) (latitude + dlat)));
+        params.setLeftBottom(new LngAndLatParam((float) (longitude - dlng), (float) (latitude - dlat)));
+        params.setRightBottom(new LngAndLatParam((float) (longitude + dlng), (float) (latitude - dlat)));
 
-        logger.info("四个点的经纬度分别是：" + JSON.toJSONString(localtionFilter));
+        logger.info("四个点的经纬度分别是：" + JSON.toJSONString(params));
 
-        return localtionFilter;
+        return params;
     }
 
     /**
@@ -74,7 +69,7 @@ public class LocaltionCalcService {
      * 基于googleMap中的算法得到两经纬度之间的距离,计算精度与谷歌地图的距离精度差不多，相差范围在0.2米以下
      * @return 返回的距离，单位km
      */
-    public double GetDistance(LngAndLatParam param1, LngAndLatParam param2) {
+    public double getEarthRadius(LngAndLatParam param1, LngAndLatParam param2) {
         double radLat1 = rad(param1.getLatitude());
         double radLat2 = rad(param2.getLatitude());
         double a = radLat1 - radLat2;
@@ -83,32 +78,4 @@ public class LocaltionCalcService {
         s = s * EARTH_RADIUS;
         return s;
     }
-
-    public static void main(String[] args) {
-
-//        float longitude = 39.9649f;
-//        float latitude = 116.3086f;
-        float longitude = 0f;
-        float latitude = 0f;
-
-        LocaltionCalcService localtionCalcService = new LocaltionCalcService();
-
-        LocaltionFilter filter = localtionCalcService.lbsCalc(longitude, latitude, 500);
-
-        System.out.println(JSON.toJSONString(filter));
-
-//        System.out.println("两点之间的距离：" + localtionCalcService.distance(filter.getLeftTop(), filter.getRightTop()));
-
-
-        System.out.println(localtionCalcService.GetDistance(
-                filter.getLeftTop(),
-                filter.getRightTop()));
-
-    }
-
-
-//    private static final double EARTH_RADIUS = 6378137;//赤道半径(单位m)
-
-
-
 }

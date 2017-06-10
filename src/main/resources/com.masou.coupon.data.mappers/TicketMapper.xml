@@ -7,14 +7,14 @@
         <result column="shop_id" jdbcType="BIGINT" property="shopId" />
         <result column="ticket_name" jdbcType="VARCHAR" property="ticketName" />
         <result column="content" jdbcType="VARCHAR" property="content" />
-        <result column="type_id" jdbcType="TINYINT" property="typeId" />
+        <result column="type_id" jdbcType="TINYINT" property="_typeId" />
         <result column="period_of_validity_startTime" jdbcType="TIMESTAMP" property="periodOfValidityStarttime" />
         <result column="period_of_validity_endTime" jdbcType="TIMESTAMP" property="periodOfValidityEndtime" />
         <result column="comment" jdbcType="VARCHAR" property="comment" />
-        <result column="status" jdbcType="TINYINT" property="status" />
+        <result column="status" jdbcType="TINYINT" property="_status" />
         <result column="collecting_method" jdbcType="TINYINT" property="collectingMethod" />
-        <result column="is_retaken" jdbcType="TINYINT" property="isRetaken" />
-        <result column="is_re_use" jdbcType="TINYINT" property="isReUse" />
+        <result column="is_retaken" jdbcType="TINYINT" property="_isRetaken" />
+        <result column="is_re_use" jdbcType="TINYINT" property="_isReUse" />
         <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     </resultMap>
     <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.masou.coupon.data.models.TicketWithBLOBs">

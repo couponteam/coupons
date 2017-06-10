@@ -5,6 +5,8 @@ import com.masou.coupon.action.api.vo.ShopTicketVO;
 import com.masou.coupon.common.enums.ErrorCodeEnum;
 import com.masou.coupon.common.struct.Result;
 import com.masou.coupon.common.utils.ResultHelper;
+import com.masou.coupon.data.filter.LngAndLatParam;
+import com.masou.coupon.data.filter.LocaltionFilter;
 import com.masou.coupon.data.models.Shop;
 import com.masou.coupon.exception.UserException;
 import com.masou.coupon.service.api.TicketService;
@@ -82,7 +84,6 @@ public class ApiTicketController {
             return ResultHelper.genResultWithSuccess();
         }else{
             String msg = "";
-
             switch (status){
                 case(1):
                     msg = "查看券错误";
@@ -107,22 +108,27 @@ public class ApiTicketController {
     @RequestMapping(value = "/selectlist", method = RequestMethod.GET)
     public Result selectList(@RequestParam("longitude") float longitude,
                              @RequestParam("latitude") float latitude,
-                             @RequestParam("token") String token){
-
-        Long uid = userTokenService.getUid(token);
-        if(uid == null || uid <= 0){
-            ;
-        }
-
+                             @RequestParam("industry") Integer industry,
+                             @RequestParam("type") Integer type,
+                             @RequestParam("page") Integer page,
+                             @RequestParam("pageSize") Integer pageSize){
         ShopResultVO shopResultVO = null;
         try {
+            LocaltionFilter params = new LocaltionFilter();
+            params.setType(type);
+            params.setType(industry);
+            params.setOffset(page);
+            params.setLimit(pageSize);
             if(Math.abs(longitude) > 0 && Math.abs(latitude) > 0){
-                shopResultVO = ticketService.selectList();
+                //定位失败
+                return ResultHelper.genResult(ErrorCodeEnum.LOCATION_FAILED);
             }else{
-                shopResultVO = ticketService.selectList(longitude, latitude,DISTANCE_RADIUS);
-            }
-            if(shopResultVO != null){
-                return ResultHelper.genResultWithSuccess(shopResultVO);
+                shopResultVO = ticketService.selectList(params, longitude, latitude, DISTANCE_RADIUS);
+                if(shopResultVO == null){
+                    return ResultHelper.genResult(ErrorCodeEnum.SHOP_NECESSERY);
+                }else{
+                    return ResultHelper.genResultWithSuccess(shopResultVO);
+                }
             }
         }catch (UserException e){
             logger.error("今日必领列表加载失败："+e.getLocalizedMessage());

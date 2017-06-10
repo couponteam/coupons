@@ -10,6 +10,7 @@ import com.masou.coupon.data.mappers.TicketTypeMapper;
 import com.masou.coupon.data.models.TicketType;
 import com.masou.coupon.data.models.TicketWithBLOBs;
 import com.masou.coupon.exception.UserException;
+import com.masou.coupon.service.CommonService;
 import com.masou.coupon.utils.GenTicketIdUtil;
 import com.masou.coupon.utils.ModelConvertUtil;
 import org.slf4j.Logger;
@@ -33,6 +34,9 @@ public class TicketManagerService {
 
     @Autowired
     private TicketTypeMapper ticketTypeMapper;
+
+    @Autowired
+    private CommonService commonService;
 
     public TicketWithBLOBs insertTicket(String data){
         try {
@@ -71,9 +75,8 @@ public class TicketManagerService {
             TicketResultVO resultVo = new TicketResultVO();
             List<TicketVO> listVo = new ArrayList<TicketVO>();
             for (TicketWithBLOBs ticket: list) {
-                TicketVO vo = new TicketVO();
-                vo.setTicketWithBLOBs(ticket);
-                vo.setTicketType(getTicketType(Long.parseLong(vo.getTicketWithBLOBs().getTypeId().toString())));
+                TicketVO vo = (TicketVO)ticket;
+                fileTicketVO(vo, ticket);
                 listVo.add(vo);
             }
             resultVo.setTicketVO(listVo);
@@ -83,6 +86,13 @@ public class TicketManagerService {
             e.printStackTrace();
             throw new UserException();
         }
+    }
+
+    private void fileTicketVO(TicketVO vo, TicketWithBLOBs ticket){
+        vo.setTypeId(commonService.changeTicketType(ticket.get_typeId()));
+        vo.setIsRetaken(commonService.changeTicketRetaken(ticket.get_isRetaken()));
+        vo.setIsReUse(commonService.changeTicketReuse(ticket.get_isReUse()));
+        vo.setStatus(commonService.changeTicketStatus(ticket.get_status()));
     }
 
     private int selectCount(TicketPageParam tdata){
@@ -95,9 +105,9 @@ public class TicketManagerService {
      * @return
      */
     public TicketVO selectSingleTicket(Long tid){
-        TicketVO ticketVO = new TicketVO();
-        ticketVO.setTicketWithBLOBs(ticketManagerDao.selectByTicketId(tid));
-        ticketVO.setTicketType(getTicketType(Long.parseLong(ticketVO.getTicketWithBLOBs().getTicketId().toString())));
+        TicketWithBLOBs ticket = ticketManagerDao.selectByTicketId(tid);
+        TicketVO ticketVO = (TicketVO)ticket;
+        fileTicketVO(ticketVO, ticket);
         return ticketVO;
     }
 

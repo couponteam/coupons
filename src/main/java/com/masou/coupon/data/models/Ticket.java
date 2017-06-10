@@ -13,7 +13,7 @@ public class Ticket {
 
     private String content;
 
-    private Byte typeId;
+    private Byte _typeId;
 
     private Date periodOfValidityStarttime;
 
@@ -21,13 +21,13 @@ public class Ticket {
 
     private String comment;
 
-    private Byte status;
+    private Byte _status;
 
     private Byte collectingMethod;
 
-    private Byte isRetaken;
+    private Byte _isRetaken;
 
-    private Byte isReUse;
+    private Byte _isReUse;
 
     private Date createTime;
 
@@ -72,14 +72,6 @@ public class Ticket {
         this.content = content == null ? null : content.trim();
     }
 
-    public Byte getTypeId() {
-        return typeId;
-    }
-
-    public void setTypeId(Byte typeId) {
-        this.typeId = typeId;
-    }
-
     public Date getPeriodOfValidityStarttime() {
         return periodOfValidityStarttime;
     }
@@ -104,12 +96,13 @@ public class Ticket {
         this.comment = comment == null ? null : comment.trim();
     }
 
-    public Byte getStatus() {
-        return status;
+    public Byte get_status() {
+
+        return _status;
     }
 
-    public void setStatus(Byte status) {
-        this.status = status;
+    public void set_status(Byte _status) {
+        this._status = _status;
     }
 
     public Byte getCollectingMethod() {
@@ -120,27 +113,35 @@ public class Ticket {
         this.collectingMethod = collectingMethod;
     }
 
-    public Byte getIsRetaken() {
-        return isRetaken;
-    }
-
-    public void setIsRetaken(Byte isRetaken) {
-        this.isRetaken = isRetaken;
-    }
-
-    public Byte getIsReUse() {
-        return isReUse;
-    }
-
-    public void setIsReUse(Byte isReUse) {
-        this.isReUse = isReUse;
-    }
-
     public Date getCreateTime() {
         return createTime;
     }
 
     public void setCreateTime(Date createTime) {
         this.createTime = createTime;
+    }
+
+    public Byte get_typeId() {
+        return _typeId;
+    }
+
+    public void set_typeId(Byte _typeId) {
+        this._typeId = _typeId;
+    }
+
+    public Byte get_isRetaken() {
+        return _isRetaken;
+    }
+
+    public void set_isRetaken(Byte _isRetaken) {
+        this._isRetaken = _isRetaken;
+    }
+
+    public Byte get_isReUse() {
+        return _isReUse;
+    }
+
+    public void set_isReUse(Byte _isReUse) {
+        this._isReUse = _isReUse;
     }
 }

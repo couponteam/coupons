@@ -29,10 +29,13 @@ public class ShopDao {
     }
 
 
+    /**
+     * 获取当前定位的店铺信息
+     * @param filter
+     * @return
+     */
     public List<Shop> findByLocation(LocaltionFilter filter){
-        shopMapper.findByLocation(filter);
-
-        return null;
+        return shopMapper.findByLocation(filter);
     }
 
 
