@@ -13,6 +13,8 @@ public class LocaltionFilter extends ShopFilter{
 
     private LngAndLatParam rightBottom;
 
+    private String keyword;
+
     public LngAndLatParam getLeftTop() {
         return leftTop;
     }
@@ -43,5 +45,13 @@ public class LocaltionFilter extends ShopFilter{
 
     public void setRightBottom(LngAndLatParam rightBottom) {
         this.rightBottom = rightBottom;
+    }
+
+    public String getKeyword() {
+        return keyword;
+    }
+
+    public void setKeyword(String keyword) {
+        this.keyword = keyword;
     }
 }

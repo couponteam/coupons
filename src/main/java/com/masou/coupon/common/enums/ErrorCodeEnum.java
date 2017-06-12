@@ -27,6 +27,7 @@ public enum ErrorCodeEnum {
     WRONG_SIGN(10015, "签名错误"),
     TOKEN_INVALID(10016,"Token失效"),
     LOCATION_FAILED(10017,"定位失败"),
+    BLACK_LIST_EXIST(10018, "已在黑名单"),
 
 
     IMAGE_UPLOAD_FAILED(10020,"图片上传失败"),
@@ -38,12 +39,16 @@ public enum ErrorCodeEnum {
     TICKET_INSERT_EMPTY(10034, "输入内容为空"),
     TICKET_INSERT_EMPTY_ID(10035, "店铺ID为空"),
 
+    STATISTIC_SSELECT_FAILED(10040, "获取数据失败"),
+
+
     SHOP_REGIS_FAILED(10050, "注册店铺失败"),
     SHOP_UPDATE_FAILED(10051, "更新店铺失败"),
     SHOP_DELETE_FAILED(10052, "删除店铺失败"),
     SHOP_BEST_FAILED(10053,"精选店铺加载失败"),
     SHOP_NECESSERY(10054, "今日必领列表加载失败"),
     SHOP_SEL_BY_TYPE_FAILED(10055, "筛选失败"),
+    SHOP_VERIFY_FAILED(10056,"店铺审核失败"),
 
     USER_TICKET_OPEATE_FAILED(10060, "失败"),
 

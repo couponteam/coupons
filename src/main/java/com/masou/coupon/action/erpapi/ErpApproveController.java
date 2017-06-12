@@ -23,14 +23,18 @@ public class ErpApproveController {
 
     @ApiImplicitParam(name = "verifyType",value = "商铺是否通过审核：0-待审核；1-已审核；2-未通过；3-已通过",paramType = "query",dataType = "Integer")
     @GetMapping("/shopList")
-    public Result shopList(PageParam pageParam, @RequestParam("verifyType")Integer verifyType){
-
+    public Result shopList(@RequestParam("verifyType")Integer verifyType,
+                           @RequestParam("page")Integer page,
+                           @RequestParam("pageSize")Integer pageSize){
+        PageParam pageParam = new PageParam();
+        pageParam.setPage(page);
+        pageParam.setPageSize(pageSize);
         return shopService.selectShopList(pageParam,verifyType);
     }
 
     @ApiOperation("审核店铺")
     @PostMapping("/approve")
-    @ApiImplicitParam(name = "verifyType",value = "1-通过；2-未通过",dataType = "String")
+    @ApiImplicitParam(name = "verifyType",value = "2-未通过；3-已通过",dataType = "String")
     public Result approve(@RequestParam("shopId") Long shopId,
                           @RequestParam("verifyType")Integer verifyType){
 

@@ -34,7 +34,7 @@
       #{createTime,jdbcType=DATE})
   </insert>
   <insert id="insertSelective" parameterType="com.masou.coupon.data.models.HotWord">
-    insert into ety_hot_word
+    insert IGNORE into ety_hot_word
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
         id,
@@ -63,6 +63,7 @@
         #{createTime,jdbcType=DATE},
       </if>
     </trim>
+    ON DUPLICATE KEY UPDATE frequence = frequence + 1
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.masou.coupon.data.models.HotWord">
     update ety_hot_word

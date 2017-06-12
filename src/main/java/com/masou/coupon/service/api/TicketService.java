@@ -37,6 +37,9 @@ public class TicketService {
     private ShopService shopService;
 
     @Autowired
+    private SearchService searchService;
+
+    @Autowired
     private LocaltionCalcService localtionCalcService;
 
     private Logger logger = LoggerFactory.getLogger(TicketService.class);
@@ -104,6 +107,7 @@ public class TicketService {
      */
     public ShopResultVO selectList(LocaltionFilter params, double longitude, double latitude, double radius){
         LocaltionFilter filter = localtionCalcService.lbsCalc(params, longitude, latitude, radius);
+        searchService.insertKeyword(params.getKeyword());
         ShopResultVO shopResultVO = new ShopResultVO();
 
         //筛选出方形区域内的店铺
@@ -135,8 +139,9 @@ public class TicketService {
     /**
      * 展示精选店铺
      */
-    public List<Shop> bestShop(){
-
-        return null;
+    public List<Shop> bestShop(Integer limit){
+        ShopFilter shopFilter = new ShopFilter();
+        shopFilter.setLimit(limit);
+        return shopDao.bestShop(shopFilter);
     }
 }

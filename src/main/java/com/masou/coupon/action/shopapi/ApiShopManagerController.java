@@ -23,7 +23,7 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/shop/api/shopmag")
-public class ErpShopManagerController {
+public class ApiShopManagerController {
 
     @Autowired
     private ShopManagerService shopManagerService;
@@ -31,7 +31,7 @@ public class ErpShopManagerController {
     @Autowired
     private UserTokenService userTokenService;
 
-    private Logger logger = LoggerFactory.getLogger(ErpShopManagerController.class);
+    private Logger logger = LoggerFactory.getLogger(ApiShopManagerController.class);
 
     @ApiOperation("查看店铺列表")
     @RequestMapping(value = "/shoplist", method = RequestMethod.GET)
@@ -39,9 +39,6 @@ public class ErpShopManagerController {
                            @RequestParam("page") Integer page,
                            @RequestParam("pageSize") Integer pageSize){
         Long uid = userTokenService.getUid(token);
-        if(uid == null || uid <= 0){
-            return ResultHelper.genResult(ErrorCodeEnum.TOKEN_INVALID);
-        }
 
         List<Shop> shopList = shopManagerService.shopList(uid,page,pageSize);
         if(shopList != null && shopList.size() > 0){
@@ -56,10 +53,10 @@ public class ErpShopManagerController {
     @RequestMapping(value = "/shop", method = RequestMethod.GET)
     public Result shopBysid(@RequestParam("sid") Long sid,
                             @RequestParam("token") String token){
-        Long uid = userTokenService.getUid(token);
-        if(uid == null || uid <= 0){
-            return ResultHelper.genResult(ErrorCodeEnum.TOKEN_INVALID);
-        }
+//        Long uid = userTokenService.getUid(token);
+//        if(uid == null || uid <= 0){
+//            return ResultHelper.genResult(ErrorCodeEnum.TOKEN_INVALID);
+//        }
 
         if(sid != null && sid > 0){
             Shop shop = shopManagerService.shopBysid(sid);

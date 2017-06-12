@@ -69,14 +69,14 @@ public class WebInterceptorConfig extends WebMvcConfigurerAdapter {
 //				);
 
         // token 校验
-        registry.addInterceptor(checkTokenInterceptor)
-                .addPathPatterns(
-                        "/api/**",
-                        "/management/api/**"
-                )
-                .excludePathPatterns(
-                        "/api/user/token/create",
-                        "/api/common/**");
+//        registry.addInterceptor(checkTokenInterceptor)
+//                .addPathPatterns(
+//                        "/api/**",
+//                        "/management/api/**"
+//                )
+//                .excludePathPatterns(
+//                        "/api/user/token/create",
+//                        "/api/common/**", "/api/ticket/selectlist");
 
         // 管理后台权限验证
 //        registry.addInterceptor(managementAuthInterceptor)

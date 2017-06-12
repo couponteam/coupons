@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.masou.coupon.data.mappers.LogErpOperateMapper">
+  <resultMap id="BaseResultMap" type="com.masou.coupon.data.models.LogErpOperate">
+    <id column="int" jdbcType="BIGINT" property="int" />
+    <result column="uid" jdbcType="BIGINT" property="uid" />
+    <result column="operate" jdbcType="CHAR" property="operate" />
+    <result column="op_path" jdbcType="VARCHAR" property="opPath" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+  </resultMap>
+  <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.masou.coupon.data.models.LogErpOperate">
+    <result column="data" jdbcType="LONGVARCHAR" property="data" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    int, uid, operate, op_path, create_time
+  </sql>
+  <sql id="Blob_Column_List">
+    data
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="ResultMapWithBLOBs">
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from log_erp_operate
+    where int = #{int,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from log_erp_operate
+    where int = #{int,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.masou.coupon.data.models.LogErpOperate">
+    insert into log_erp_operate (int, uid, operate, 
+      op_path, create_time, data
+      )
+    values (#{int,jdbcType=BIGINT}, #{uid,jdbcType=BIGINT}, #{operate,jdbcType=CHAR}, 
+      #{opPath,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{data,jdbcType=LONGVARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.masou.coupon.data.models.LogErpOperate">
+    insert into log_erp_operate
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="int != null">
+        int,
+      </if>
+      <if test="uid != null">
+        uid,
+      </if>
+      <if test="operate != null">
+        operate,
+      </if>
+      <if test="opPath != null">
+        op_path,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="data != null">
+        data,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="int != null">
+        #{int,jdbcType=BIGINT},
+      </if>
+      <if test="uid != null">
+        #{uid,jdbcType=BIGINT},
+      </if>
+      <if test="operate != null">
+        #{operate,jdbcType=CHAR},
+      </if>
+      <if test="opPath != null">
+        #{opPath,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="data != null">
+        #{data,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.masou.coupon.data.models.LogErpOperate">
+    update log_erp_operate
+    <set>
+      <if test="uid != null">
+        uid = #{uid,jdbcType=BIGINT},
+      </if>
+      <if test="operate != null">
+        operate = #{operate,jdbcType=CHAR},
+      </if>
+      <if test="opPath != null">
+        op_path = #{opPath,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="data != null">
+        data = #{data,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where int = #{int,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.masou.coupon.data.models.LogErpOperate">
+    update log_erp_operate
+    set uid = #{uid,jdbcType=BIGINT},
+      operate = #{operate,jdbcType=CHAR},
+      op_path = #{opPath,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      data = #{data,jdbcType=LONGVARCHAR}
+    where int = #{int,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.masou.coupon.data.models.LogErpOperate">
+    update log_erp_operate
+    set uid = #{uid,jdbcType=BIGINT},
+      operate = #{operate,jdbcType=CHAR},
+      op_path = #{opPath,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP}
+    where int = #{int,jdbcType=BIGINT}
+  </update>
+</mapper>

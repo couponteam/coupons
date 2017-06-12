@@ -21,13 +21,17 @@ public class ErpUserController {
     private UserService userService;
 
     @RequestMapping(value = "/list",method = RequestMethod.GET)
-    public Result list(PageParam pageParam,
-                       @RequestParam(value = "fromKey", required = false) String fromKey,
+    public Result list(@RequestParam(value = "fromKey", required = false) String fromKey,
                        @RequestParam(value = "phone", required = false) String phone,
                        @RequestParam(value = "timeBegin", required = false) String timeBegin,
-                       @RequestParam(value = "timeEnd", required = false) String timeEnd) {
+                       @RequestParam(value = "timeEnd", required = false) String timeEnd,
+                       @RequestParam(value = "page") Integer page,
+                       @RequestParam(value = "pageSize") Integer pageSize,
+                       @RequestParam(value = "token") String token) {
 
-
+        PageParam pageParam = new PageParam();
+        pageParam.setPage(page);
+        pageParam.setPageSize(pageSize);
         return userService.userList(pageParam, fromKey, phone, timeBegin, timeEnd);
     }
 

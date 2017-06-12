@@ -17,13 +17,13 @@ public class SearchService {
     @Autowired
     private SearchDao searchDao;
 
-    public List<Shop> search(String keyword){
-
-
-
-
-
-        return null;
+    /**
+     * 关键词插入
+     * @param keyword
+     * @return
+     */
+    public int insertKeyword(String keyword){
+       return searchDao.insertKeyword(keyword);
     }
 
 //    /**

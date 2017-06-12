@@ -1,6 +1,7 @@
 package com.masou.coupon.dao.api;
 
 import com.masou.coupon.data.filter.LocaltionFilter;
+import com.masou.coupon.data.filter.ShopFilter;
 import com.masou.coupon.data.mappers.ShopMapper;
 import com.masou.coupon.data.models.Shop;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,5 +39,12 @@ public class ShopDao {
         return shopMapper.findByLocation(filter);
     }
 
-
+    /**
+     * 获取精选店铺
+     * @param shopFilter
+     * @return
+     */
+    public List<Shop> bestShop(ShopFilter shopFilter){
+       return shopMapper.bestShop(shopFilter);
+    }
 }

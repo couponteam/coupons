@@ -1,6 +1,7 @@
 package com.masou.coupon.service.api;
 
 
+import com.masou.coupon.common.enums.ErrorCodeEnum;
 import com.masou.coupon.common.struct.Result;
 import com.masou.coupon.common.utils.ResultHelper;
 import com.masou.coupon.dao.UserDenyDao;
@@ -38,11 +39,13 @@ public class UserDenyService {
 
         User user = userService.selectByPhone(phone);
         if (user==null){
-            throw new UserException("用户不存在");
+//            throw new UserException("用户不存在");
+            return ResultHelper.genResult(ErrorCodeEnum.PHONE_NOT_EXIST);
         }
         UserDeny deny = userDenyDao.selectByPhone(phone);
         if (deny!=null){
-            throw new UserException("黑名单已经存在");
+//            throw new UserException("黑名单已经存在");
+            return ResultHelper.genResult(ErrorCodeEnum.BLACK_LIST_EXIST);
         }
 
         UserDeny record = new UserDeny();

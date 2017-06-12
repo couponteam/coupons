@@ -106,12 +106,13 @@ public class ApiTicketController {
      */
     @ApiOperation("登录系统展示附近券")
     @RequestMapping(value = "/selectlist", method = RequestMethod.GET)
-    public Result selectList(@RequestParam("longitude") float longitude,
-                             @RequestParam("latitude") float latitude,
+    public Result selectList(@RequestParam("longitude") String longitude,
+                             @RequestParam("latitude") String latitude,
                              @RequestParam("industry") Integer industry,
                              @RequestParam("type") Integer type,
                              @RequestParam("page") Integer page,
-                             @RequestParam("pageSize") Integer pageSize){
+                             @RequestParam("pageSize") Integer pageSize,
+                             @RequestParam("keyword") String keyword){
         ShopResultVO shopResultVO = null;
         try {
             LocaltionFilter params = new LocaltionFilter();
@@ -119,11 +120,15 @@ public class ApiTicketController {
             params.setType(industry);
             params.setOffset(page);
             params.setLimit(pageSize);
-            if(Math.abs(longitude) > 0 && Math.abs(latitude) > 0){
+            params.setKeyword(keyword);
+            if(Math.abs(Float.parseFloat(longitude)) <= 0 && Math.abs(Float.parseFloat(latitude)) <= 0){
+                logger.info("" + longitude + "-" +  latitude);
                 //定位失败
                 return ResultHelper.genResult(ErrorCodeEnum.LOCATION_FAILED);
             }else{
-                shopResultVO = ticketService.selectList(params, longitude, latitude, DISTANCE_RADIUS);
+                shopResultVO = ticketService.selectList(params,
+                        Float.parseFloat(longitude),
+                        Float.parseFloat(latitude), DISTANCE_RADIUS);
                 if(shopResultVO == null){
                     return ResultHelper.genResult(ErrorCodeEnum.SHOP_NECESSERY);
                 }else{
@@ -142,9 +147,9 @@ public class ApiTicketController {
      */
     @ApiOperation("精选店铺")
     @RequestMapping(value = "/bestshop", method = RequestMethod.GET)
-    public Result bestShop(){
+    public Result bestShop(@RequestParam("pageSize") Integer pageSize){
         try {
-            List<Shop> list = ticketService.bestShop();
+            List<Shop> list = ticketService.bestShop(pageSize);
             if(list != null && list.size() > 0){
                 return ResultHelper.genResultWithSuccess(list);
             }

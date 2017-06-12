@@ -32,6 +32,8 @@ public interface ShopMapper {
 
     List<Shop> shopList(BaseFilter baseFilter);
 
+    List<Shop> bestShop(ShopFilter shopFilter);
+
     List<Shop> findByLocation(LocaltionFilter filter);
 
     Shop shopMD5(String shopMD5);

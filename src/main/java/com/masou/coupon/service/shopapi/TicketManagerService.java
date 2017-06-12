@@ -75,7 +75,8 @@ public class TicketManagerService {
             TicketResultVO resultVo = new TicketResultVO();
             List<TicketVO> listVo = new ArrayList<TicketVO>();
             for (TicketWithBLOBs ticket: list) {
-                TicketVO vo = (TicketVO)ticket;
+                TicketVO vo = new TicketVO();
+                vo.setTicket(ticket);
                 fileTicketVO(vo, ticket);
                 listVo.add(vo);
             }
@@ -106,7 +107,8 @@ public class TicketManagerService {
      */
     public TicketVO selectSingleTicket(Long tid){
         TicketWithBLOBs ticket = ticketManagerDao.selectByTicketId(tid);
-        TicketVO ticketVO = (TicketVO)ticket;
+        TicketVO ticketVO = new TicketVO();
+        ticketVO.setTicket(ticket);
         fileTicketVO(ticketVO, ticket);
         return ticketVO;
     }

@@ -1,9 +1,12 @@
 package com.masou.coupon.interceptor;
 
 import com.alibaba.fastjson.JSON;
+import com.masou.coupon.data.models.LogUserVisit;
+import com.masou.coupon.service.UserLogService;
 import com.masou.coupon.utils.IPUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.Order;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
@@ -21,14 +24,23 @@ public class LogInterceptor implements HandlerInterceptor {
 
     private IPUtil ipUtil;
 
+    @Autowired
+    private UserLogService userLogService;
+
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+        String ip = ipUtil.getIpAddress(request);
         logger.info("IP:{} - URL:{} - Method:{} - 参数:{}",
-                ipUtil.getIpAddress(request),
+                ip,
                 request.getRequestURI(),
                 request.getMethod(),
                 JSON.toJSONString(request.getParameterMap()));
 
+        LogUserVisit logUserVisit = new LogUserVisit();
+        logUserVisit.setIp(ip);
+        logUserVisit.setMethod(request.getMethod());
+        logUserVisit.setUrl(request.getRequestURI());
+        userLogService.insertLog(logUserVisit);
         return true;
     }
 

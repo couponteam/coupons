@@ -31,25 +31,6 @@ public class ApiSearchController {
 
     private Logger logger = LoggerFactory.getLogger(ApiSearchController.class);
 
-    /**
-     * 请求关键词查询
-     *
-     * @param keyword
-     * @return
-     */
-    @ApiOperation("关键词查询")
-    @RequestMapping(value = "/search", method = RequestMethod.GET)
-    public Result search(@RequestParam("keyword") String keyword){
-
-        List<Shop> shopList = searchService.search(keyword);
-        if(shopList == null || shopList.size() < 1){
-            return ResultHelper.genResult(ErrorCodeEnum.SEARCH_EMPTY_RESULT);
-        }else{
-
-        }
-        return ResultHelper.genResult(ErrorCodeEnum.SYS_ERROR);
-    }
-
     @ApiOperation("热词接口")
     @RequestMapping(value = "/hotword", method = RequestMethod.GET)
     public Result hotword(@RequestParam("limit") Integer limit){

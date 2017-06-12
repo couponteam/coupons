@@ -6,7 +6,6 @@ import com.masou.coupon.common.enums.ErrorCodeEnum;
 import com.masou.coupon.common.struct.Result;
 import com.masou.coupon.common.utils.ResultHelper;
 import com.masou.coupon.data.models.Ticket;
-import com.masou.coupon.data.models.TicketWithBLOBs;
 import com.masou.coupon.exception.UserException;
 import com.masou.coupon.service.VerifyService;
 import com.masou.coupon.service.api.UserTokenService;
@@ -20,16 +19,14 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
-
 /**
  * Created by jason on 2017/5/17.
  */
 @RestController
 @RequestMapping("/shop/api/ticket")
-public class ErpTicketManagerController {
+public class ApiTicketManagerController {
 
-    private Logger log = LoggerFactory.getLogger(ErpTicketManagerController.class);
+    private Logger log = LoggerFactory.getLogger(ApiTicketManagerController.class);
 
     @Autowired
     private TicketManagerService ticketManagerService;
@@ -101,12 +98,7 @@ public class ErpTicketManagerController {
     @RequestMapping(value = "/selectlist", method = RequestMethod.GET)
     public Result selectTicketList(@RequestParam("sid") Long sid,
                                    @RequestParam("page") Integer page,
-                                   @RequestParam("pageSize") Integer pageSize,
-                                   @RequestParam("token") String token){
-        Long uid = userTokenService.getUid(token);
-        if(uid == null || uid <= 0){
-            return ResultHelper.genResult(ErrorCodeEnum.TOKEN_INVALID);
-        }
+                                   @RequestParam("pageSize") Integer pageSize){
         TicketResultVO ticketResultVO = ticketManagerService.showTicketList(sid, page, pageSize);
         if(ticketResultVO != null){
             return ResultHelper.genResultWithSuccess(ticketResultVO);

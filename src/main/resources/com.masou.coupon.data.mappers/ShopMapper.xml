@@ -57,6 +57,12 @@
         limit #{offset, jdbcType=INTEGER}, #{limit, jdbcType=INTEGER};
     </select>
 
+    <select id="bestShop" parameterType="com.masou.coupon.data.filter.ShopFilter" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from ety_shop where rank > 0 ORDER BY create_time desc,rank DESC LIMIT #{limit, jdbcType=INTEGER};
+    </select>
+
     <select id="findByLocation" parameterType="com.masou.coupon.data.filter.LocaltionFilter" resultMap="BaseResultMap">
         SELECT
           *
@@ -91,6 +97,13 @@
                 s.dimensionality &gt;= #{leftBottom.latitude, jdbcType=DECIMAL}
                 AND s.dimensionality &lt;= #{leftTop.latitude, jdbcType=DECIMAL}
                 )
+                <if test="keyword != null">
+                AND (
+                  s.shop_name like CONCAT('%','#{keyword, jdbcType=VARCHAR }','%' )
+                  OR
+                  t.ticket_name like CONCAT('%','#{keyword, jdbcType=VARCHAR }','%' )
+                )
+                </if>
                 AND s.is_shop_verified = 1
                 AND t.`status` = 1
             ORDER BY

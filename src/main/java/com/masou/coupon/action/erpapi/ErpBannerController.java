@@ -27,7 +27,8 @@ public class ErpBannerController {
             @RequestParam(value = "weight") int weight,
             @RequestParam(value = "image") String image,
             @RequestParam(value = "action") String action,
-            @RequestParam(value = "section") String section
+            @RequestParam(value = "section") String section,
+            @RequestParam(value = "token") String token
     ) {
         Banner banner = new Banner();
         banner.setWeight(weight);
@@ -51,14 +52,16 @@ public class ErpBannerController {
 
     @ApiOperation("删除广告位")
     @PostMapping("/delete")
-    public Result delete(@RequestParam("id") Integer id) {
+    public Result delete(@RequestParam("id") Integer id,
+                         @RequestParam(value = "token") String token) {
         bannerService.deleteByPrimaryKey(id);
         return ResultHelper.genResultWithSuccess();
     }
 
     @ApiOperation("广告位列表")
     @GetMapping("/list")
-    public Result list(@RequestParam("section") String section) {
+    public Result list(@RequestParam("section") String section,
+                       @RequestParam(value = "token") String token) {
         return ResultHelper.genResultWithSuccess(bannerService.selectListBySection(section));
     }
 

@@ -41,42 +41,33 @@ public class ErpResourceController {
     public Result insert(@RequestParam(value = "name") String[] name,
                          @RequestParam(value = "shopId", required = false) Integer shopId,
                          @RequestParam(value = "type", required = false) Integer type,
-                         @RequestParam(value = "file") MultipartFile[] file) {
+                         @RequestParam(value = "file") MultipartFile file) {
 
         String md5 = null;
         try {
-            if(file != null && file.length > 0){
-                List<ImgResource> imageList = new ArrayList<ImgResource>();
-                for (MultipartFile one : file) {
-                    md5 = md5Util.MD5File(one.getBytes());
-                    String fileName = one.getOriginalFilename();
-                    String extension = fileName.substring(fileName.lastIndexOf(".") + 1);
-                    if (extension.equals("")) {
-                        throw new UserException("请先选择文件");
-                    } else {
-                        switch (extension.toLowerCase()) {
-                            case "jpg":
-                            case "jpeg":
-                            case "png":
-                                break;
-                            default:
-                                throw new UserException("不支持的文件格式");
+            md5 = md5Util.MD5File(file.getBytes());
+            String fileName = file.getOriginalFilename();
+            String extension = fileName.substring(fileName.lastIndexOf(".") + 1);
+            if (extension.equals("")) {
+                throw new UserException("请先选择文件");
+            } else {
+                switch (extension.toLowerCase()) {
+                    case "jpg":
+                    case "jpeg":
+                    case "png":
+                        break;
+                    default:
+                        throw new UserException("不支持的文件格式");
 
-                        }
-                    }
-                    String fileKey = String.format("%s.%s", md5, extension);
-                    boolean uploadResult = qiniuService.upload(one.getBytes(), fileKey);
-                    //保存
-                    ImgResource record = new ImgResource(shopId, (byte) 0, type != null ? type.byteValue() : 0, fileKey);
-                    if (imageResourceService.insertSelective(record) > 1){
-                        imageList.add(record);
-                    }
                 }
-                return ResultHelper.genResultWithSuccess(imageList);
             }
+            String fileKey = String.format("%s.%s", md5, extension);
+            boolean uploadResult = qiniuService.upload(file.getBytes(), fileKey);
+            //保存
+            ImgResource record = new ImgResource(shopId, (byte) 0, type != null ? type.byteValue() : 0, fileKey);
+            return imageResourceService.insertSelective(record);
         } catch (IOException e) {
             throw new UserException("异常错误");
         }
-        return ResultHelper.genResult(ErrorCodeEnum.IMAGE_UPLOAD_FAILED);
     }
 }

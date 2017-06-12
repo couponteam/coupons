@@ -6,7 +6,9 @@ import com.masou.coupon.data.models.TicketWithBLOBs;
 /**
  * Created by jason on 2017/6/9.
  */
-public class TicketVO extends TicketWithBLOBs{
+public class TicketVO {
+
+    private TicketWithBLOBs ticket;
 
     private String typeId;
 
@@ -46,5 +48,13 @@ public class TicketVO extends TicketWithBLOBs{
 
     public void setIsReUse(String isReUse) {
         this.isReUse = isReUse;
+    }
+
+    public TicketWithBLOBs getTicket() {
+        return ticket;
+    }
+
+    public void setTicket(TicketWithBLOBs ticket) {
+        this.ticket = ticket;
     }
 }

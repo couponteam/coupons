@@ -24,9 +24,11 @@ spring:
         active: test
     #redis server
     redis:
-      host: 119.23.242.204
+#      host: 119.23.242.204
+      host: 121.42.153.133
       port: 6379
-      password: Yyc51Linghui
+      password: jasonlin
+#      password: Yyc51Linghui
       pool:
         max-idle: 8
         min-idle: 0
