@@ -54,8 +54,27 @@
         select
         COUNT(id)
         from ety_ticket
-        where shop_id = #{shop_id,jdbcType=BIGINT} ORDER BY create_time DESC limit #{page, jdbcType=BIGINT},#{pageSize,jdbcType=BIGINT}
+        where shop_id = #{shop_id,jdbcType=BIGINT}
+        ORDER BY create_time DESC
+        limit #{page, jdbcType=BIGINT},#{pageSize,jdbcType=BIGINT}
     </select>
+
+    <select id="findBySid" parameterType="com.masou.coupon.data.filter.ShopFilter" resultMap="ResultMapWithBLOBs">
+	SELECT
+        id,
+        type_id,
+        ticket_name
+    FROM
+        ety_ticket
+    WHERE
+        shop_id = #{sid,jdbcType=BIGINT}
+    AND STATUS = 1
+    GROUP BY
+        type_id
+    ORDER BY
+        create_time DESC
+    </select>
+
 
     <select id="selectByShopId" parameterType="com.masou.coupon.data.filter.ShopFilter" resultMap="ResultMapWithBLOBs">
         select

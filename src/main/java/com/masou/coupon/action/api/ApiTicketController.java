@@ -7,18 +7,24 @@ import com.masou.coupon.common.struct.Result;
 import com.masou.coupon.common.utils.ResultHelper;
 import com.masou.coupon.data.filter.LngAndLatParam;
 import com.masou.coupon.data.filter.LocaltionFilter;
+import com.masou.coupon.data.models.LogUserVisit;
 import com.masou.coupon.data.models.Shop;
 import com.masou.coupon.exception.UserException;
+import com.masou.coupon.service.UserLogService;
 import com.masou.coupon.service.api.TicketService;
 import com.masou.coupon.service.api.UserTokenService;
+import com.masou.coupon.utils.IPUtil;
 import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.HttpRequestHandler;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 /**
@@ -30,6 +36,15 @@ public class ApiTicketController {
 
     @Autowired
     private TicketService ticketService;
+
+    @Autowired
+    private HttpServletRequest request;
+
+    @Autowired
+    private IPUtil ipUtil;
+
+    @Autowired
+    private UserLogService userLogService = new UserLogService();
 
     @Autowired
     private UserTokenService userTokenService;
@@ -61,10 +76,7 @@ public class ApiTicketController {
                                        @RequestParam("token") String token){
         if(sid != null &&sid > 0){
             Long uid = userTokenService.getUid(token);
-            if(uid == null || uid <= 0){
-                return ResultHelper.genResultWithSuccess(ticketService.selectTicketByShopId(sid,uid));
-            }
-            return ResultHelper.genResultWithSuccess(ticketService.selectTicketByShopId(sid));
+            return ResultHelper.genResultWithSuccess(ticketService.selectTicketByShopId(sid,uid,ipUtil.getIpAddress(request)));
         }
         return ResultHelper.genResult(ErrorCodeEnum.NULL_VALUE_ERROR.getCode(), "传入店铺id"+ErrorCodeEnum.NULL_VALUE_ERROR.getMsg());
     }
@@ -113,6 +125,7 @@ public class ApiTicketController {
                              @RequestParam("page") Integer page,
                              @RequestParam("pageSize") Integer pageSize,
                              @RequestParam("keyword") String keyword){
+
         ShopResultVO shopResultVO = null;
         try {
             LocaltionFilter params = new LocaltionFilter();

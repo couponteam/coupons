@@ -77,11 +77,6 @@ public class ApiShopManagerController {
                              @RequestParam("sid") Long sid,
                              @RequestParam("token") String token){
 
-        Long uid = userTokenService.getUid(token);
-        if(uid == null || uid <= 0){
-            return ResultHelper.genResult(ErrorCodeEnum.TOKEN_INVALID);
-        }
-
         String errorMsg = "";
         if(StringUtil.areNotEmpty(data)){
             if((sid != null && sid > 0 )){

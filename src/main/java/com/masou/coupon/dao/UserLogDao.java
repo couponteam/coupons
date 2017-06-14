@@ -19,8 +19,8 @@ public class UserLogDao {
      * @param logUserVisit
      * @return
      */
-//    public int insertLog(LogUserVisit logUserVisit){
-//
-//        return logUserVisitMapper.insertSelective(logUserVisit);
-//    }
+    public int insertLog(LogUserVisit logUserVisit){
+        System.out.println("user log dao:");
+        return 0;
+    }
 }

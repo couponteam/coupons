@@ -35,4 +35,6 @@ public interface TicketMapper {
 
     List<Ticket> selectByType(Integer type, PageParam param);
 
+    List<TicketWithBLOBs> findBySid(ShopFilter shopFilter);
+
 }

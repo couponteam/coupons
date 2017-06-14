@@ -2,6 +2,7 @@ package com.masou.coupon.dao.ShopApiDao;
 
 import com.alibaba.fastjson.JSON;
 import com.masou.coupon.data.filter.BaseFilter;
+import com.masou.coupon.data.mappers.LogUserVisitMapper;
 import com.masou.coupon.data.mappers.ShopMapper;
 import com.masou.coupon.data.models.Shop;
 import org.springframework.beans.factory.annotation.Autowired;

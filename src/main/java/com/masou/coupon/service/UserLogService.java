@@ -6,6 +6,7 @@ import com.masou.coupon.data.models.LogUserVisit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 /**
@@ -14,14 +15,13 @@ import org.springframework.stereotype.Service;
 @Service
 public class UserLogService {
 
-//    @Autowired
-//    private UserLogDao userLogDao;
+    @Autowired
+    private UserLogDao userLogDao = new UserLogDao();
 
     private Logger logger = LoggerFactory.getLogger(UserLogService.class);
 
     public int insertLog(LogUserVisit logUserVisit){
-//        logger.info("写入用户日志：" + JSON.toJSONString(logUserVisit));
-//        userLogDao.insertLog(logUserVisit)
-        return 0;
+        logger.info("【User log】：" + JSON.toJSONString(logUserVisit));
+        return userLogDao.insertLog(logUserVisit);
     }
 }

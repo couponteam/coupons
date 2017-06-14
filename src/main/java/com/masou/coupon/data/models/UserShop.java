@@ -5,9 +5,9 @@ import java.util.Date;
 public class UserShop {
     private Long id;
 
-    private String userId;
+    private Long userId;
 
-    private String shopId;
+    private Long shopId;
 
     private Byte status;
 
@@ -21,20 +21,12 @@ public class UserShop {
         this.id = id;
     }
 
-    public String getUserId() {
+    public Long getUserId() {
         return userId;
     }
 
-    public void setUserId(String userId) {
-        this.userId = userId == null ? null : userId.trim();
-    }
-
-    public String getShopId() {
-        return shopId;
-    }
-
-    public void setShopId(String shopId) {
-        this.shopId = shopId == null ? null : shopId.trim();
+    public void setUserId(Long userId) {
+        this.userId = userId;
     }
 
     public Byte getStatus() {
@@ -51,5 +43,13 @@ public class UserShop {
 
     public void setCreateTime(Date createTime) {
         this.createTime = createTime;
+    }
+
+    public Long getShopId() {
+        return shopId;
+    }
+
+    public void setShopId(Long shopId) {
+        this.shopId = shopId;
     }
 }

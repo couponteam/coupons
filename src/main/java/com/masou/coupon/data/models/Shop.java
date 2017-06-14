@@ -47,6 +47,8 @@ public class Shop {
 
     private Ticket ticket;
 
+    private UserShop userShop;
+
     private String comment;
 
     private String profilePicture;
@@ -240,5 +242,13 @@ public class Shop {
 
     public void setProfilePicture(String profilePicture) {
         this.profilePicture = profilePicture;
+    }
+
+    public UserShop getUserShop() {
+        return userShop;
+    }
+
+    public void setUserShop(UserShop userShop) {
+        this.userShop = userShop;
     }
 }

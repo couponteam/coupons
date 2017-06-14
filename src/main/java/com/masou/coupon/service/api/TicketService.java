@@ -1,5 +1,6 @@
 package com.masou.coupon.service.api;
 
+import com.alibaba.fastjson.JSON;
 import com.masou.coupon.action.api.vo.*;
 //import com.masou.coupon.dao.ShopDao;
 import com.masou.coupon.dao.api.ShopDao;
@@ -7,6 +8,8 @@ import com.masou.coupon.dao.api.TicketDao;
 import com.masou.coupon.data.filter.LngAndLatParam;
 import com.masou.coupon.data.filter.LocaltionFilter;
 import com.masou.coupon.data.filter.ShopFilter;
+import com.masou.coupon.data.mappers.LogUserShopMapper;
+import com.masou.coupon.data.models.LogUserShop;
 import com.masou.coupon.data.models.Shop;
 import com.masou.coupon.data.models.TicketWithBLOBs;
 import com.masou.coupon.data.models.UserTicket;
@@ -38,6 +41,9 @@ public class TicketService {
 
     @Autowired
     private SearchService searchService;
+
+    @Autowired
+    private LogUserShopMapper logUserShopMapper;
 
     @Autowired
     private LocaltionCalcService localtionCalcService;
@@ -80,18 +86,34 @@ public class TicketService {
      * @param sid
      * @return
      */
-    public ShopTicketListVO selectTicketByShopId(Long sid){
+    public ShopTicketListVO selectTicketByShopId(Long sid, Long uid, String ip){
         ShopTicketListVO shopTicketListVO = new ShopTicketListVO();
         try {
             shopTicketListVO.setShop(shopService.selectByPrimaryKey(sid));
             shopTicketListVO.setTicketWithBLOBsList(ticketDao.selectTicketByShopId(sid));
+            logUserViewShop(sid,uid,ip);
         }catch(Exception e){
             logger.error(e.getLocalizedMessage());
         }
         return shopTicketListVO;
     }
 
-    public List<ShopTicketListVO> selectTicketByShopId(Long sid, Long uid){
+    /**
+     * 用户访问店铺的日志记录
+     * @param sid
+     * @param uid
+     * @param ip
+     */
+    private void logUserViewShop(Long sid, Long uid, String ip){
+        LogUserShop logUserShop = new LogUserShop();
+        logUserShop.setIp(ip);
+        logUserShop.setSid(sid);
+        logUserShop.setUid(uid);
+        logUserShopMapper.insertSelective(logUserShop);
+        logger.info("[User visit shop log] : " + JSON.toJSONString(logUserShop));
+    }
+
+   public List<ShopTicketListVO> selectTicketByShopId(Long sid, Long uid){
 
         return null;
     }
@@ -113,9 +135,9 @@ public class TicketService {
         //筛选出方形区域内的店铺
         List<Shop> shopList = shopDao.findByLocation(filter);
         if(shopList != null && shopList.size() > 0){
-            List<ShopVO> shopVOList = new ArrayList<ShopVO>();
+            List<ShopapiVO> shopVOList = new ArrayList<ShopapiVO>();
             for ( Shop shop : shopList ) {
-                ShopVO shopVO = new ShopVO();
+                ShopapiVO shopVO = new ShopapiVO();
                 //计算店铺与用户位置的距离
                 double distance=localtionCalcService.getEarthRadius(
                         new LngAndLatParam(shop.getLongitude(),shop.getDimensionality()),

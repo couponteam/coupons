@@ -25,7 +25,7 @@ public class LogInterceptor implements HandlerInterceptor {
     private IPUtil ipUtil;
 
     @Autowired
-    private UserLogService userLogService;
+    private UserLogService userLogService = new UserLogService();
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {

@@ -19,6 +19,8 @@ public class DateUtil {
     public final int ISO_DATETIME_FORMAT = 12;
     public final int DB_CHN_DATETIME_FORMAT = 1;
 
+    public static final String ZERO_DATE = " 00:00:00";
+
     public Date dateIncreaseByDay(Date date, int days) {
 
         Calendar cal = GregorianCalendar.getInstance(TimeZone
@@ -70,6 +72,16 @@ public class DateUtil {
             res = sdf.format(date);
         }
         return res;
+    }
+
+    /**
+     * 获取当前时间，格式为2017-06-13 00:00:00
+     * @return
+     */
+    public Date todayOnlyDate(){
+        Calendar cal = Calendar.getInstance();
+        String today = cal.get(Calendar.YEAR) + "-" + (cal.get(Calendar.MONTH) + 1) + "-" + cal.get(Calendar.DATE) + ZERO_DATE;
+        return toDate(today,1);
     }
 
     private String getDateFormat(int kind) {

@@ -4,7 +4,10 @@ import com.masou.coupon.action.api.vo.ShopTicketVO;
 import com.masou.coupon.data.filter.BaseFilter;
 import com.masou.coupon.data.filter.LocaltionFilter;
 import com.masou.coupon.data.filter.ShopFilter;
+import com.masou.coupon.data.filter.StatisticFilter;
 import com.masou.coupon.data.models.Shop;
+import com.masou.coupon.data.models.Ticket;
+import com.masou.coupon.data.models.TicketWithBLOBs;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -37,5 +40,9 @@ public interface ShopMapper {
     List<Shop> findByLocation(LocaltionFilter filter);
 
     Shop shopMD5(String shopMD5);
+
+    List<Shop> findByUid(ShopFilter shopFilter);
+
+    int ticketCount(StatisticFilter statisticFilter);
 
 }

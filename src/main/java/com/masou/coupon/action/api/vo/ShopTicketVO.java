@@ -15,7 +15,7 @@ public class ShopTicketVO {
 
     private Shop shop;
 
-        public Shop getShop() {
+    public Shop getShop() {
         return shop;
     }
 

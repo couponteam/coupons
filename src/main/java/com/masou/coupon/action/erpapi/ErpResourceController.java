@@ -38,7 +38,7 @@ public class ErpResourceController {
 
     @ApiOperation("插入图片")
     @RequestMapping(value = "/insert", method = RequestMethod.POST)
-    public Result insert(@RequestParam(value = "name") String[] name,
+    public Result insert(@RequestParam(value = "name") String name,
                          @RequestParam(value = "shopId", required = false) Integer shopId,
                          @RequestParam(value = "type", required = false) Integer type,
                          @RequestParam(value = "file") MultipartFile file) {

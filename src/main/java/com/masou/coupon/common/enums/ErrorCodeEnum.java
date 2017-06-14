@@ -8,6 +8,7 @@ public enum ErrorCodeEnum {
     OK(0, "成功"),
     FAILED(-1,"操作失败"),
     NULL_VALUE_ERROR(-1000,"为空"),
+    EMPTY_DATA_ERROR(-99, "无数据"),
 
     REGISTER_FAILED(10001, "注册失败"),
 
@@ -28,9 +29,11 @@ public enum ErrorCodeEnum {
     TOKEN_INVALID(10016,"Token失效"),
     LOCATION_FAILED(10017,"定位失败"),
     BLACK_LIST_EXIST(10018, "已在黑名单"),
+    RANK_FAILED(10019, "设置权重失败"),
+    FOLLOW_SHOP_FAILED(10020,"关注店铺失败"),
 
 
-    IMAGE_UPLOAD_FAILED(10020,"图片上传失败"),
+    IMAGE_UPLOAD_FAILED(10021,"图片上传失败"),
 
     TICKET_INSERT_FAILED(10030, "新增券失败"),
     TICKET_SELECT_FAILED(10031, "查询券失败"),

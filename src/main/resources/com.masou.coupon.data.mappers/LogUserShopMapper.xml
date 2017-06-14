@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.masou.coupon.data.mappers.LogUserShopMapper">
+  <resultMap id="BaseResultMap" type="com.masou.coupon.data.models.LogUserShop">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="uid" jdbcType="BIGINT" property="uid" />
+    <result column="ip" jdbcType="VARCHAR" property="ip" />
+    <result column="sid" jdbcType="BIGINT" property="sid" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <association property="shop" javaType="com.masou.coupon.data.models.Shop">
+      <id column="id" jdbcType="BIGINT" property="id"/>
+      <result column="uid" jdbcType="BIGINT" property="uid"></result>
+    </association>
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, uid, ip, sid, create_time
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from log_user_shop
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+
+  <select id="pageView" parameterType="com.masou.coupon.data.filter.StatisticFilter"  resultType="java.lang.Integer">
+    select COUNT(s.id)
+    from ety_shop s, log_user_shop lus
+    where s.id=lus.sid and s.uid=#{uid, jdbcType=BIGINT}
+    <if test="  today != null">
+      and lus.create_time &gt;= #{today, jdbcType=TIMESTAMP}
+    </if>
+  </select>
+
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from log_user_shop
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.masou.coupon.data.models.LogUserShop">
+    insert into log_user_shop (id, uid, ip, sid, 
+      create_time)
+    values (#{id,jdbcType=BIGINT}, #{uid,jdbcType=BIGINT}, #{ip,jdbcType=VARCHAR}, #{sid,jdbcType=BIGINT}, 
+      #{createTime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.masou.coupon.data.models.LogUserShop">
+    insert into log_user_shop
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="uid != null">
+        uid,
+      </if>
+      <if test="ip != null">
+        ip,
+      </if>
+      <if test="sid != null">
+        sid,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="uid != null">
+        #{uid,jdbcType=BIGINT},
+      </if>
+      <if test="ip != null">
+        #{ip,jdbcType=VARCHAR},
+      </if>
+      <if test="sid != null">
+        #{sid,jdbcType=BIGINT},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.masou.coupon.data.models.LogUserShop">
+    update log_user_shop
+    <set>
+      <if test="uid != null">
+        uid = #{uid,jdbcType=BIGINT},
+      </if>
+      <if test="ip != null">
+        ip = #{ip,jdbcType=VARCHAR},
+      </if>
+      <if test="sid != null">
+        sid = #{sid,jdbcType=BIGINT},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.masou.coupon.data.models.LogUserShop">
+    update log_user_shop
+    set uid = #{uid,jdbcType=BIGINT},
+      ip = #{ip,jdbcType=VARCHAR},
+      sid = #{sid,jdbcType=BIGINT},
+      create_time = #{createTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

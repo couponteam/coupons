@@ -51,6 +51,21 @@
         where p.invite_code=#{inviteCode}
 
     </select>
+
+    <select id="statistic" parameterType="com.masou.coupon.data.filter.StatisticFilter"  resultType="java.lang.Integer">
+        select COUNT(id)
+        from rel_user_shop
+        where
+        AND user_id = #{uid, jdbcType=BIGINT}
+        <if test="sid != null">
+            AND shop_id = #{sid, jdbcType=BIGINT}
+        </if>
+        <if test="sid != null">
+            AND create_time &gt;= #{fromData, jdbcType=TIMESTAMP}
+            AND create_time &lt;= #{toData, jdbcType=TIMESTAMP}
+        </if>
+    </select>
+
     <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMapWithProfile">
         select
         <include refid="Base_Column_List"/>

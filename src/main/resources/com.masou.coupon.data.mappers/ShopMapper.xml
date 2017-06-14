@@ -34,6 +34,13 @@
             <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
             <result column="status" jdbcType="TINYINT" property="status"/>
         </association>
+        <association property="userShop" javaType="com.masou.coupon.data.models.UserShop">
+            <id column="id" jdbcType="BIGINT" property="id" />
+            <result column="user_id" jdbcType="CHAR" property="userId" />
+            <result column="shop_id" jdbcType="CHAR" property="shopId" />
+            <result column="status" jdbcType="TINYINT" property="status" />
+            <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+        </association>
     </resultMap>
 
     <sql id="Base_Column_List">
@@ -56,6 +63,19 @@
         GROUP BY id ORDER BY create_time
         limit #{offset, jdbcType=INTEGER}, #{limit, jdbcType=INTEGER};
     </select>
+
+    <!--<select id="selectByType" parameterType="com.masou.coupon.data.filter.ShopFilter" resultMap="BaseResultMap">-->
+        <!--select s.shop_name,s.id,s.shop_address,s.icon_id,us.id,us.`status`-->
+        <!--from ety_shop s, rel_user_shop us-->
+        <!--where s.id = us.shop_id and us.user_id = #{uid, jdbcType=BIGINT}-->
+        <!--AND s.is_shop_verified = 3-->
+        <!--<if test="industry != null">-->
+            <!--and s.industry_id=#{industry, jdbcType=INTEGER}-->
+        <!--</if>-->
+        <!--ORDER BY us.create_time DESC-->
+        <!--limit #{offset, jdbcType=INTEGER}, #{limit, jdbcType=INTEGER};-->
+    <!--</select>-->
+
 
     <select id="bestShop" parameterType="com.masou.coupon.data.filter.ShopFilter" resultMap="BaseResultMap">
         select
@@ -99,9 +119,9 @@
                 )
                 <if test="keyword != null">
                 AND (
-                  s.shop_name like CONCAT('%','#{keyword, jdbcType=VARCHAR }','%' )
+                  s.shop_name like "%"#{keyword, jdbcType=VARCHAR}"%"
                   OR
-                  t.ticket_name like CONCAT('%','#{keyword, jdbcType=VARCHAR }','%' )
+                  t.ticket_name like "%"#{keyword, jdbcType=VARCHAR}"%"
                 )
                 </if>
                 AND s.is_shop_verified = 1
@@ -129,6 +149,39 @@
         from ety_shop
         where shophash=#{shophash,jdbcType=CHAR};
     </select>
+
+    <select id="pageView" parameterType="com.masou.coupon.data.filter.StatisticFilter" resultType="java.lang.Integer">
+        select COUNT(ut.id)
+        from ety_shop s,ety_ticket t,rel_user_ticket ut
+        where s.uid=#{uid, jdbcType=BIGINT}
+        and s.id=t.shop_id
+        and t.ticket_id=ut.ticket_id
+        <if test="today != null">
+            AND ut.create_time &gt;= #{today, jdbcType=TIMESTAMP};
+        </if>
+    </select>
+
+    <select id="findByUid" parameterType="com.masou.coupon.data.filter.ShopFilter" resultMap="BaseResultMap">
+        SELECT
+            s.id,
+            s.shop_name,
+            s.shop_address,
+            s.icon_id,
+            s.longitude,
+            s.dimensionality
+        FROM
+            ety_shop s,
+            rel_user_shop us
+        WHERE
+            us.user_id = #{uid, jdbcType=BIGINT}
+        AND s.id = us.shop_id
+        ORDER BY
+            us.create_time DESC
+        limit #{limit,jdbcType=INTEGER}, #{offset, jdbcType=INTEGER}
+    </select>
+
+
+
     <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List"/>

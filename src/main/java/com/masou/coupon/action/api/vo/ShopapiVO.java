@@ -1,18 +1,16 @@
 package com.masou.coupon.action.api.vo;
 
 import com.masou.coupon.data.models.Shop;
-import com.masou.coupon.data.models.TicketType;
 
-import java.util.Comparator;
 import java.util.List;
 
 /**
  * Created by jason on 2017/6/10.
  */
-public class ShopVO implements Comparable<ShopVO>{
+public class ShopapiVO implements Comparable<ShopapiVO>{
 
     @Override
-    public int compareTo(ShopVO o) {
+    public int compareTo(ShopapiVO o) {
         return Integer.parseInt((this.distance - o.distance) + "");
     }
 

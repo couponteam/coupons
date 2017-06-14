@@ -89,7 +89,7 @@ public class TicketManagerService {
         }
     }
 
-    private void fileTicketVO(TicketVO vo, TicketWithBLOBs ticket){
+    public void fileTicketVO(TicketVO vo, TicketWithBLOBs ticket){
         vo.setTypeId(commonService.changeTicketType(ticket.get_typeId()));
         vo.setIsRetaken(commonService.changeTicketRetaken(ticket.get_isRetaken()));
         vo.setIsReUse(commonService.changeTicketReuse(ticket.get_isReUse()));

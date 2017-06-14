@@ -2,7 +2,9 @@ package com.masou.coupon.data.mappers;
 
 
 import com.masou.coupon.data.models.LogUserVisit;
+import org.apache.ibatis.annotations.Mapper;
 
+@Mapper
 public interface LogUserVisitMapper {
     int deleteByPrimaryKey(Long id);
 

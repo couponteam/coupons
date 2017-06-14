@@ -1,5 +1,8 @@
 package com.masou.coupon.service.api;
 
+import com.masou.coupon.action.api.vo.ShopResultVO;
+import com.masou.coupon.action.api.vo.ShopapiVO;
+import com.masou.coupon.action.api.vo.TicketVO;
 import com.masou.coupon.action.param.PageParam;
 import com.masou.coupon.action.shopapi.vo.ShopVO;
 import com.masou.coupon.action.shopapi.vo.UserShopVO;
@@ -8,11 +11,13 @@ import com.masou.coupon.common.enums.ShopOwnerTypeEnum;
 import com.masou.coupon.common.struct.Result;
 import com.masou.coupon.common.utils.ResultHelper;
 import com.masou.coupon.dao.Shop2Dao;
+import com.masou.coupon.dao.api.ShopDao;
+import com.masou.coupon.data.filter.LngAndLatParam;
 import com.masou.coupon.data.filter.ShopFilter;
-import com.masou.coupon.data.models.Shop;
-import com.masou.coupon.data.models.ShopChief;
-import com.masou.coupon.data.models.User;
+import com.masou.coupon.data.mappers.UserShopMapper;
+import com.masou.coupon.data.models.*;
 import com.masou.coupon.exception.UserException;
+import com.masou.coupon.service.shopapi.TicketManagerService;
 import com.masou.coupon.utils.ModelConvertUtil;
 import com.masou.coupon.utils.PhoneUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +25,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -40,6 +46,14 @@ public class ShopService {
     @Autowired
     private UserTokenService userTokenService;
 
+    @Autowired
+    private TicketManagerService ticketManagerService;
+
+    @Autowired
+    private UserShopMapper userShopMapper;
+
+    @Autowired
+    private ShopDao shopDao;
 
     @Autowired
     private ShopChiefService shopChiefService;
@@ -156,6 +170,8 @@ public class ShopService {
     }
 
     public Result updateByPrimaryKeySelective(Shop record) {
+        record.setIsShopVerified(null);
+        record.setBusinessLicenseId(null);
         if (shop2Dao.updateByPrimaryKeySelective(record)==1){
             return ResultHelper.genResultWithSuccess();
         }else{
@@ -172,5 +188,66 @@ public class ShopService {
 
         return voList;
 
+    }
+
+    /**
+     * 用户关注店铺
+     * @param uid
+     * @param sid
+     * @param status
+     * @return
+     */
+    public int follow(Long uid, Long sid, Integer status){
+        UserShop userShop = new UserShop();
+        userShop.setId(uid);
+        userShop.setShopId(sid);
+        userShop.setStatus(new Byte(status + ""));
+
+        //查询店铺是否存在
+        Shop shop = shop2Dao.selectByPrimaryKey(sid);
+        if(shop != null && shop.getShopName().length() > 0){
+            return userShopMapper.insertSelective(userShop);
+        }
+        return 0;
+    }
+
+    /**
+     * 根据uid获取用户关注的店铺列表
+     * @param uid
+     * @param page
+     * @param pageSize
+     * @return
+     */
+    public ShopResultVO list(Long uid,Integer page, Integer pageSize){
+
+        ShopFilter shopFilter = new ShopFilter();
+        shopFilter.setUid(uid);
+        shopFilter.setOffset(page);
+        shopFilter.setLimit(pageSize);
+
+        ShopResultVO shopResultVO = new ShopResultVO();
+        List<Shop> shopList = shopDao.findByUid(shopFilter);
+        List<ShopapiVO> shopapiVOs = new ArrayList<>();
+        if(shopList != null && shopList.size() > 0){
+            for ( Shop shop : shopList ) {
+                ShopapiVO shopapiVO = new ShopapiVO();
+                shopapiVO.setShop(shop);
+
+                //组装ticketvo
+                List<TicketVO> ticketVOs = new ArrayList<>();
+                List<TicketWithBLOBs> ticketWithBLOBses = shopDao.findBySid(shopFilter);
+                for (TicketWithBLOBs ticket : ticketWithBLOBses) {
+                    TicketVO ticketVo = new TicketVO();
+                    ticketManagerService.fileTicketVO(ticketVo, ticket);
+                    ticketVOs.add(ticketVo);
+                }
+                shopapiVO.setTicketVO(ticketVOs);
+                shopapiVOs.add(shopapiVO);
+            }
+            shopResultVO.setShopVOList(shopapiVOs);
+            shopResultVO.setTotal(shopapiVOs.size());
+            return shopResultVO;
+        }
+        return null;
     }
 }

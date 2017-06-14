@@ -7,6 +7,7 @@ import com.masou.coupon.common.struct.Result;
 import com.masou.coupon.common.utils.ResultHelper;
 import com.masou.coupon.data.models.Ticket;
 import com.masou.coupon.exception.UserException;
+import com.masou.coupon.service.UserLogService;
 import com.masou.coupon.service.VerifyService;
 import com.masou.coupon.service.api.UserTokenService;
 import com.masou.coupon.service.shopapi.TicketManagerService;
@@ -33,6 +34,7 @@ public class ApiTicketManagerController {
 
     @Autowired
     private VerifyService verifyService;
+
     @Autowired
     private UserTokenService userTokenService;
 

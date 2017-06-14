@@ -7,15 +7,15 @@ import java.util.List;
  */
 public class ShopResultVO {
 
-    private List<ShopVO> shopVOList;
+    private List<ShopapiVO> shopVOList;
 
     private int total;
 
-    public List<ShopVO> getShopVOList() {
+    public List<ShopapiVO> getShopVOList() {
         return shopVOList;
     }
 
-    public void setShopVOList(List<ShopVO> shopVOList) {
+    public void setShopVOList(List<ShopapiVO> shopVOList) {
         this.shopVOList = shopVOList;
     }
 

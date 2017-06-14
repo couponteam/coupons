@@ -1,5 +1,6 @@
 package com.masou.coupon.data.mappers;
 
+import com.masou.coupon.data.filter.StatisticFilter;
 import com.masou.coupon.data.models.UserShop;
 import org.apache.ibatis.annotations.Mapper;
 
@@ -16,4 +17,8 @@ public interface UserShopMapper {
     int updateByPrimaryKeySelective(UserShop record);
 
     int updateByPrimaryKey(UserShop record);
+
+    int statistic(StatisticFilter statisticFilter);
+
+    int followers(StatisticFilter statisticFilter);
 }

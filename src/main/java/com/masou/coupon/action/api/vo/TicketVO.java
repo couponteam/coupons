@@ -18,6 +18,9 @@ public class TicketVO {
 
     private String isReUse;
 
+    //用户对券的使用情况
+    private String utStatus;
+
     public String getTypeId() {
         return typeId;
     }
@@ -56,5 +59,13 @@ public class TicketVO {
 
     public void setTicket(TicketWithBLOBs ticket) {
         this.ticket = ticket;
+    }
+
+    public String getUtStatus() {
+        return utStatus;
+    }
+
+    public void setUtStatus(String utStatus) {
+        this.utStatus = utStatus;
     }
 }
