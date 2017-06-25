@@ -13,7 +13,7 @@ public interface TicketTypeMapper {
 
     int insertSelective(TicketType record);
 
-    TicketType selectByPrimaryKey(Long id);
+    TicketType selectByPrimaryKey(Integer id);
 
     int updateByPrimaryKeySelective(TicketType record);
 

@@ -163,6 +163,26 @@ public class DateUtil {
         return Integer.parseInt(String.valueOf(between_days));
     }
 
+    /**
+     *
+     * @param oldDate 前一天
+     * @param newDate 后一天
+     * @return
+     * @throws ParseException
+     */
+    public int daysBetweenSeconds(Date oldDate, Date newDate) throws ParseException {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        oldDate = sdf.parse(sdf.format(oldDate));
+        newDate = sdf.parse(sdf.format(newDate));
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(oldDate);
+        long time1 = cal.getTimeInMillis();
+        cal.setTime(newDate);
+        long time2 = cal.getTimeInMillis();
+        long between_days = (time2 - time1);
+        return Integer.parseInt(String.valueOf(between_days));
+    }
+
 
     /**
      * 间隔的秒

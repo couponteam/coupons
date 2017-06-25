@@ -1,9 +1,11 @@
 package com.masou.coupon.dao.ShopApiDao;
 
 import com.alibaba.fastjson.JSON;
+import com.masou.coupon.common.struct.Result;
 import com.masou.coupon.data.filter.BaseFilter;
 import com.masou.coupon.data.mappers.LogUserVisitMapper;
 import com.masou.coupon.data.mappers.ShopMapper;
+import com.masou.coupon.data.mappers.TicketMapper;
 import com.masou.coupon.data.models.Shop;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -19,6 +21,9 @@ public class ShopManagerDao {
     @Autowired
     private ShopMapper shopMapper;
 
+    @Autowired
+    private TicketMapper ticketMapper;
+
     /**
      * 查询店铺列表
      * @return
@@ -28,12 +33,26 @@ public class ShopManagerDao {
     }
 
     /**
+     * 查询店铺列表总数
+     * @param baseFilter
+     * @return
+     */
+    public int shopListCount(BaseFilter baseFilter){
+        return shopMapper.shopListCount(baseFilter);
+    }
+
+
+    /**
      * 查看单个店铺
      * @param sid
      * @return
      */
     public Shop shopBysid(Long sid){
         return shopMapper.selectByPrimaryKey(sid);
+    }
+
+    public Integer findStatusByUid(String tid){
+        return shopMapper.findStatusByUid(tid);
     }
 
     /**

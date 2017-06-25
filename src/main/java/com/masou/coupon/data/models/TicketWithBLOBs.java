@@ -7,6 +7,8 @@ public class TicketWithBLOBs extends Ticket {
 
     private String validityComment;
 
+    private String isExpired;
+
     public String getApplicableScope() {
         return applicableScope;
     }
@@ -29,5 +31,13 @@ public class TicketWithBLOBs extends Ticket {
 
     public void setValidityComment(String validityComment) {
         this.validityComment = validityComment;
+    }
+
+    public String getIsExpired() {
+        return isExpired;
+    }
+
+    public void setIsExpired(String isExpired) {
+        this.isExpired = isExpired;
     }
 }

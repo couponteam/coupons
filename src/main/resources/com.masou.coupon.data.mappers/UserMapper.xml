@@ -52,6 +52,18 @@
 
     </select>
 
+    <select id="memberCount" parameterType="com.masou.coupon.data.filter.BaseFilter" resultType="java.lang.Integer">
+        SELECT
+            COUNT(id)
+        FROM
+            ety_user
+        WHERE
+            1
+            <if test="today != null">
+                AND create_at &gt; #{today, jdbcType=TIMESTAMP} ;
+            </if>
+    </select>
+
     <select id="statistic" parameterType="com.masou.coupon.data.filter.StatisticFilter"  resultType="java.lang.Integer">
         select COUNT(id)
         from rel_user_shop

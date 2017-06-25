@@ -2,6 +2,7 @@ package com.masou.coupon.action.api;
 
 import com.masou.coupon.action.api.vo.ShopResultVO;
 import com.masou.coupon.action.api.vo.ShopTicketVO;
+import com.masou.coupon.common.constant.DicValue;
 import com.masou.coupon.common.enums.ErrorCodeEnum;
 import com.masou.coupon.common.struct.Result;
 import com.masou.coupon.common.utils.ResultHelper;
@@ -9,6 +10,8 @@ import com.masou.coupon.data.filter.LngAndLatParam;
 import com.masou.coupon.data.filter.LocaltionFilter;
 import com.masou.coupon.data.models.LogUserVisit;
 import com.masou.coupon.data.models.Shop;
+import com.masou.coupon.data.models.UserTicket;
+import com.masou.coupon.data.param.PageParam;
 import com.masou.coupon.exception.UserException;
 import com.masou.coupon.service.UserLogService;
 import com.masou.coupon.service.api.TicketService;
@@ -38,20 +41,14 @@ public class ApiTicketController {
     private TicketService ticketService;
 
     @Autowired
-    private HttpServletRequest request;
-
-    @Autowired
-    private IPUtil ipUtil;
-
-    @Autowired
-    private UserLogService userLogService = new UserLogService();
+    private UserLogService userLogService;
 
     @Autowired
     private UserTokenService userTokenService;
 
     private Logger logger = LoggerFactory.getLogger(ApiTicketController.class);
 
-    private static final double DISTANCE_RADIUS = 500;
+    private static final double DISTANCE_RADIUS = 5000;
 
     @ApiOperation("券筛选，根据行业类型，券类型筛选")
     @RequestMapping(value = "/sel_by_type", method = RequestMethod.GET)
@@ -70,44 +67,49 @@ public class ApiTicketController {
         return ResultHelper.genResult(ErrorCodeEnum.SHOP_SEL_BY_TYPE_FAILED);
     }
 
-    @ApiOperation("根据shop id查询券")
-    @RequestMapping(value = "/sel_by_sid", method = RequestMethod.GET)
-    public Result selectTicketByShopId(@RequestParam("sid") Long sid,
-                                       @RequestParam("token") String token){
-        if(sid != null &&sid > 0){
-            Long uid = userTokenService.getUid(token);
-            return ResultHelper.genResultWithSuccess(ticketService.selectTicketByShopId(sid,uid,ipUtil.getIpAddress(request)));
-        }
-        return ResultHelper.genResult(ErrorCodeEnum.NULL_VALUE_ERROR.getCode(), "传入店铺id"+ErrorCodeEnum.NULL_VALUE_ERROR.getMsg());
-    }
-
-    @ApiOperation("用户领取券，读取券，使用券，放弃券接口")
-    @RequestMapping(value = "/colet_ticket", method = RequestMethod.GET)
-    public Result userCollectTicket(@RequestParam("token") String token,
-                                    @RequestParam("tid") Long tid,
-                                    @RequestParam("status") Integer status){
+    @ApiOperation("用户领取券")
+    @RequestMapping(value = "/get_t", method = RequestMethod.GET)
+    public Result userCollectTicket(
+                                    @RequestParam("token") String token,
+                                    @RequestParam("tid") String tid
+//                                    ,@RequestParam("uid") Long uid
+                                    ){
 
         Long uid = userTokenService.getUid(token);
-        if(uid == null || uid <= 0){
-            return ResultHelper.genResult(ErrorCodeEnum.TOKEN_INVALID);
-        }
+        return ticketService.userCollectTicket(uid,tid, DicValue.TICKET_STATUS_GOT);
+    }
 
-        if(ticketService.userCollectTicket(uid,tid,status) > 0){
-            return ResultHelper.genResultWithSuccess();
-        }else{
-            String msg = "";
-            switch (status){
-                case(1):
-                    msg = "查看券错误";
-                case(2):
-                    msg = "领取券失败";
-                case(3):
-                    msg = "使用券失败";
-                case(4):
-                    msg = "放弃券失败";
-            }
-            return ResultHelper.genResult(ErrorCodeEnum.USER_TICKET_OPEATE_FAILED.getCode(),msg);
+    @ApiOperation("用户读取券")
+    @RequestMapping(value = "/read", method = RequestMethod.GET)
+        public Result userReadTicket(@RequestParam(value = "token", required = false) String token,
+                                     @RequestParam("tid") String tid,
+                                     @RequestParam(value = "status",required = false) Integer status){
+        Long uid = userTokenService.getUid(token);
+//        UserTicket utId = ticketService.userReadTicket(uid,tid, DicValue.TICKET_STATUS_READ);
+        ShopTicketVO shopTicketVO = ticketService.userReadTicket(uid,tid,status);
+        if(shopTicketVO != null){
+            return ResultHelper.genResultWithSuccess(shopTicketVO);
         }
+        return ResultHelper.genResult(ErrorCodeEnum.USER_TICKET_READ_FAILED);
+    }
+
+    @ApiOperation("人气推荐")
+    @RequestMapping(value = "/poplist", method = RequestMethod.GET)
+    public Result popShopList(@RequestParam("page") Integer page,
+                              @RequestParam(value = "pageSize", required = false) Integer pageSize){
+
+        return ticketService.popShopList(page, pageSize);
+    }
+
+    @ApiOperation("我的券列表")
+    @RequestMapping(value = "/my_t", method = RequestMethod.GET)
+    public Result myTicket(@RequestParam("page") Integer page,
+                           @RequestParam(value = "pageSize", required = false) Integer pageSize,
+//                           @RequestParam("token") String token,
+                           @RequestParam("uid") Long uid,
+                           @RequestParam(value = "status", required = false) Integer status){
+//        Long uid = userTokenService.getUid(token);
+        return ticketService.myTicket(page,pageSize,uid,status);
     }
 
     /**
@@ -120,11 +122,14 @@ public class ApiTicketController {
     @RequestMapping(value = "/selectlist", method = RequestMethod.GET)
     public Result selectList(@RequestParam("longitude") String longitude,
                              @RequestParam("latitude") String latitude,
-                             @RequestParam("industry") Integer industry,
-                             @RequestParam("type") Integer type,
+                             @RequestParam( value = "industry", required = false) Integer industry,
+                             @RequestParam(value = "type", required = false) Integer type,
                              @RequestParam("page") Integer page,
-                             @RequestParam("pageSize") Integer pageSize,
-                             @RequestParam("keyword") String keyword){
+                             @RequestParam(value = "pageSize",required = false) Integer pageSize,
+                             @RequestParam(value = "keyword", required = false) String keyword,
+                             @RequestParam(value = "token", required = false) String token,
+                             @RequestParam(value = "radius", required = false) Double radius,
+                             @RequestParam(value = "isFollow", required = false) String isFollow){
 
         ShopResultVO shopResultVO = null;
         try {
@@ -133,15 +138,36 @@ public class ApiTicketController {
             params.setType(industry);
             params.setOffset(page);
             params.setLimit(pageSize);
+            params.setRadius(radius);
+            try {
+                Long uid = userTokenService.getUid(token);
+                if(Boolean.parseBoolean(isFollow)){
+                    params.setUid(uid);
+                }
+            }catch(Exception e){
+                e.printStackTrace();
+                return ResultHelper.genResult(ErrorCodeEnum.SHOP_NECESSERY);
+            }
+
+            if (pageSize == null){
+                params.setLimit(new PageParam().getPageSize());
+            }
+            if(keyword != null && keyword.trim().length() > 0){
+                params.setKeyword(keyword);
+            }
             params.setKeyword(keyword);
             if(Math.abs(Float.parseFloat(longitude)) <= 0 && Math.abs(Float.parseFloat(latitude)) <= 0){
                 logger.info("" + longitude + "-" +  latitude);
                 //定位失败
                 return ResultHelper.genResult(ErrorCodeEnum.LOCATION_FAILED);
             }else{
-                shopResultVO = ticketService.selectList(params,
+                double innerRadius = DISTANCE_RADIUS;
+                if(radius != null){
+                    innerRadius = radius;
+                }
+                 shopResultVO = ticketService.selectList(params,
                         Float.parseFloat(longitude),
-                        Float.parseFloat(latitude), DISTANCE_RADIUS);
+                        Float.parseFloat(latitude), innerRadius);
                 if(shopResultVO == null){
                     return ResultHelper.genResult(ErrorCodeEnum.SHOP_NECESSERY);
                 }else{
@@ -160,7 +186,7 @@ public class ApiTicketController {
      */
     @ApiOperation("精选店铺")
     @RequestMapping(value = "/bestshop", method = RequestMethod.GET)
-    public Result bestShop(@RequestParam("pageSize") Integer pageSize){
+    public Result bestShop(@RequestParam(value =  "pageSize", required = false) Integer pageSize){
         try {
             List<Shop> list = ticketService.bestShop(pageSize);
             if(list != null && list.size() > 0){

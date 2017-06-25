@@ -6,9 +6,9 @@ package com.masou.coupon.common.enums;
 public enum ShopVerifyEnum {
 
     PRE_VERIFY(0, "待审核"),
-    VERIFIED(1, "已审核"),
-    UN_PASSED(2, "未通过"),
-    PASSED(3, "已通过"),;
+    VERIFIED(1, "已通过"),
+    UN_PASSED(2, "未通过");
+//    PASSED(3, "已通过"),;
 
 
     private int code;

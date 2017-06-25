@@ -30,6 +30,18 @@
       and lus.create_time &gt;= #{today, jdbcType=TIMESTAMP}
     </if>
   </select>
+<select id="selectByUid" parameterType="java.lang.Long"  resultMap="BaseResultMap">
+    SELECT
+        <include refid="Base_Column_List" />
+    FROM
+        log_user_shop
+    WHERE
+        uid = #{uid,jdbcType=BIGINT}
+    ORDER BY
+        create_time DESC
+    LIMIT 1;
+  </select>
+
 
 
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">

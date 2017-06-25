@@ -1,10 +1,12 @@
 package com.masou.coupon.data.mappers;
 
+import com.masou.coupon.data.filter.BaseFilter;
 import com.masou.coupon.data.filter.UserFilter;
 import com.masou.coupon.data.models.User;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.Date;
 import java.util.List;
 
 @Mapper
@@ -18,7 +20,7 @@ public interface UserMapper {
 
     int updateByPrimaryKeySelective(User record);
 
-
+    Integer memberCount(BaseFilter baseFilter);
 
     List<User> selectListByFilter(UserFilter filter);
 

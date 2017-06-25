@@ -1,5 +1,6 @@
 package com.masou.coupon.action.shopapi;
 
+import com.masou.coupon.action.api.vo.ticketvo.Shops;
 import com.masou.coupon.common.enums.ErrorCodeEnum;
 import com.masou.coupon.common.struct.Result;
 import com.masou.coupon.common.utils.ResultHelper;
@@ -35,29 +36,34 @@ public class ApiShopManagerController {
 
     @ApiOperation("查看店铺列表")
     @RequestMapping(value = "/shoplist", method = RequestMethod.GET)
-    public Result shopList(@RequestParam("token") String token,
+    public Result shopList(
+//            @RequestParam("token") String token,
+            @RequestParam("uid") Long uid,
                            @RequestParam("page") Integer page,
-                           @RequestParam("pageSize") Integer pageSize){
-        Long uid = userTokenService.getUid(token);
-
-        List<Shop> shopList = shopManagerService.shopList(uid,page,pageSize);
-        if(shopList != null && shopList.size() > 0){
-            return ResultHelper.genResultWithSuccess(shopList);
+                           @RequestParam(value = "pageSize" , required = false) Integer pageSize){
+//        Long uid = userTokenService.getUid(token);
+        Shops shops = shopManagerService.shopList(uid,page,pageSize);
+        if(shops != null ){
+            return ResultHelper.genResultWithSuccess(shops);
         }else{
             logger.info("[无数据]当前用户 " + uid + " 无店铺信息");
             return ResultHelper.genResult(ErrorCodeEnum.FAILED);
         }
     }
 
+    @ApiOperation("使用券")
+    @RequestMapping(value = "/use_t", method = RequestMethod.POST)
+    public Result userTicketUse(@RequestParam("tid") String tid,
+                            @RequestParam("token") String token){
+        Long uid = userTokenService.getUid(token);
+        return shopManagerService.userTicketUse(tid);
+    }
+
     @ApiOperation("查看单个店铺")
     @RequestMapping(value = "/shop", method = RequestMethod.GET)
     public Result shopBysid(@RequestParam("sid") Long sid,
                             @RequestParam("token") String token){
-//        Long uid = userTokenService.getUid(token);
-//        if(uid == null || uid <= 0){
-//            return ResultHelper.genResult(ErrorCodeEnum.TOKEN_INVALID);
-//        }
-
+        Long uid = userTokenService.getUid(token);
         if(sid != null && sid > 0){
             Shop shop = shopManagerService.shopBysid(sid);
             if(shop != null){
@@ -71,22 +77,22 @@ public class ApiShopManagerController {
         return ResultHelper.genResult(ErrorCodeEnum.FAILED);
     }
 
-    @ApiOperation("更新店铺信息")
-    @RequestMapping(value = "/update", method = RequestMethod.POST)
-    public Result updateShop(@RequestParam("data") String data,
-                             @RequestParam("sid") Long sid,
-                             @RequestParam("token") String token){
-
-        String errorMsg = "";
-        if(StringUtil.areNotEmpty(data)){
-            if((sid != null && sid > 0 )){
-                return ResultHelper.genResultWithSuccess(shopManagerService.update(data, sid));
-            }
-        }else{
-            errorMsg = "数据不能为空";
-        }
-        return ResultHelper.genResult(ErrorCodeEnum.SHOP_UPDATE_FAILED.getCode(),ErrorCodeEnum.SHOP_UPDATE_FAILED.getMsg());
-    }
+//    @ApiOperation("更新店铺信息")
+//    @RequestMapping(value = "/update", method = RequestMethod.POST)
+//    public Result updateShop(@RequestParam("data") String data,
+//                             @RequestParam("sid") Long sid,
+//                             @RequestParam("token") String token){
+//
+//        String errorMsg = "";
+//        if(StringUtil.areNotEmpty(data)){
+//            if((sid != null && sid > 0 )){
+//                return ResultHelper.genResultWithSuccess(shopManagerService.update(data, sid));
+//            }
+//        }else{
+//            errorMsg = "数据不能为空";
+//        }
+//        return ResultHelper.genResult(ErrorCodeEnum.SHOP_UPDATE_FAILED.getCode(),ErrorCodeEnum.SHOP_UPDATE_FAILED.getMsg());
+//    }
 
     @ApiOperation("删除店铺")
     @RequestMapping(value = "/delete", method = RequestMethod.POST)

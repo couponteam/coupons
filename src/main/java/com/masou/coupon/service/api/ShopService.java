@@ -1,31 +1,36 @@
 package com.masou.coupon.service.api;
 
+import com.alibaba.fastjson.JSON;
 import com.masou.coupon.action.api.vo.ShopResultVO;
 import com.masou.coupon.action.api.vo.ShopapiVO;
-import com.masou.coupon.action.api.vo.TicketVO;
-import com.masou.coupon.action.param.PageParam;
+import com.masou.coupon.action.api.vo.ticketvo.TicketVO;
+import com.masou.coupon.data.mappers.LogUserShopMapper;
+import com.masou.coupon.data.param.PageParam;
 import com.masou.coupon.action.shopapi.vo.ShopVO;
 import com.masou.coupon.action.shopapi.vo.UserShopVO;
 import com.masou.coupon.common.enums.ErrorCodeEnum;
-import com.masou.coupon.common.enums.ShopOwnerTypeEnum;
 import com.masou.coupon.common.struct.Result;
 import com.masou.coupon.common.utils.ResultHelper;
 import com.masou.coupon.dao.Shop2Dao;
 import com.masou.coupon.dao.api.ShopDao;
-import com.masou.coupon.data.filter.LngAndLatParam;
 import com.masou.coupon.data.filter.ShopFilter;
 import com.masou.coupon.data.mappers.UserShopMapper;
 import com.masou.coupon.data.models.*;
 import com.masou.coupon.exception.UserException;
+import com.masou.coupon.service.shopapi.ShopManagerService;
 import com.masou.coupon.service.shopapi.TicketManagerService;
+import com.masou.coupon.service.sms.SMSResult;
+import com.masou.coupon.service.sms.SmsClientService;
 import com.masou.coupon.utils.ModelConvertUtil;
 import com.masou.coupon.utils.PhoneUtil;
+import com.qiniu.util.Json;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -53,10 +58,18 @@ public class ShopService {
     private UserShopMapper userShopMapper;
 
     @Autowired
-    private ShopDao shopDao;
+    private SmsClientService smsClientService;
 
     @Autowired
-    private ShopChiefService shopChiefService;
+    private ShopManagerService shopManagerService;
+
+    @Autowired
+    private LogUserShopMapper logUserShopMapper;
+
+    @Autowired
+    private ShopDao shopDao;
+
+    private Logger logger = LoggerFactory.getLogger(ShopService.class);
 
 
     public int deleteByPrimaryKey(Long id) {
@@ -118,9 +131,7 @@ public class ShopService {
             throw new UserException(ErrorCodeEnum.LOGIN_FAILED);
         }
 
-
         Shop shop = shop2Dao.selectByPhone(phone);
-
         userTokenService.updateByLogin(token, user.getId());
         UserShopVO vo = new UserShopVO();
         vo.setUid(user.getId());
@@ -155,39 +166,67 @@ public class ShopService {
         return ResultHelper.genResultWithSuccess(buildList(shop2Dao.selectListByFilter(filter)));
     }
 
-    public Result approve(Long shopId, Integer shopVerifyType) {
+    public Result approve(Long shopId, Integer shopVerifyType, String comment) {
         Shop shop = shop2Dao.selectByPrimaryKey(shopId);
         shop.setIsShopVerified(shopVerifyType.byteValue());
+        if(comment != null && comment.length() > 0){
+            shop.setComment(comment);
+        }
         if (shop2Dao.updateByPrimaryKeySelective(shop) == 1) {
+            sendMsgOfVerify(shopId, shopVerifyType, comment);
             return ResultHelper.genResultWithSuccess();
         } else {
             throw new UserException("审核失败");
         }
     }
 
+    private void sendMsgOfVerify(Long shopId, Integer shopVerifyType, String comment){
+        String msg = "";
+        switch(shopVerifyType){
+            case (2):
+                msg = "未通过审核，未通过原因 " +  comment;
+                break;
+            case (3):
+                msg = "已通过审核";
+                break;
+        }
+        Shop shop = shopDao.findByPrimaryId(shopId);
+
+        StringBuffer content = new StringBuffer();
+
+        content.append("您在 领汇券 APP上申请的店铺 " +  shop.getShopName() + " " +  msg + "。感谢您使用领汇圈！");
+
+        SMSResult result = smsClientService.sendMessage(shop.getPhone(), content.toString());
+
+        logger.info(JSON.toJSONString(result));
+
+    }
+
     public Shop selectByPrimaryKey(Long id) {
-        return shop2Dao.selectByPrimaryKey(id);
+        return shopManagerService.changeStatus2Char(shop2Dao.selectByPrimaryKey(id));
     }
 
     public Result updateByPrimaryKeySelective(Shop record) {
         record.setIsShopVerified(null);
         record.setBusinessLicenseId(null);
         if (shop2Dao.updateByPrimaryKeySelective(record)==1){
-            return ResultHelper.genResultWithSuccess();
+            System.out.println("SHOP MSG:" + JSON.toJSONString(record));
+            Shop shop = shop2Dao.selectByPrimaryKey(record.getId());
+            shopManagerService.changeStatus2Char(shop);
+            return ResultHelper.genResultWithSuccess(shop);
         }else{
             throw new UserException("更新失败");
         }
     }
 
-    public List<ShopVO> buildList(List<Shop> list) {
-        List<ShopVO> voList = new ArrayList<>();
+    public List<Shop> buildList(List<Shop> list) {
+        List<Shop> voList = new ArrayList<>();
 
         for (Shop e : list) {
-            voList.add(ModelConvertUtil.convert(ShopVO.class, e));
+            Shop shop = shopManagerService.changeStatus2Char(e);
+            voList.add(shop);
         }
-
         return voList;
-
     }
 
     /**
@@ -218,20 +257,53 @@ public class ShopService {
      * @param pageSize
      * @return
      */
-    public ShopResultVO list(Long uid,Integer page, Integer pageSize){
-
+    public ShopResultVO list(Long uid,Integer page, Integer pageSize,String keyword) {
         ShopFilter shopFilter = new ShopFilter();
         shopFilter.setUid(uid);
-        shopFilter.setOffset(page);
-        shopFilter.setLimit(pageSize);
+        shopFilter.setOffset(pageSize);
+        shopFilter.setLimit(page);
+        if(pageSize == null && pageSize <= 0){
+            shopFilter.setOffset(PageParam.PAGESIZE_DEFAULT);
+        }
 
         ShopResultVO shopResultVO = new ShopResultVO();
-        List<Shop> shopList = shopDao.findByUid(shopFilter);
+        List<Shop> shopList = null;
+        //非关键词查询
+        if (keyword == null || keyword.trim().length() <= 0) {
+            //获取用户最近访问店铺的时间
+            LogUserShop logUserShop = logUserShopMapper.selectByUid(uid);
+            if (logUserShop != null) {
+                shopFilter.setCreateTime(logUserShop.getCreateTime());
+            }
+
+            shopList = shopDao.findUnread(shopFilter);
+            if (shopList == null) {
+                //
+                shopFilter.setCreateTime(null);
+                shopList = shopDao.findUnread(shopFilter);
+            } else if (shopList.size() < shopFilter.getLimit()) {
+                shopFilter.setCreateTime(null);
+                shopFilter.setOffset(pageSize - shopList.size());
+                List<Long> ids = new ArrayList<Long>();
+                for (Shop shop : shopList) {
+                    ids.add(shop.getId());
+                }
+                List<Shop> shopAdd = shopDao.findUnread(shopFilter);
+                if (shopAdd != null && shopAdd.size() > 0) {
+                    shopList.addAll(shopAdd);
+                }
+            }
+        } else {
+            //关键词查询
+            shopFilter.setKeyword(keyword);
+            shopList = shopDao.findByUid(shopFilter);
+        }
+
         List<ShopapiVO> shopapiVOs = new ArrayList<>();
-        if(shopList != null && shopList.size() > 0){
-            for ( Shop shop : shopList ) {
+        if (shopList != null && shopList.size() > 0) {
+            for (Shop shop : shopList) {
                 ShopapiVO shopapiVO = new ShopapiVO();
-                shopapiVO.setShop(shop);
+                shopapiVO.setShop(shopManagerService.changeStatus2Char(shop));
 
                 //组装ticketvo
                 List<TicketVO> ticketVOs = new ArrayList<>();

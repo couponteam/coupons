@@ -65,7 +65,6 @@ public class ApiShopUserController {
         record.setShopAddress(shopAddress);
         record.setIndustryId(industryId);
         record.setUid(uid);
-
         return shopService.apply(record);
     }
 
@@ -76,14 +75,18 @@ public class ApiShopUserController {
                          @RequestParam(value = "briefIntro", required = false) String briefIntro,
                          @RequestParam(value = "profilePicture",required = false) String profilePicture,
                          @RequestParam(value = "shopName",required = false) String shopName,
-                         @RequestParam(value = "shopAddress",required = false) String shopAddress) {
+                         @RequestParam(value = "shopAddress",required = false) String shopAddress
+                         ) {
 
         Shop shop = shopService.selectByPrimaryKey(shopId);
         if (shop==null){
             throw new UserException("店铺不存在");
         }
-        if (shop.getIsShopVerified()!= ShopVerifyEnum.PASSED.getCode()){
-            throw new UserException("店铺未通过");
+        if (shop.getIsShopVerified() == ShopVerifyEnum.UN_PASSED.getCode()){
+            throw new UserException("未通过审核");
+        }
+        if (shop.getIsShopVerified() == ShopVerifyEnum.PRE_VERIFY.getCode()){
+            throw new UserException("审核中");
         }
 
         shop.setIconId(iconId);
@@ -101,7 +104,6 @@ public class ApiShopUserController {
                            @RequestParam("password") String password) {
 
         return userService.register(phone, verify, password, "shop", null, false, RoleEnum.SHOP_OWNER.getRole());
-
     }
 
 
@@ -131,10 +133,7 @@ public class ApiShopUserController {
     public Result login(@RequestParam("token") String token,
                         @RequestParam("phone") String phone,
                         @RequestParam("password") String password) {
-
-
         return shopService.login(token, phone, password);
-
     }
 
     @PostMapping("/logout")

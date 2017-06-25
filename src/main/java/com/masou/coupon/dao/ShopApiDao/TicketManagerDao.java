@@ -1,7 +1,6 @@
 package com.masou.coupon.dao.ShopApiDao;
 
 import com.masou.coupon.action.erpapi.vo.TicketPageParam;
-import com.masou.coupon.action.param.PageParam;
 import com.masou.coupon.data.mappers.TicketMapper;
 import com.masou.coupon.data.models.TicketWithBLOBs;
 import org.slf4j.Logger;
@@ -37,8 +36,7 @@ public class TicketManagerDao {
      * @return 返回影响条数
      */
     public int updateTicket(TicketWithBLOBs record){
-
-        return ticketMapper.updateByPrimaryKeyWithBLOBs(record);
+        return ticketMapper.updateByTidSelective(record);
     }
 
     /**
@@ -46,9 +44,9 @@ public class TicketManagerDao {
      * @param tid 券的id，对应表的主键
      * @return
      */
-    public int deleteTicket(Long tid){
+    public int deleteTicket(String tid){
         try {
-            return ticketMapper.deleteByPrimaryKey(tid);
+            return ticketMapper.deleteByPrimaryTid(tid);
         }catch(Exception e){
             log.error("删除券失败，原因："+ e.getLocalizedMessage());
         }
@@ -64,7 +62,7 @@ public class TicketManagerDao {
        return ticketMapper.selectByLimit(param);
     }
 
-    public TicketWithBLOBs selectByTicketId(Long tid){
+    public TicketWithBLOBs selectByTicketId(String tid){
         return ticketMapper.selectByPrimaryKey(tid);
     }
 

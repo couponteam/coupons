@@ -1,5 +1,6 @@
 package com.masou.coupon.data.mappers;
 
+import com.masou.coupon.data.filter.BaseFilter;
 import com.masou.coupon.data.models.UserManager;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -20,13 +21,12 @@ public interface UserManagerMapper {
 
     int updateByPrimaryKey(UserManager record);
 
-
+    List<UserManager> memberList(BaseFilter baseFilter);
 
     List<UserManager> selectAllList();
 
     UserManager selectByPhone(@Param("phone") String phone);
 
     UserManager selectByUid(@Param("uid") Long uid);
-
 
 }

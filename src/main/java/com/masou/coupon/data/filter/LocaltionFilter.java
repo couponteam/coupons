@@ -15,6 +15,10 @@ public class LocaltionFilter extends ShopFilter{
 
     private String keyword;
 
+    private Double radius;
+
+    private Long uid;
+
     public LngAndLatParam getLeftTop() {
         return leftTop;
     }
@@ -53,5 +57,23 @@ public class LocaltionFilter extends ShopFilter{
 
     public void setKeyword(String keyword) {
         this.keyword = keyword;
+    }
+
+    public Double getRadius() {
+        return radius;
+    }
+
+    public void setRadius(Double radius) {
+        this.radius = radius;
+    }
+
+    @Override
+    public Long getUid() {
+        return uid;
+    }
+
+    @Override
+    public void setUid(Long uid) {
+        this.uid = uid;
     }
 }

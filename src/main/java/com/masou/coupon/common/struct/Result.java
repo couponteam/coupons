@@ -12,7 +12,7 @@ public class Result<T> extends BaseDTO {
     private static final long serialVersionUID = -4159843077341007128L;
     public int code =0;
     public T data=null;
-    public String message="";
+//    public String message="";
 
     public String userMessage="";
 
@@ -47,20 +47,20 @@ public class Result<T> extends BaseDTO {
             this.data = obj;
         } else {
             if (obj != null) {
-                this.message = obj.toString();
+                this.userMessage = obj.toString();
             } else {
-                this.message = "";
+                this.userMessage = "";
             }
         }
     }
 
-    public String getMessage() {
-        return message;
-    }
-
-    public void setMessage(String message) {
-        this.message = message;
-    }
+//    public String getMessage() {
+//        return message;
+//    }
+//
+//    public void setMessage(String message) {
+//        this.message = message;
+//    }
 
     public String getUserMessage() {
         return userMessage;

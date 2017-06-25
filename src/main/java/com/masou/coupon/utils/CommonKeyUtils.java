@@ -2,6 +2,7 @@
 package com.masou.coupon.utils;
 
 import java.util.Random;
+import java.util.UUID;
 
 /**
  * 主键 唯一键生成
@@ -63,6 +64,11 @@ public class CommonKeyUtils {
 
         rand = random.nextInt(randMask);
 
+        System.out.println(timestamp - twepoch);
+        System.out.println((timestamp - twepoch) << 22);
+        System.out.println((timestamp - twepoch) << 22 | sequence << 10);
+        System.out.println(rand);
+
         return ((timestamp - twepoch) << 22 | sequence << 10 | rand);
     }
 
@@ -74,7 +80,22 @@ public class CommonKeyUtils {
         return timestamp;
     }
 
+
+    /**
+     * 生成用户领券时的唯一券号
+     * @param uid
+     * @return
+     */
+    public static String genTicketKey(Long uid){
+        int rand = random.nextInt(randMask);
+        String uid_four = uid.toString().substring(uid.toString().length()-4,uid.toString().length());
+        String uuid = UUID.randomUUID().toString().replaceAll("-","").substring(0,6).toUpperCase();
+        return uuid + rand + uid_four;
+    }
+
+
     private static long timeGen() {
         return System.currentTimeMillis();
     }
+
 }

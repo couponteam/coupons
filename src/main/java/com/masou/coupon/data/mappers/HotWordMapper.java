@@ -2,6 +2,7 @@ package com.masou.coupon.data.mappers;
 
 
 import com.masou.coupon.data.models.HotWord;
+import com.masou.coupon.data.param.PageParam;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
@@ -20,5 +21,5 @@ public interface HotWordMapper {
 
     int updateByPrimaryKey(HotWord record);
 
-    List<HotWord> selectList(Integer limit);
+    List<HotWord> selectList(PageParam param);
 }

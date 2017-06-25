@@ -10,6 +10,8 @@ import com.masou.coupon.exception.UserException;
 import com.masou.coupon.service.sms.SMSResult;
 import com.masou.coupon.service.sms.SmsClientService;
 import com.masou.coupon.utils.PhoneUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -23,6 +25,8 @@ import java.util.Date;
  */
 @Service
 public class PhoneMessageService {
+
+    private Logger logger = LoggerFactory.getLogger(PhoneMessageService.class);
 
 
     @Value("${be.phone_message_per_day}")
@@ -63,20 +67,20 @@ public class PhoneMessageService {
      * @return
      */
     public Result sendMessage(String phone, String verify, String message, Integer type) {
-
         return sendMessage(phone, verify, message, type, 1);
-
     }
 
 
     @Transactional
     public Result sendMessage(String phone, String verify, String message, Integer type, Integer source) {
         if (!phoneUtil.isPhone(phone)) {
+            logger.error(phone + "手机号不正确" );
             throw new UserException(ErrorCodeEnum.SYS_ERROR, "手机号不正确");
         }
         if (!verify.equals("")) {
             int count = phoneMessageDao.selectTodayMessageCount(phone);
             if (count >= phoneMessagePerDay) {
+                logger.error(phone + "短信已达上限" );
                 throw new UserException(ErrorCodeEnum.SYS_ERROR, "短信已达上限");
             }
 
@@ -84,6 +88,7 @@ public class PhoneMessageService {
             _time.add(Calendar.MINUTE, -2);
             PhoneMessage lastMsg = phoneMessageDao.selectLastByType(phone, type);
             if (lastMsg != null && lastMsg.getCreateAt().after(_time.getTime())) {
+                logger.error(phone + "f发送太频繁" );
                 throw new UserException(ErrorCodeEnum.SYS_ERROR, "发送太频繁");
             }
         }

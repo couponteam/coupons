@@ -3,12 +3,14 @@ package com.masou.coupon.service.shopapi;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONException;
 import com.masou.coupon.action.api.vo.TicketResultVO;
-import com.masou.coupon.action.api.vo.TicketVO;
+import com.masou.coupon.action.api.vo.ticketvo.TicketVO;
 import com.masou.coupon.action.erpapi.vo.TicketPageParam;
 import com.masou.coupon.dao.ShopApiDao.TicketManagerDao;
 import com.masou.coupon.data.mappers.TicketTypeMapper;
+import com.masou.coupon.data.models.Ticket;
 import com.masou.coupon.data.models.TicketType;
 import com.masou.coupon.data.models.TicketWithBLOBs;
+import com.masou.coupon.data.param.PageParam;
 import com.masou.coupon.exception.UserException;
 import com.masou.coupon.service.CommonService;
 import com.masou.coupon.utils.GenTicketIdUtil;
@@ -64,12 +66,20 @@ public class TicketManagerService {
      * @param sid
      * @return
      */
-    public  TicketResultVO showTicketList(Long sid, Integer page, Integer pageSize){
+    public  TicketResultVO showTicketList(Long sid, Integer page, Integer pageSize, String status){
         try {
             TicketPageParam tdata = new TicketPageParam();
             tdata.setShop_id(sid);
             tdata.setPage(page);
-            tdata.setPageSize(pageSize);
+            if(pageSize == null){
+                tdata.setPageSize(PageParam.PAGESIZE_DEFAULT);
+            }else{
+                tdata.setPageSize(pageSize);
+            }
+            if(status != null && status.length() > 0){
+                tdata.setStatus(new Byte(status));
+            }
+
             List<TicketWithBLOBs> list = ticketManagerDao.selectTicket(tdata);
 
             TicketResultVO resultVo = new TicketResultVO();
@@ -90,10 +100,10 @@ public class TicketManagerService {
     }
 
     public void fileTicketVO(TicketVO vo, TicketWithBLOBs ticket){
-        vo.setTypeId(commonService.changeTicketType(ticket.get_typeId()));
-        vo.setIsRetaken(commonService.changeTicketRetaken(ticket.get_isRetaken()));
-        vo.setIsReUse(commonService.changeTicketReuse(ticket.get_isReUse()));
-        vo.setStatus(commonService.changeTicketStatus(ticket.get_status()));
+        vo.set_typeId(commonService.changeTicketType(ticket.getTypeId()));
+        vo.set_isRetaken(commonService.changeTicketRetaken(ticket.getIsRetaken()));
+        vo.set_isReUse(commonService.changeTicketReuse(ticket.getIsReUse()));
+        vo.set_status(commonService.changeTicketStatus(ticket.getStatus()));
     }
 
     private int selectCount(TicketPageParam tdata){
@@ -105,12 +115,15 @@ public class TicketManagerService {
      * @param tid
      * @return
      */
-    public TicketVO selectSingleTicket(Long tid){
+    public TicketVO selectSingleTicket(String tid){
         TicketWithBLOBs ticket = ticketManagerDao.selectByTicketId(tid);
-        TicketVO ticketVO = new TicketVO();
-        ticketVO.setTicket(ticket);
-        fileTicketVO(ticketVO, ticket);
-        return ticketVO;
+        if(ticket != null){
+            TicketVO ticketVO = new TicketVO();
+            ticketVO.setTicket(ticket);
+            fileTicketVO(ticketVO, ticket);
+            return ticketVO;
+        }
+        return null;
     }
 
     /**
@@ -118,7 +131,7 @@ public class TicketManagerService {
      * @param id
      * @return
      */
-    public TicketType getTicketType(Long id){
+    public TicketType getTicketType(Integer id){
         return ticketTypeMapper.selectByPrimaryKey(id);
     }
 
@@ -131,7 +144,16 @@ public class TicketManagerService {
         }
     }
 
-    public int deleteTicket(Long tid){
+
+    public int updateTicket(TicketWithBLOBs ticket){
+        try {
+            return ticketManagerDao.updateTicket(ticket);
+        }catch(Exception e){
+            throw new UserException();
+        }
+    }
+
+    public int deleteTicket(String tid){
        return ticketManagerDao.deleteTicket(tid);
     }
 }

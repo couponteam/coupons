@@ -17,6 +17,20 @@
     from log_user_visit
     where id = #{id,jdbcType=BIGINT}
   </select>
+
+  <select id="webStatistic" parameterType="com.masou.coupon.data.filter.BaseFilter" resultType="java.lang.Integer">
+    SELECT
+        count(id)
+    FROM
+        log_user_visit
+    <if test="today != null">
+      GROUP BY
+      ip,
+      DATE_FORMAT(create_time, '%Y-%m-%d')
+    </if>
+
+  </select>
+
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     delete from log_user_visit
     where id = #{id,jdbcType=BIGINT}

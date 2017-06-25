@@ -32,7 +32,7 @@ public class ExceptionsHandler {
         if (ex instanceof DevException) {
             BaseException e = (BaseException) ex;
             result.setCode(e.getStatus());
-            result.setMessage(e.getMsg());
+            result.setUserMessage(e.getMsg());
         } else if (ex instanceof UserException) {
             BaseException e = (BaseException) ex;
             result.setCode(e.getStatus());
@@ -40,7 +40,7 @@ public class ExceptionsHandler {
 
         } else {
             result.setCode(ViewResultCodeEnum.UNKNOWN_EXCEPTION.getCode());
-            result.setMessage(ex.toString());
+            result.setUserMessage(ex.toString());
         }
 
         StringBuffer buffer = new StringBuffer();

@@ -2,6 +2,8 @@ package com.masou.coupon.data.filter;
 
 import lombok.Data;
 
+import java.util.Date;
+
 /**
  * Created by Paul on 2017/2/21.
  */
@@ -18,8 +20,10 @@ public class BaseFilter {
 
     private Integer placeholder=1;
 
+    private Date today;
+
     public Integer getLimit() {
-        return limit;
+        return limit-1;
     }
 
     public void setLimit(Integer limit) {
@@ -72,5 +76,13 @@ public class BaseFilter {
 
     public void setPlaceholder(Integer placeholder) {
         this.placeholder = placeholder;
+    }
+
+    public Date getToday() {
+        return today;
+    }
+
+    public void setToday(Date today) {
+        this.today = today;
     }
 }

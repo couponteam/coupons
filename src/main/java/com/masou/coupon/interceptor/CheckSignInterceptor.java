@@ -54,7 +54,7 @@ public class CheckSignInterceptor implements HandlerInterceptor {
 
         if (!result) {
             Result responseBag = new Result(ErrorCodeEnum.WRONG_SIGN.getCode());
-            responseBag.setMessage(ErrorCodeEnum.WRONG_SIGN.getMsg());
+            responseBag.setUserMessage(ErrorCodeEnum.WRONG_SIGN.getMsg());
             response.setContentType("application/json;charset=UTF-8");
             response.setHeader("Cache-Control", "no-cache");
             try {

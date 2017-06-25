@@ -1,6 +1,7 @@
 package com.masou.coupon.data.mappers;
 
 
+import com.masou.coupon.data.filter.BaseFilter;
 import com.masou.coupon.data.models.LogUserVisit;
 import org.apache.ibatis.annotations.Mapper;
 
@@ -17,4 +18,6 @@ public interface LogUserVisitMapper {
     int updateByPrimaryKeySelective(LogUserVisit record);
 
     int updateByPrimaryKey(LogUserVisit record);
+
+    Integer webStatistic(BaseFilter baseFilter);
 }

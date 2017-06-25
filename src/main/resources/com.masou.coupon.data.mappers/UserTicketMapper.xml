@@ -8,9 +8,10 @@
     <result column="status" jdbcType="TINYINT" property="status" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="last_update_time" jdbcType="TIMESTAMP" property="lastUpdateTime" />
+    <result column="ut_id" jdbcType="VARCHAR" property="utId" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, user_id, ticket_id, status, create_time, last_update_time
+    id, user_id, ticket_id,ut_id, status, create_time, last_update_time
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
@@ -18,15 +19,45 @@
     from rel_user_ticket
     where id = #{id,jdbcType=BIGINT}
   </select>
+
+  <select id="ticketTaken" parameterType="java.lang.Integer" resultType="java.lang.Integer">
+    SELECT
+        COUNT(id)
+    FROM
+        rel_user_ticket
+    WHERE
+        `status` = 2;
+  </select>
+
+  <select id="findByUidTid" parameterType="com.masou.coupon.data.models.UserTicket" resultMap="BaseResultMap">
+    SELECT
+    <include refid="Base_Column_List" />
+    FROM
+        rel_user_ticket
+    WHERE
+        user_id = #{userId, jdbcType=BIGINT}
+    AND ut_id = #{utId, jdbcType=VARCHAR};
+  </select>
+
+  <select id="findByUidTidNotUtid" parameterType="com.masou.coupon.data.models.UserTicket" resultMap="BaseResultMap">
+    SELECT
+    <include refid="Base_Column_List" />
+    FROM
+    rel_user_ticket
+    WHERE
+    user_id = #{userId, jdbcType=BIGINT}
+    AND ticket_id = #{ticketId, jdbcType=VARCHAR};
+  </select>
+
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     delete from rel_user_ticket
     where id = #{id,jdbcType=BIGINT}
   </delete>
   <insert id="insert" parameterType="com.masou.coupon.data.models.UserTicket">
-    insert into rel_user_ticket (id, user_id, ticket_id, 
+    insert into rel_user_ticket (id, user_id, ticket_id, ut_id,
       status, create_time, last_update_time
       )
-    values (#{id,jdbcType=BIGINT}, #{userId,jdbcType=CHAR}, #{ticketId,jdbcType=CHAR}, 
+    values (#{id,jdbcType=BIGINT}, #{userId,jdbcType=CHAR}, #{ticketId,jdbcType=CHAR}, #{utId, jdbcType=VARCHAR},
       #{status,jdbcType=TINYINT}, #{createTime,jdbcType=TIMESTAMP}, #{lastUpdateTime,jdbcType=TIMESTAMP}
       )
   </insert>
@@ -41,6 +72,9 @@
       </if>
       <if test="ticketId != null">
         ticket_id,
+      </if>
+      <if test="utId != null">
+        ut_id,
       </if>
       <if test="status != null">
         status,
@@ -57,10 +91,13 @@
         #{id,jdbcType=BIGINT},
       </if>
       <if test="userId != null">
-        #{userId,jdbcType=CHAR},
+        #{userId,jdbcType=VARCHAR},
       </if>
       <if test="ticketId != null">
         #{ticketId,jdbcType=CHAR},
+      </if>
+      <if test="utId != null">
+        #{utId, jdbcType=VARCHAR},
       </if>
       <if test="status != null">
         #{status,jdbcType=TINYINT},
@@ -77,7 +114,7 @@
     update rel_user_ticket
     <set>
       <if test="userId != null">
-        user_id = #{userId,jdbcType=CHAR},
+        user_id = #{userId,jdbcType=VARCHAR},
       </if>
       <if test="ticketId != null">
         ticket_id = #{ticketId,jdbcType=CHAR},
@@ -98,9 +135,16 @@
     update rel_user_ticket
     set user_id = #{userId,jdbcType=CHAR},
       ticket_id = #{ticketId,jdbcType=CHAR},
+      user_id = #{userId,jdbcType=CHAR},
       status = #{status,jdbcType=TINYINT},
       create_time = #{createTime,jdbcType=TIMESTAMP},
       last_update_time = #{lastUpdateTime,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByUtId" parameterType="com.masou.coupon.data.models.UserTicket">
+    UPDATE rel_user_ticket
+    SET STATUS = #{status,jdbcType=TINYINT},
+    WHERE
+        ut_id = #{utId,jdbcType=VARCHAR}
   </update>
 </mapper>

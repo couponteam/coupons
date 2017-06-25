@@ -1,5 +1,6 @@
 package com.masou.coupon.service.sms;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.masou.coupon.common.struct.Result;
 import com.masou.coupon.exception.UserException;
@@ -15,6 +16,8 @@ import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.methods.RequestEntity;
 import org.apache.commons.httpclient.methods.StringRequestEntity;
 import org.omg.PortableInterceptor.SUCCESSFUL;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Base64Utils;
@@ -32,6 +35,8 @@ import java.util.Map;
 @Service
 public class SmsClientService {
 
+    private Logger logger = LoggerFactory.getLogger(SmsClientService.class);
+
     private static String baseUrl = "http://202.91.244.252:30001/yqx/v1/sms/single_send";
     private static final String ACCOUNT = "5634";
 
@@ -46,6 +51,7 @@ public class SmsClientService {
         String result = send(phone, content);
         if (result != null) {
             SMSResult smsResult = JsonUtil.getObjectFromJson(result, SMSResult.class);
+            logger.info("短信请求结果：" + JSON.toJSONString(smsResult));
 
             if (smsResult != null && smsResult.getCode().equals(CODE_SUCCESS)) {
                 return smsResult;

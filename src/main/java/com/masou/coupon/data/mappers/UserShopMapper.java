@@ -4,6 +4,8 @@ import com.masou.coupon.data.filter.StatisticFilter;
 import com.masou.coupon.data.models.UserShop;
 import org.apache.ibatis.annotations.Mapper;
 
+import java.util.Date;
+
 @Mapper
 public interface UserShopMapper {
     int deleteByPrimaryKey(Long id);
@@ -21,4 +23,6 @@ public interface UserShopMapper {
     int statistic(StatisticFilter statisticFilter);
 
     int followers(StatisticFilter statisticFilter);
+
+    int memberCount(Date today);
 }

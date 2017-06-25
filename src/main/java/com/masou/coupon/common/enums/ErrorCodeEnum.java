@@ -37,10 +37,12 @@ public enum ErrorCodeEnum {
 
     TICKET_INSERT_FAILED(10030, "新增券失败"),
     TICKET_SELECT_FAILED(10031, "查询券失败"),
-    TICKET_UPDATE_FAILED(10032, "更新券失败"),
+    TICKET_UPDATE_FAILED(10032, "修改券失败"),
     TICKET_DELETE_FAILED(10033, "删除券失败"),
     TICKET_INSERT_EMPTY(10034, "输入内容为空"),
     TICKET_INSERT_EMPTY_ID(10035, "店铺ID为空"),
+    TICKET_USE_FAILED(10036, "使用券失败"),
+    TICKET_POP_FAILED(10037, "无人气推荐"),
 
     STATISTIC_SSELECT_FAILED(10040, "获取数据失败"),
 
@@ -49,15 +51,19 @@ public enum ErrorCodeEnum {
     SHOP_UPDATE_FAILED(10051, "更新店铺失败"),
     SHOP_DELETE_FAILED(10052, "删除店铺失败"),
     SHOP_BEST_FAILED(10053,"精选店铺加载失败"),
-    SHOP_NECESSERY(10054, "今日必领列表加载失败"),
+    SHOP_NECESSERY(10054, "无数据"),
     SHOP_SEL_BY_TYPE_FAILED(10055, "筛选失败"),
     SHOP_VERIFY_FAILED(10056,"店铺审核失败"),
 
-    USER_TICKET_OPEATE_FAILED(10060, "失败"),
+    USER_TICKET_OPEATE_FAILED(10060, "领取券失败"),
+    USER_TICKET_READ_FAILED(10060, "读取券失败"),
 
     SEARCH_FAILED(10080,"查询失败"),
     SEARCH_EMPTY_RESULT(10081, "暂无数据"),
     SEARCH_HOTWORD_FAILED(10082, "暂无数据"),
+
+
+    SECTION_FAILED(10090,"操作失败"),
 
 
 

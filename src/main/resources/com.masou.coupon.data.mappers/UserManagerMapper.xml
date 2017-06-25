@@ -26,6 +26,16 @@
         where uid = #{uid}
     </select>
 
+    <select id="memberList" parameterType="com.masou.coupon.data.filter.BaseFilter" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM
+            ety_user_manager
+        WHERE
+            `enable` = 1
+        limit #{limit,jdbcType=INTEGER}, #{offset, jdbcType=INTEGER}
+    </select>
+
     <select id="selectByPhone" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List"/>

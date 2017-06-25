@@ -67,7 +67,7 @@ public class LocaltionCalcService {
 
     /**
      * 基于googleMap中的算法得到两经纬度之间的距离,计算精度与谷歌地图的距离精度差不多，相差范围在0.2米以下
-     * @return 返回的距离，单位km
+     * @return 返回的距离，单位m
      */
     public double getEarthRadius(LngAndLatParam param1, LngAndLatParam param2) {
         double radLat1 = rad(param1.getLatitude());

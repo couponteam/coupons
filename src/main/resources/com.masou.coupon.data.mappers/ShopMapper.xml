@@ -24,15 +24,27 @@
         <result column="phone_verified_time" jdbcType="TIMESTAMP" property="phoneVerifiedTime"/>
         <result column="comment" jdbcType="VARCHAR" property="comment"/>
         <result column="profile_picture" jdbcType="VARCHAR" property="profilePicture"/>
-        <association property="ticket" javaType="com.masou.coupon.data.models.Ticket">
-            <id column="id" jdbcType="BIGINT" property="id"/>
-            <result column="ticket_name" jdbcType="VARCHAR" property="ticketName"/>
-            <result column="shop_id" jdbcType="BIGINT" property="shopId"/>
-            <result column="ticket_id" jdbcType="CHAR" property="ticketId"/>
-            <result column="type_id" jdbcType="TINYINT" property="typeId"/>
-            <result column="status" jdbcType="TINYINT" property="status"/>
-            <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
-            <result column="status" jdbcType="TINYINT" property="status"/>
+        <result column="uread" jdbcType="INTEGER" property="uread"/>
+        <association property="ticket" javaType="com.masou.coupon.data.models.TicketWithBLOBs">
+            <id column="id" jdbcType="BIGINT" property="id" />
+            <result column="ticket_id" jdbcType="CHAR" property="ticketId" />
+            <result column="shop_id" jdbcType="BIGINT" property="shopId" />
+            <result column="ticket_name" jdbcType="VARCHAR" property="ticketName" />
+            <result column="content" jdbcType="VARCHAR" property="content" />
+            <result column="type_id" jdbcType="TINYINT" property="typeId" />
+            <result column="period_of_validity_startTime" jdbcType="TIMESTAMP" property="periodOfValidityStarttime" />
+            <result column="period_of_validity_endTime" jdbcType="TIMESTAMP" property="periodOfValidityEndtime" />
+            <result column="comment" jdbcType="VARCHAR" property="comment" />
+            <result column="status" jdbcType="TINYINT" property="status" />
+            <result column="collecting_method" jdbcType="TINYINT" property="collectingMethod" />
+            <result column="is_retaken" jdbcType="TINYINT" property="isRetaken" />
+            <result column="is_re_use" jdbcType="TINYINT" property="isReUse" />
+            <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+            <result column="amount" jdbcType="INTEGER" property="amount"/>
+            <result column="taken" jdbcType="INTEGER" property="taken"/>
+            <result column="applicable_scope" jdbcType="LONGVARCHAR" property="applicableScope" />
+            <result column="working_condition" jdbcType="LONGVARCHAR" property="workingCondition" />
+            <result column="validity_comment" jdbcType="LONGVARCHAR" property="validityComment" />
         </association>
         <association property="userShop" javaType="com.masou.coupon.data.models.UserShop">
             <id column="id" jdbcType="BIGINT" property="id" />
@@ -41,6 +53,15 @@
             <result column="status" jdbcType="TINYINT" property="status" />
             <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
         </association>
+        <association property="userTicket" javaType="com.masou.coupon.data.models.UserTicket">
+            <id column="uticketid" jdbcType="BIGINT" property="id" />
+            <result column="user_id" jdbcType="CHAR" property="userId" />
+            <result column="ticket_id" jdbcType="CHAR" property="ticketId" />
+            <result column="utStatus" jdbcType="TINYINT" property="status" />
+            <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+            <result column="last_update_time" jdbcType="TIMESTAMP" property="lastUpdateTime" />
+            <result column="ut_id" jdbcType="VARCHAR" property="utId" />
+        </association>
     </resultMap>
 
     <sql id="Base_Column_List">
@@ -48,34 +69,127 @@
         brief_intro, business_license_id, longitude, dimensionality, is_shop_verified, wechat_account,
         shop_address, rank, create_time, last_update_time, phone_verified_time, `comment`,profile_picture
     </sql>
+    <sql id="Base_Column_Ticket">
+        t.ticket_id, t.shop_id, t.ticket_name, t.content, t.type_id, t.period_of_validity_startTime,
+        t.period_of_validity_endTime, t.status, t.collecting_method, t.is_retaken, t.is_re_use,
+        t.amount,t.applicable_scope, t.working_condition, t.validity_comment
+    </sql>
+    <sql id="Base_Column_ut">
+       ut.id as uticketid, ut.user_id, ut.ticket_id, ut.status as utStatus, ut.create_time, ut.ut_id
+    </sql>
     <select id="selectByType" parameterType="com.masou.coupon.data.filter.ShopFilter" resultMap="BaseResultMap">
-        select * from
-        (SELECT s.shop_name,s.id,s.shop_address,s.icon_id,t.ticket_id,t.ticket_name,t.create_time
-        from ety_shop s, ety_ticket t
-        WHERE s.id=t.shop_id
-        <if test="industry != null">
-            and s.industry_id=#{industry, jdbcType=INTEGER}
-        </if>
-        <if test="type != null">
-            AND t.type_id=#{type, jdbcType=INTEGER}
-        </if>
-        AND s.is_shop_verified=1 AND t.`status`=1 ORDER BY t.create_time DESC) tmp
-        GROUP BY id ORDER BY create_time
-        limit #{offset, jdbcType=INTEGER}, #{limit, jdbcType=INTEGER};
+        SELECT
+          *
+        FROM
+        (
+            SELECT
+                s.*,
+                <include refid="Base_Column_Ticket"/>
+            FROM
+                ety_shop s,
+                ety_ticket t
+            WHERE
+                s.id = t.shop_id
+                <if test="industry != null">
+                    and s.industry_id=#{industry, jdbcType=INTEGER}
+                </if>
+                <if test="type != null">
+                    AND t.type_id=#{type, jdbcType=INTEGER}
+                </if>
+                AND s.is_shop_verified = 1
+                AND t.`status` = 1
+            ORDER BY
+            t.create_time DESC
+        ) tmp
+        GROUP BY
+          id
+        ORDER BY
+          create_time
+        LIMIT #{offset, jdbcType=INTEGER}, #{limit, jdbcType=INTEGER};
     </select>
 
-    <!--<select id="selectByType" parameterType="com.masou.coupon.data.filter.ShopFilter" resultMap="BaseResultMap">-->
-        <!--select s.shop_name,s.id,s.shop_address,s.icon_id,us.id,us.`status`-->
-        <!--from ety_shop s, rel_user_shop us-->
-        <!--where s.id = us.shop_id and us.user_id = #{uid, jdbcType=BIGINT}-->
-        <!--AND s.is_shop_verified = 3-->
-        <!--<if test="industry != null">-->
-            <!--and s.industry_id=#{industry, jdbcType=INTEGER}-->
+    <select id="myTicket" parameterType="com.masou.coupon.data.filter.ShopFilter" resultMap="BaseResultMap">
+        SELECT
+            s.*,
+            <include refid="Base_Column_Ticket"/>,
+            <include refid="Base_Column_ut"/>
+        FROM
+        ety_shop s,
+        ety_ticket t,
+        rel_user_ticket ut
+        WHERE
+        s.id = t.shop_id
+        AND t.ticket_id = ut.ticket_id
+        AND ut.user_id = #{uid, jdbcType=BIGINT}
+        <!--<if test="status == 2">-->
+            <!--AND t.period_of_validity_endTime &lt; NOW()-->
         <!--</if>-->
-        <!--ORDER BY us.create_time DESC-->
-        <!--limit #{offset, jdbcType=INTEGER}, #{limit, jdbcType=INTEGER};-->
-    <!--</select>-->
+        <!--<if test="status == -3">-->
+            <!--t.status = #{status, jdbcType=TINYINT}-->
+        <!--</if>-->
+        <!--<if test="status == 3 or status=4">-->
+            <!--AND ut.`status` = #{status, jdbcType=TINYINT}-->
+        <!--</if>-->
+        ORDER BY
+        ut.create_time
+        limit #{limit,jdbcType=INTEGER}, #{offset, jdbcType=INTEGER};
+    </select>
 
+
+    <select id="myTicketCount" parameterType="com.masou.coupon.data.filter.ShopFilter" resultType="java.lang.Integer">
+        SELECT
+        count(s.id)
+        FROM
+        ety_shop s,
+        ety_ticket t,
+        rel_user_ticket ut
+        WHERE
+        s.id = t.shop_id
+        AND t.ticket_id = ut.ticket_id
+        AND ut.user_id = #{uid, jdbcType=BIGINT}
+        <!--<if test="status == 2">-->
+            <!--AND t.period_of_validity_endTime &lt; NOW()-->
+        <!--</if>-->
+        <!--<if test="status == -3">-->
+            <!--t.status = #{status, jdbcType=TINYINT}-->
+        <!--</if>-->
+        <!--<if test="status == 3 or status=4">-->
+            <!--AND ut.`status` = #{status, jdbcType=TINYINT}-->
+        <!--</if>-->
+        ORDER BY
+        ut.create_time;
+    </select>
+
+    <select id="popShopList" parameterType="com.masou.coupon.data.filter.ShopFilter" resultMap="BaseResultMap">
+        SELECT
+            s.*,
+            <include refid="Base_Column_Ticket"/>,
+            COUNT(*) AS pnum
+        FROM
+            ety_shop s,
+            ety_ticket t,
+            rel_user_ticket ut
+        WHERE
+            s.id = t.shop_id
+        AND t.ticket_id = ut.ticket_id
+        GROUP BY
+            t.shop_id
+        ORDER BY
+            pnum DESC
+        limit #{limit,jdbcType=INTEGER}, #{offset, jdbcType=INTEGER};
+    </select>
+
+    <select id="userReadTicket" parameterType="com.masou.coupon.data.filter.ShopFilter" resultMap="BaseResultMap">
+        SELECT
+            s.*,
+            <include refid="Base_Column_Ticket"/>
+        FROM
+            ety_shop s,
+            ety_ticket t
+        WHERE
+            s.id = t.shop_id
+        AND t.ticket_id = #{tid, jdbcType=CHAR}
+    </select>
 
     <select id="bestShop" parameterType="com.masou.coupon.data.filter.ShopFilter" resultMap="BaseResultMap">
         select
@@ -89,15 +203,8 @@
         FROM
         (
             SELECT
-                s.id,
-                s.shop_name,
-                s.shop_address,
-                s.icon_id,
-                s.longitude,
-                s.dimensionality,
-                t.ticket_id,
-                t.ticket_name,
-                t.create_time
+                s.*,
+                <include refid="Base_Column_Ticket"/>
             FROM
                 ety_shop s,
                 ety_ticket t
@@ -142,6 +249,12 @@
         where uid=#{uid,jdbcType=BIGINT} ORDER BY create_time DESC
         limit #{limit,jdbcType=INTEGER}, #{offset, jdbcType=INTEGER};
     </select>
+    <select id="shopListCount" parameterType="com.masou.coupon.data.filter.BaseFilter" resultType="java.lang.Integer">
+        select
+        count(id)
+        from ety_shop
+        where uid=#{uid,jdbcType=BIGINT}
+    </select>
     <!-- 通过MD5查询数据 -->
     <select id="shopMD5" parameterType="java.lang.String" resultMap="BaseResultMap">
         select
@@ -160,27 +273,82 @@
             AND ut.create_time &gt;= #{today, jdbcType=TIMESTAMP};
         </if>
     </select>
-
     <select id="findByUid" parameterType="com.masou.coupon.data.filter.ShopFilter" resultMap="BaseResultMap">
         SELECT
+            DISTINCT(s.id),
+            s.shop_name,
+            s.shop_address,
+            s.icon_id,
+            s.longitude,
+            s.dimensionality,
+            s.profile_picture,
+            s.brief_intro,
+            t.*
+        FROM
+            ety_shop s,
+            rel_user_shop us,
+            ety_ticket t
+        WHERE
+            us.user_id = #{uid, jdbcType=BIGINT}
+        AND s.id = us.shop_id
+        AND t.shop_id = s.id
+        <if test="keyword != null">
+            AND (
+            s.shop_name like "%"#{keyword, jdbcType=VARCHAR}"%"
+            OR
+            t.ticket_name like "%"#{keyword, jdbcType=VARCHAR}"%"
+            )
+        </if>
+        ORDER BY
+            us.create_time DESC
+        limit #{offset,jdbcType=INTEGER}, #{limit, jdbcType=INTEGER}
+    </select>
+
+    <select id="findUnread" parameterType="com.masou.coupon.data.filter.ShopFilter" resultMap="BaseResultMap">
+        SELECT
+        <if test="createTime != null">
+            COUNT(s.id) AS uread,
+        </if>
             s.id,
             s.shop_name,
             s.shop_address,
             s.icon_id,
             s.longitude,
-            s.dimensionality
+            s.dimensionality,
+            s.profile_picture,
+            s.brief_intro,
+            t.*
         FROM
             ety_shop s,
-            rel_user_shop us
+            rel_user_shop us,
+            ety_ticket t
         WHERE
             us.user_id = #{uid, jdbcType=BIGINT}
         AND s.id = us.shop_id
+        AND t.shop_id = s.id
+        <if test="createTime != null">
+        AND t.create_time &gt; #{createTime,jdbcType=TIMESTAMP}
+        </if>
+        AND t.`status` = 1
+        AND s.id
+        GROUP BY
+            s.id
         ORDER BY
             us.create_time DESC
         limit #{limit,jdbcType=INTEGER}, #{offset, jdbcType=INTEGER}
     </select>
 
-
+    <select id="shopCount" parameterType="com.masou.coupon.data.filter.BaseFilter" resultType="java.lang.Integer">
+        SELECT
+        COUNT(id)
+        FROM
+        ety_shop
+        WHERE
+        1
+        <if test="today != null">
+            AND create_time &gt; #{today, jdbcType=TIMESTAMP} ;
+        </if>
+    </select>
 
     <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
         select
@@ -217,7 +385,6 @@
             offset #{offset}
         </if>
 
-
     </select>
     <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
         delete from ety_shop
@@ -230,14 +397,14 @@
         business_license_id, longitude, dimensionality,
         is_shop_verified, wechat_account, shop_address,
         rank, create_time, last_update_time,
-        phone_verified_time,comment)
+        phone_verified_time,comment),profile_picture
         values (#{id,jdbcType=BIGINT},#{uid,jdbcType=BIGINT} #{shopName,jdbcType=VARCHAR}, #{iconId,jdbcType=VARCHAR},
         #{industryId,jdbcType=INTEGER}, #{phone,jdbcType=CHAR}, #{isPhoneVerified,jdbcType=TINYINT},
         #{telephone,jdbcType=CHAR}, #{telephoneEx,jdbcType=CHAR}, #{briefIntro,jdbcType=VARCHAR},
         #{businessLicenseId,jdbcType=VARCHAR}, #{longitude,jdbcType=DECIMAL}, #{dimensionality,jdbcType=DECIMAL},
         #{isShopVerified,jdbcType=TINYINT}, #{wechatAccount,jdbcType=VARCHAR}, #{shopAddress,jdbcType=VARCHAR},
         #{rank,jdbcType=TINYINT}, #{createTime,jdbcType=TIMESTAMP}, #{lastUpdateTime,jdbcType=TIMESTAMP},
-        #{phoneVerifiedTime,jdbcType=TIMESTAMP},#{comment,jdbcType=VARCHAR})
+        #{phoneVerifiedTime,jdbcType=TIMESTAMP},#{comment,jdbcType=VARCHAR},#{profilePicture, jdbcType=VARCHAR}
     </insert>
     <insert id="insertSelective" parameterType="com.masou.coupon.data.models.Shop">
         insert into ety_shop
@@ -305,6 +472,10 @@
             <if test="comment != null">
                 comment,
             </if>
+            <if test="profilePicture != null">
+                profile_picture,
+            </if>
+
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="id != null">
@@ -370,6 +541,9 @@
             <if test="comment != null">
                 #{comment,jdbcType=VARCHAR},
             </if>
+            <if test="profilePicture != null">
+                #{profilePicture,jdbcType=VARCHAR},
+            </if>
 
         </trim>
     </insert>
@@ -433,9 +607,8 @@
             <if test="comment != null">
                 comment = #{comment,jdbcType=VARCHAR},
             </if>
-
-            <if test="profilePicture!=null">
-                profile_picture=#{profilePicture},
+            <if test="profilePicture != null">
+                profile_picture = #{profilePicture, jdbcType=VARCHAR}
             </if>
 
         </set>
@@ -461,7 +634,7 @@
       create_time = #{createTime,jdbcType=TIMESTAMP},
       last_update_time = #{lastUpdateTime,jdbcType=TIMESTAMP},
       phone_verified_time = #{phoneVerifiedTime,jdbcType=TIMESTAMP},
-      comment = #{comment, jdbcType=VARCHAR}
+      comment = #{comment, jdbcType=VARCHAR},profile_picture=#{profilePicture, jdbcType=VARCHAR}
     where id = #{id,jdbcType=BIGINT}
   </update>
 </mapper>

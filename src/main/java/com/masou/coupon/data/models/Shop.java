@@ -45,13 +45,24 @@ public class Shop {
 
     private String shopMD5;
 
-    private Ticket ticket;
+    private TicketWithBLOBs ticket;
+
+    private String ticketTypeStr;
 
     private UserShop userShop;
 
     private String comment;
 
     private String profilePicture;
+
+    private String industryIdStr;
+
+    private String isShopVerifiedStr;
+
+    private UserTicket userTicket;
+
+    private Integer uread;
+
     public Long getId() {
         return id;
     }
@@ -220,11 +231,11 @@ public class Shop {
         this.uid = uid;
     }
 
-    public Ticket getTicket() {
+    public TicketWithBLOBs getTicket() {
         return ticket;
     }
 
-    public void setTicket(Ticket ticket) {
+    public void setTicket(TicketWithBLOBs ticket) {
         this.ticket = ticket;
     }
 
@@ -236,6 +247,30 @@ public class Shop {
         this.comment = comment;
     }
 
+    public UserShop getUserShop() {
+        return userShop;
+    }
+
+    public void setUserShop(UserShop userShop) {
+        this.userShop = userShop;
+    }
+
+    public String getIndustryIdStr() {
+        return industryIdStr;
+    }
+
+    public void setIndustryIdStr(String industryIdStr) {
+        this.industryIdStr = industryIdStr;
+    }
+
+    public String getIsShopVerifiedStr() {
+        return isShopVerifiedStr;
+    }
+
+    public void setIsShopVerifiedStr(String isShopVerifiedStr) {
+        this.isShopVerifiedStr = isShopVerifiedStr;
+    }
+
     public String getProfilePicture() {
         return profilePicture;
     }
@@ -244,11 +279,27 @@ public class Shop {
         this.profilePicture = profilePicture;
     }
 
-    public UserShop getUserShop() {
-        return userShop;
+    public String getTicketTypeStr() {
+        return ticketTypeStr;
     }
 
-    public void setUserShop(UserShop userShop) {
-        this.userShop = userShop;
+    public void setTicketTypeStr(String ticketTypeStr) {
+        this.ticketTypeStr = ticketTypeStr;
+    }
+
+    public UserTicket getUserTicket() {
+        return userTicket;
+    }
+
+    public void setUserTicket(UserTicket userTicket) {
+        this.userTicket = userTicket;
+    }
+
+    public Integer getUread() {
+        return uread;
+    }
+
+    public void setUread(Integer uread) {
+        this.uread = uread;
     }
 }

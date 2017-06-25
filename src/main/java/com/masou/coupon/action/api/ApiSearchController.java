@@ -33,10 +33,9 @@ public class ApiSearchController {
 
     @ApiOperation("热词接口")
     @RequestMapping(value = "/hotword", method = RequestMethod.GET)
-    public Result hotword(@RequestParam("limit") Integer limit){
+    public Result hotword(@RequestParam(value = "limit", required = false) Integer limit){
         try {
-//            List<HotWord> hotword = searchService.hotword(limit);
-            List<HotWord> hotword = null;
+            List<HotWord> hotword = searchService.hotword(limit);
             if(hotword != null && hotword.size() > 0){
                 return ResultHelper.genResultWithSuccess(hotword);
             }

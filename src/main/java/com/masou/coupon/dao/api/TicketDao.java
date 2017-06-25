@@ -1,10 +1,14 @@
 package com.masou.coupon.dao.api;
 
 import com.masou.coupon.action.api.vo.ShopTicketVO;
+import com.masou.coupon.common.struct.Result;
+import com.masou.coupon.data.filter.BaseFilter;
 import com.masou.coupon.data.filter.ShopFilter;
 import com.masou.coupon.data.mappers.ShopMapper;
 import com.masou.coupon.data.mappers.TicketMapper;
 import com.masou.coupon.data.mappers.UserTicketMapper;
+import com.masou.coupon.data.models.Shop;
+import com.masou.coupon.data.models.Ticket;
 import com.masou.coupon.data.models.TicketWithBLOBs;
 import com.masou.coupon.data.models.UserTicket;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +39,19 @@ public class TicketDao {
         return shopMapper.selectByType(shopFilter);
     }
 
+    /**
+     * 通过券id获取券的详细信息
+     * @param shopFilter
+     * @return
+     */
+    public Shop userReadTicket(ShopFilter shopFilter){
+        return shopMapper.userReadTicket(shopFilter);
+    }
+
+    public List<Shop> popShopList(BaseFilter baseFilter){
+        return shopMapper.popShopList(baseFilter);
+    }
+
     public List<TicketWithBLOBs> selectTicketByShopId(Long sid){
         ShopFilter shopFilter = new ShopFilter();
         shopFilter.setSid(sid);
@@ -47,6 +64,24 @@ public class TicketDao {
 
     public int userCollectTicket(UserTicket record){
         return userTicketMapper.insertSelective(record);
+    }
+
+    /**
+     * 查询当前用户领取的券是否可领取
+     * @param record
+     * @return
+     */
+    public List<UserTicket> findByUidTid(UserTicket record){
+        return userTicketMapper.findByUidTid(record);
+    }
+
+    /**
+     * 检查券是否可重复领取
+     * @param record
+     * @return
+     */
+    public int isRetaken(UserTicket record){
+        return ticketMapper.isRetaken(record);
     }
 
 }

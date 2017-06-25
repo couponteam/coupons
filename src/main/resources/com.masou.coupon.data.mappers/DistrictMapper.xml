@@ -8,12 +8,23 @@
     <result column="status" jdbcType="TINYINT" property="status" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
   </resultMap>
+  <sql id="Base_Column_List">
+    id, district_name, status, create_time, city_id
+  </sql>
   <insert id="insert" parameterType="com.masou.coupon.data.models.District">
     insert into dic_districts (id, district_name, city_id, 
       status, create_time)
     values (#{id,jdbcType=INTEGER}, #{districtName,jdbcType=VARCHAR}, #{cityId,jdbcType=INTEGER}, 
       #{status,jdbcType=TINYINT}, #{createTime,jdbcType=TIMESTAMP})
   </insert>
+
+  <select id="selectList" parameterType="com.masou.coupon.data.filter.AddressFilter" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from dic_districts
+    where city_id = #{city,jdbcType=INTEGER} AND `status`=1 ORDER BY id
+  </select>
+
   <insert id="insertSelective" parameterType="com.masou.coupon.data.models.District">
     insert into dic_districts
     <trim prefix="(" suffix=")" suffixOverrides=",">

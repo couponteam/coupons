@@ -16,11 +16,11 @@
     from ety_hot_word
     where id = #{id,jdbcType=BIGINT}
   </select>
-  <select id="selectList" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+  <select id="selectList" parameterType="com.masou.coupon.data.param.PageParam" resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List" />
     from ety_hot_word
-    ORDER BY frequence DESC LIMIT limit-{limit,jdbcType=BIGINT }
+    ORDER BY frequence DESC LIMIT #{pageSize,jdbcType=INTEGER }
   </select>
 
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">

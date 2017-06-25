@@ -1,13 +1,14 @@
 package com.masou.coupon.action.shopapi;
 
 import com.masou.coupon.action.api.vo.TicketResultVO;
-import com.masou.coupon.action.api.vo.TicketVO;
+import com.masou.coupon.action.api.vo.ticketvo.TicketVO;
+import com.masou.coupon.common.constant.DicValue;
 import com.masou.coupon.common.enums.ErrorCodeEnum;
 import com.masou.coupon.common.struct.Result;
 import com.masou.coupon.common.utils.ResultHelper;
 import com.masou.coupon.data.models.Ticket;
+import com.masou.coupon.data.models.TicketWithBLOBs;
 import com.masou.coupon.exception.UserException;
-import com.masou.coupon.service.UserLogService;
 import com.masou.coupon.service.VerifyService;
 import com.masou.coupon.service.api.UserTokenService;
 import com.masou.coupon.service.shopapi.TicketManagerService;
@@ -83,7 +84,7 @@ public class ApiTicketManagerController {
      */
     @ApiOperation("查看单张券")
     @RequestMapping(value = "/select", method = RequestMethod.GET)
-    public Result selectTicket(@RequestParam("tid") Long tid,
+    public Result selectTicket(@RequestParam("tid") String tid,
                                @RequestParam("token") String token){
         Long uid = userTokenService.getUid(token);
         if(uid == null || uid <= 0){
@@ -100,8 +101,9 @@ public class ApiTicketManagerController {
     @RequestMapping(value = "/selectlist", method = RequestMethod.GET)
     public Result selectTicketList(@RequestParam("sid") Long sid,
                                    @RequestParam("page") Integer page,
-                                   @RequestParam("pageSize") Integer pageSize){
-        TicketResultVO ticketResultVO = ticketManagerService.showTicketList(sid, page, pageSize);
+                                   @RequestParam(value = "status", required = false) String status,
+                                   @RequestParam(value = "pageSize", required = false) Integer pageSize){
+        TicketResultVO ticketResultVO = ticketManagerService.showTicketList(sid, page, pageSize,status);
         if(ticketResultVO != null){
             return ResultHelper.genResultWithSuccess(ticketResultVO);
         }
@@ -114,7 +116,7 @@ public class ApiTicketManagerController {
      */
     @ApiOperation("删除券")
     @RequestMapping(value = "/delete", method = RequestMethod.GET)
-    public Result deleteTicket(@RequestParam("tid") Long tid,
+    public Result deleteTicket(@RequestParam("tid") String tid,
                                @RequestParam("token") String token){
         Long uid = userTokenService.getUid(token);
         if(uid == null || uid <= 0){
@@ -133,7 +135,7 @@ public class ApiTicketManagerController {
      */
     @ApiOperation("更新/编辑券")
     @RequestMapping(value = "/update", method = RequestMethod.GET)
-    public Result updateTicket(@RequestParam(" 5月") String data,
+    public Result updateTicket(@RequestParam("data") String data,
                                @RequestParam("token") String token){
         Long uid = userTokenService.getUid(token);
         if(uid == null || uid <= 0){
@@ -144,5 +146,35 @@ public class ApiTicketManagerController {
             return ResultHelper.genResultWithSuccess();
         }
         return ResultHelper.genResult(data, ErrorCodeEnum.TICKET_UPDATE_FAILED.getCode(), ErrorCodeEnum.TICKET_UPDATE_FAILED.getMsg());
+    }
+
+    /**
+     *
+     * @return
+     */
+    @ApiOperation("上架下架券")
+    @RequestMapping(value = "/soldout", method = RequestMethod.GET)
+    public Result soldOutTicket(@RequestParam("tid") String tid,
+                                @RequestParam("token") String token,
+                                @RequestParam("status") String status){
+        Long uid = userTokenService.getUid(token);
+        if(tid != null && tid.length() > 0){
+            TicketWithBLOBs ticket = new TicketWithBLOBs();
+            ticket.setTicketId(tid);
+
+            if(Integer.parseInt(status) == DicValue.TICKET_SOLD_OUT
+                    || Integer.parseInt(status) == DicValue.TICKET_PUT_AWAY){
+                ticket.setStatus(new Byte(status));
+                if(ticketManagerService.updateTicket(ticket) > 0){
+                    TicketVO ticketVO = ticketManagerService.selectSingleTicket(tid);
+                    if(ticketVO != null){
+                        return ResultHelper.genResultWithSuccess(ticketVO);
+                    }
+                }
+            }else{
+                return ResultHelper.genResult(ErrorCodeEnum.TICKET_UPDATE_FAILED);
+            }
+        }
+        return ResultHelper.genResult(ErrorCodeEnum.TICKET_UPDATE_FAILED);
     }
 }

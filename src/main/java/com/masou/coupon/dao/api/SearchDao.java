@@ -3,6 +3,7 @@ package com.masou.coupon.dao.api;
 import com.masou.coupon.data.mappers.HotWordMapper;
 import com.masou.coupon.data.mappers.ShopMapper;
 import com.masou.coupon.data.models.HotWord;
+import com.masou.coupon.data.param.PageParam;
 import com.masou.coupon.exception.UserException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -30,15 +31,13 @@ public class SearchDao {
 
     /**
      * 查询热词
-     * @param limit
      * @return
      */
-//    public List<HotWord> hotWords(Integer limit){
-//        try {
-//            return null;
-//            return hotWordMapper.selectList(limit);
-//        }catch (Exception e){
-//            throw new UserException(e);
-//        }
-//    }
+    public List<HotWord> hotWords(PageParam param){
+        try {
+            return hotWordMapper.selectList(param);
+        }catch (Exception e){
+            return null;
+        }
+    }
 }

@@ -1,6 +1,6 @@
 package com.masou.coupon.action.erpapi;
 
-import com.masou.coupon.action.param.PageParam;
+import com.masou.coupon.data.param.PageParam;
 import com.masou.coupon.common.struct.Result;
 import com.masou.coupon.service.api.ShopService;
 import io.swagger.annotations.ApiImplicitParam;
@@ -36,10 +36,9 @@ public class ErpApproveController {
     @PostMapping("/approve")
     @ApiImplicitParam(name = "verifyType",value = "2-未通过；3-已通过",dataType = "String")
     public Result approve(@RequestParam("shopId") Long shopId,
-                          @RequestParam("verifyType")Integer verifyType){
+                          @RequestParam("verifyType")Integer verifyType,
+                          @RequestParam(value= "comment", required = false) String comment){
 
-        return shopService.approve(shopId,verifyType);
+        return shopService.approve(shopId,verifyType,comment);
     }
-
-
 }

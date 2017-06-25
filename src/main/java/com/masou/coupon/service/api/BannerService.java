@@ -1,5 +1,8 @@
 package com.masou.coupon.service.api;
 
+import com.masou.coupon.common.enums.ErrorCodeEnum;
+import com.masou.coupon.common.struct.Result;
+import com.masou.coupon.common.utils.ResultHelper;
 import com.masou.coupon.dao.BannerDao;
 import com.masou.coupon.data.models.Banner;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,12 +23,18 @@ public class BannerService {
         return bannerDao.deleteByPrimaryKey(id);
     }
 
-    public int insertSelective(Banner record) {
+    public Result insertSelective(Banner record) {
         if (record.getId() != null) {
-            return bannerDao.updateByPrimaryKeySelective(record);
+            if(bannerDao.updateByPrimaryKeySelective(record) > 0){
+                return ResultHelper.genResultWithSuccess(
+                        bannerDao.selectByPrimaryKey(record.getId()));
+            }
         } else {
-            return bannerDao.insertSelective(record);
+            if(bannerDao.insertSelective(record) > 0){
+                return ResultHelper.genResultWithSuccess();
+            }
         }
+        return ResultHelper.genResult(ErrorCodeEnum.SECTION_FAILED);
     }
 
     public Banner selectByPrimaryKey(Integer id) {

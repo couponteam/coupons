@@ -30,7 +30,7 @@ public class UserManageService {
     private UserTokenService userTokenService;
 
     public Result deleteByPrimaryKey(Integer id) {
-        if (userManageDao.deleteByPrimaryKey(id) == 1) {
+        if (userManageDao.deleteByPrimaryKey(id) > 0) {
             return ResultHelper.genResultWithSuccess();
         } else {
             throw new UserException("删除失败");
@@ -39,32 +39,40 @@ public class UserManageService {
 
 
     @Transactional
-    public Result insertSelective(String phone, String name) {
-        UserManager manager = userManageDao.selectByPhone(phone);
-        if (manager != null) {
-            throw new UserException("管理员已经存在");
-        }
-
-        User user = userService.selectByPhone(phone);
-        if (user == null) {
-            userService.register(phone, null, "123456", "manager", null, true, RoleEnum.MANAGER.getRole());
-            user = userService.selectByPhone(phone);
-        }
-
+    public Result insertSelective(String phone, String name,Integer id) {
         UserManager record = new UserManager();
         record.setRealName(name);
         record.setPhone(phone);
-        record.setEnable(1);
-        record.setUid(user.getId());
 
-        int i = userManageDao.insertSelective(record);
+        if(id == null || id <= 0){
+            UserManager manager = userManageDao.selectByPhone(phone);
+            //插入新管理员
+            if (manager != null) {
+                throw new UserException("管理员已经存在");
+            }
 
-        if (i == 1) {
-            return ResultHelper.genResultWithSuccess();
-        } else {
-            throw new UserException("添加失败");
+            User user = userService.selectByPhone(phone);
+            if (user == null) {
+                userService.register(phone, null, "123456", "manager", null, true, RoleEnum.MANAGER.getRole());
+                user = userService.selectByPhone(phone);
+            }
+            record.setEnable(1);
+            record.setUid(user.getId());
+
+            int i = userManageDao.insertSelective(record);
+
+            if (i == 1) {
+                return ResultHelper.genResultWithSuccess();
+            } else {
+                throw new UserException("添加失败");
+            }
+        }else{
+            record.setId(id);
+            if (updateByPrimaryKeySelective(record) > 0){
+                return ResultHelper.genResultWithSuccess(userManageDao.selectByPhone(phone));
+            }
+            return ResultHelper.genResult(ErrorCodeEnum.FAILED);
         }
-
     }
 
     public int updateByPrimaryKeySelective(UserManager record) {

@@ -17,7 +17,7 @@ public class ExceptionUtils {
 
     public static BaseException genWithResult(Result result) {
         if(result != null) {
-            return new BaseException(result.getCode(), result.getMessage());
+            return new BaseException(result.getCode(), result.getUserMessage());
         } else {
             return new BaseException(-1, "invoke hessian error");
         }

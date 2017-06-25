@@ -13,7 +13,7 @@ public class ResultHelper {
     public static Result genResult(Object obj, int retCode, String msg) {
         Result ret = new Result();
         ret.setData(obj);
-        ret.setMessage(msg);
+        ret.setUserMessage(msg);
         ret.setCode(retCode);
         return ret;
     }
@@ -21,14 +21,14 @@ public class ResultHelper {
 
     public static Result genResult(int retCode, String msg) {
         Result ret = new Result();
-        ret.setMessage(msg);
+        ret.setUserMessage(msg);
         ret.setCode(retCode);
         return ret;
     }
 
     public static Result genResult(ErrorCodeEnum errorCodeEnum){
         Result ret = new Result();
-        ret.setMessage(errorCodeEnum.getMsg());
+        ret.setUserMessage(errorCodeEnum.getMsg());
         ret.setCode(errorCodeEnum.getCode());
         return ret;
     }
@@ -36,7 +36,7 @@ public class ResultHelper {
     public static Result genResult(Object obj, int retCode, String msg, String userMessage) {
         Result ret = new Result();
         ret.setData(obj);
-        ret.setMessage(msg);
+        ret.setUserMessage(msg);
         ret.setCode(retCode);
         ret.setUserMessage(userMessage);
         return ret;
@@ -62,7 +62,7 @@ public class ResultHelper {
             throw new BaseException(-1, "Network is error");
         } else {
             if (result.getCode() != 0) {
-                throw new BaseException(-1, String.format("invoke hessian error! status:%s; msg:%s", result.getCode(), result.getMessage()));
+                throw new BaseException(-1, String.format("invoke hessian error! status:%s; msg:%s", result.getCode(), result.getUserMessage()));
             } else {
                 return (T) result.getData();
             }
@@ -86,6 +86,4 @@ public class ResultHelper {
     public static Result genResultWithSuccessMessage(String message) {
         return genMessageResult(null, 0, message);
     }
-
-
 }

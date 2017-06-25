@@ -13,7 +13,7 @@ public class Ticket {
 
     private String content;
 
-    private Byte _typeId;
+    private Byte typeId;
 
     private Date periodOfValidityStarttime;
 
@@ -21,16 +21,23 @@ public class Ticket {
 
     private String comment;
 
-    private Byte _status;
+    private Byte status;
 
     private Byte collectingMethod;
 
-    private Byte _isRetaken;
+    private Byte isRetaken;
 
-    private Byte _isReUse;
+    private Byte isReUse;
 
     private Date createTime;
 
+    private Integer amount;
+
+    private Integer taken;
+
+    private UserTicket userTicket;
+
+    private TicketType ticketType;
 
     public Long getId() {
         return id;
@@ -96,15 +103,6 @@ public class Ticket {
         this.comment = comment == null ? null : comment.trim();
     }
 
-    public Byte get_status() {
-
-        return _status;
-    }
-
-    public void set_status(Byte _status) {
-        this._status = _status;
-    }
-
     public Byte getCollectingMethod() {
         return collectingMethod;
     }
@@ -121,27 +119,67 @@ public class Ticket {
         this.createTime = createTime;
     }
 
-    public Byte get_typeId() {
-        return _typeId;
+    public Byte getTypeId() {
+        return typeId;
     }
 
-    public void set_typeId(Byte _typeId) {
-        this._typeId = _typeId;
+    public void setTypeId(Byte typeId) {
+        this.typeId = typeId;
     }
 
-    public Byte get_isRetaken() {
-        return _isRetaken;
+    public Byte getStatus() {
+        return status;
     }
 
-    public void set_isRetaken(Byte _isRetaken) {
-        this._isRetaken = _isRetaken;
+    public void setStatus(Byte status) {
+        this.status = status;
     }
 
-    public Byte get_isReUse() {
-        return _isReUse;
+    public Byte getIsRetaken() {
+        return isRetaken;
     }
 
-    public void set_isReUse(Byte _isReUse) {
-        this._isReUse = _isReUse;
+    public void setIsRetaken(Byte isRetaken) {
+        this.isRetaken = isRetaken;
+    }
+
+    public Byte getIsReUse() {
+        return isReUse;
+    }
+
+    public void setIsReUse(Byte isReUse) {
+        this.isReUse = isReUse;
+    }
+
+    public Integer getAmount() {
+        return amount;
+    }
+
+    public void setAmount(Integer amount) {
+        this.amount = amount;
+    }
+
+    public Integer getTaken() {
+        return taken;
+    }
+
+    public void setTaken(Integer taken) {
+        this.taken = taken;
+    }
+
+    public UserTicket getUserTicket() {
+        return userTicket;
+    }
+
+    public void setUserTicket(UserTicket userTicket) {
+        this.userTicket = userTicket;
+    }
+
+    public TicketType getTicketType() {
+        return ticketType;
+    }
+
+    public void setTicketType(TicketType ticketType) {
+        this.ticketType = ticketType;
     }
 }

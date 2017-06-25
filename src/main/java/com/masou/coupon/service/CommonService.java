@@ -29,19 +29,26 @@ public class CommonService {
      * @return
      */
     public String changeTicketStatus(Byte status){
-        String msg = status.toString();
-        switch (status){
-            case(0):
-                msg = "未上架";
-            case(1):
-                msg = "上架";
-            case(2):
-                msg = "过期";
-            case(3):
-                msg = "下架";
-            default:;
+        if(status != null){
+            String msg = status.toString();
+            switch (status){
+                case(0):
+                    msg = "未上架";
+                    break;
+                case(1):
+                    msg = "上架";
+                    break;
+                case(2):
+                    msg = "过期";
+                    break;
+                case(3):
+                    msg = "下架";
+                    break;
+                default:;
+            }
+            return msg;
         }
-        return msg;
+        return null;
     }
 
     /**
@@ -50,44 +57,56 @@ public class CommonService {
      * @return
      */
     public String changeTicketType(Byte type){
-        if(redisService.exists(KEY_TICKET_TYPE_ID)){
-            return redisService.mapGet(KEY_TICKET_TYPE_ID, type.toString());
-        }else{
-            List<TicketType> list = ticketTypeMapper.selectList();
-            if(list != null && list.size() > 0){
-                Map<String, String> typeMap = new HashMap<>();
-                for (TicketType ticketType : list) {
-                    typeMap.put(ticketType.getId()+"", ticketType.getComment());
+        if(type != null){
+            if(redisService.exists(KEY_TICKET_TYPE_ID)){
+                return redisService.mapGet(KEY_TICKET_TYPE_ID, type.toString());
+            }else{
+                List<TicketType> list = ticketTypeMapper.selectList();
+                if(list != null && list.size() > 0){
+                    Map<String, String> typeMap = new HashMap<>();
+                    for (TicketType ticketType : list) {
+                        typeMap.put(ticketType.getId()+"", ticketType.getComment());
+                    }
+                    redisService.mapSet(KEY_TICKET_TYPE_ID, typeMap, 60 * 60 * 24);
+                    return typeMap.get(type.toString());
                 }
-                redisService.mapSet(KEY_TICKET_TYPE_ID, typeMap, 60 * 60 * 24);
-                return typeMap.get(type.toString());
             }
         }
         return null;
     }
 
     public String changeTicketRetaken(Byte retaken){
-        String msg = retaken.toString();
-        switch (retaken){
-            case(0):
-                msg = "不可以";
-            case(1):
-                msg = "科艺";
-            default:;
+        if(retaken != null){
+            String msg = retaken.toString();
+            switch (retaken){
+                case(0):
+                    msg = "不可以";
+                    break;
+                case(1):
+                    msg = "可以";
+                    break;
+                default:;
+            }
+            return msg;
         }
-        return msg;
+        return null;
     }
 
-    public String changeTicketReuse(Byte reuse){
-        String msg = reuse.toString();
-        switch (reuse){
-            case(0):
-                msg = "不可叠加";
-            case(1):
-                msg = "可叠加";
-            default:
+    public static String changeTicketReuse(Byte reuse){
+        if(reuse != null){
+            String msg = reuse.toString();
+            switch (reuse){
+                case(0):
+                    msg = "不可叠加";
+                    break;
+                case(1):
+                    msg = "可叠加";
+                    break;
+                default:
+            }
+            return msg;
         }
-        return msg;
+        return null;
     }
 
 }

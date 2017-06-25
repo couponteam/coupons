@@ -2,7 +2,10 @@ package com.masou.coupon.service.shopapi;
 
 import com.masou.coupon.action.erpapi.vo.ProvinceListVO;
 import com.masou.coupon.common.enums.ErrorCodeEnum;
+import com.masou.coupon.common.struct.Result;
+import com.masou.coupon.common.utils.ResultHelper;
 import com.masou.coupon.dao.ShopApiDao.ErpDicDao;
+import com.masou.coupon.data.filter.AddressFilter;
 import com.masou.coupon.data.models.Industry;
 import com.masou.coupon.data.models.Province;
 import com.masou.coupon.data.models.TicketType;
@@ -39,6 +42,48 @@ public class ErpDicService {
     }
 
     /**
+     * 查询行业类型
+     * @return
+     */
+    public Result update(Integer id, String comment, Integer status, String icon){
+        Industry industry = new Industry();
+        industry.setId(id);
+        industry.setStatus(status);
+        industry.setComment(comment);
+        industry.setIcon(icon);
+        if (id != null && id > 0){
+            System.out.println("update dic");
+            if (erpDicDao.industryTypeUpdate(industry) > 0){
+                return ResultHelper.genResultWithSuccess(erpDicDao.selectByPrimaryKey(industry.getId()));
+            }
+        }else{
+            System.out.println("insert dic");
+            if(erpDicDao.industryTypeInsert(industry) > 0){
+                return ResultHelper.genResultWithSuccess();
+            }
+        }
+        return ResultHelper.genResult(ErrorCodeEnum.SECTION_FAILED);
+    }
+
+    public Result ticketTypeUpdate(Integer id, String comment, Integer status,String icon){
+        TicketType ticketType = new TicketType();
+        ticketType.setId(id);
+        ticketType.setStatus(status);
+        ticketType.setComment(comment);
+        ticketType.setIcon(icon);
+        if (id != null && id > 0){
+            if (erpDicDao.ticketTypeUpdate(ticketType) > 0){
+                return ResultHelper.genResultWithSuccess(erpDicDao.selectByTicketType(id));
+            }
+        }else{
+            if(erpDicDao.ticketTypeInsert(ticketType) > 0){
+                return ResultHelper.genResultWithSuccess();
+            }
+        }
+        return ResultHelper.genResult(ErrorCodeEnum.SECTION_FAILED);
+    }
+
+    /**
      * 查询省份城市
      * @return
      */
@@ -59,4 +104,18 @@ public class ErpDicService {
             throw new UserException(ErrorCodeEnum.DIC_FAIL, "查询省市信息失败");
         }
     }
+
+
+    public Result provinceList(AddressFilter ads){
+        return ResultHelper.genResultWithSuccess(erpDicDao.provinceList(ads));
+    }
+
+    public Result cityList(AddressFilter ads){
+        return ResultHelper.genResultWithSuccess(erpDicDao.cityList(ads));
+    }
+
+    public Result discList(AddressFilter ads){
+        return ResultHelper.genResultWithSuccess(erpDicDao.discList(ads));
+    }
+
 }

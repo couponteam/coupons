@@ -20,7 +20,7 @@ public class ErpBannerController {
     @Autowired
     private BannerService bannerService;
 
-    @ApiOperation("插入广告位")
+    @ApiOperation("插入/更新广告位")
     @RequestMapping(value = "/insert", method = RequestMethod.POST)
     public Result insert(
             @RequestParam(value = "id", required = false) Integer id,
@@ -39,14 +39,7 @@ public class ErpBannerController {
         if (id != null) {
             banner.setId(id);
         }
-
-        int i = bannerService.insertSelective(banner);
-
-        if (i == 1) {
-            return ResultHelper.genResultWithSuccess();
-        } else {
-            throw new UserException("操作失败");
-        }
+        return bannerService.insertSelective(banner);
     }
 
 

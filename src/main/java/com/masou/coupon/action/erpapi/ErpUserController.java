@@ -1,7 +1,8 @@
 package com.masou.coupon.action.erpapi;
 
 
-import com.masou.coupon.action.param.PageParam;
+import com.masou.coupon.data.filter.UserFilter;
+import com.masou.coupon.data.param.PageParam;
 import com.masou.coupon.common.struct.Result;
 import com.masou.coupon.service.api.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,10 +30,17 @@ public class ErpUserController {
                        @RequestParam(value = "pageSize") Integer pageSize,
                        @RequestParam(value = "token") String token) {
 
-        PageParam pageParam = new PageParam();
-        pageParam.setPage(page);
-        pageParam.setPageSize(pageSize);
-        return userService.userList(pageParam, fromKey, phone, timeBegin, timeEnd);
+        UserFilter filter = new UserFilter();
+        filter.setFromKey(fromKey);
+        filter.setUsername(phone);
+        filter.setTimeBegin(timeBegin);
+        filter.setTimeEnd(timeEnd);
+        filter.setLimit(pageSize);
+        filter.setOffset(page);
+        if (pageSize == null || pageSize <= 0){
+            filter.setLimit(PageParam.PAGESIZE_DEFAULT);
+        }
+        return userService.userList(filter);
     }
 
 

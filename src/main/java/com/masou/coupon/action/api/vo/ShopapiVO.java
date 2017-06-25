@@ -1,5 +1,6 @@
 package com.masou.coupon.action.api.vo;
 
+import com.masou.coupon.action.api.vo.ticketvo.TicketVO;
 import com.masou.coupon.data.models.Shop;
 
 import java.util.List;
@@ -19,6 +20,8 @@ public class ShopapiVO implements Comparable<ShopapiVO>{
     private List<TicketVO> ticketVO;
 
     private double distance;
+
+    private Integer newMsgCount;
 
     public Shop getShop() {
         return shop;
@@ -42,5 +45,13 @@ public class ShopapiVO implements Comparable<ShopapiVO>{
 
     public void setDistance(double distance) {
         this.distance = distance;
+    }
+
+    public Integer getNewMsgCount() {
+        return newMsgCount;
+    }
+
+    public void setNewMsgCount(Integer newMsgCount) {
+        this.newMsgCount = newMsgCount;
     }
 }

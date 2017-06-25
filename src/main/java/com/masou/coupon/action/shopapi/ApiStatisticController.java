@@ -32,12 +32,11 @@ public class ApiStatisticController {
     @ApiOperation("商铺数据统计")
     @RequestMapping(value = "/data", method = RequestMethod.GET)
     public Result statistic(
-//            @RequestParam("token") String token,
-            @RequestParam("uid") Long uid,
-                            @RequestParam(value = "fromData", required = false) Date fromData,
-                            @RequestParam(value = "toData", required = false) Date toData,
+                            @RequestParam("token") String token,
+                            @RequestParam(value = "fromData", required = false) String fromData,
+                            @RequestParam(value = "toData", required = false) String toData,
                             @RequestParam(value = "sid",required = false) Long sid){
-//        Long uid = userTokenService.getUid(token);
+        Long uid = userTokenService.getUid(token);
         StatisticVO vo = apiStatisticService.statistic(uid, fromData, toData, sid);
         if(vo != null){
             return ResultHelper.genResultWithSuccess(vo);

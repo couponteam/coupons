@@ -7,13 +7,17 @@ public class UserTicket {
 
     private Long userId;
 
-    private Long ticketId;
+    private String ticketId;
 
     private Byte status;
 
     private Date createTime;
 
     private Date lastUpdateTime;
+
+    private String utId;
+
+    private String statusStr;
 
     public Long getId() {
         return id;
@@ -31,11 +35,11 @@ public class UserTicket {
         this.userId = userId;
     }
 
-    public Long getTicketId() {
+    public String getTicketId() {
         return ticketId;
     }
 
-    public void setTicketId(Long ticketId) {
+    public void setTicketId(String ticketId) {
         this.ticketId = ticketId;
     }
 
@@ -61,5 +65,21 @@ public class UserTicket {
 
     public void setLastUpdateTime(Date lastUpdateTime) {
         this.lastUpdateTime = lastUpdateTime;
+    }
+
+    public String getUtId() {
+        return utId;
+    }
+
+    public void setUtId(String utId) {
+        this.utId = utId;
+    }
+
+    public String getStatusStr() {
+        return statusStr;
+    }
+
+    public void setStatusStr(String statusStr) {
+        this.statusStr = statusStr;
     }
 }

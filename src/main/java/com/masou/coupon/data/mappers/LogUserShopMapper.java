@@ -21,4 +21,5 @@ public interface LogUserShopMapper {
 
     int pageView(StatisticFilter statisticFilter);
 
+    LogUserShop selectByUid(Long uid);
 }

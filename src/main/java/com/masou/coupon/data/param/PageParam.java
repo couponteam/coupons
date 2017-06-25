@@ -1,4 +1,4 @@
-package com.masou.coupon.action.param;
+package com.masou.coupon.data.param;
 
 import com.masou.coupon.common.dto.BaseDTO;
 import lombok.Data;
@@ -9,6 +9,10 @@ import lombok.Data;
  */
 @Data
 public class PageParam extends BaseDTO {
+
+    public static final Integer BEST_SHOP_LIMIT = 6;
+
+    public static final Integer PAGESIZE_DEFAULT = 20;
     /**
      * 当前页码
      */

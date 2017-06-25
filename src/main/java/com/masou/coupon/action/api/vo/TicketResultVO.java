@@ -1,5 +1,7 @@
 package com.masou.coupon.action.api.vo;
 
+import com.masou.coupon.action.api.vo.ticketvo.TicketVO;
+
 import java.util.List;
 
 /**
