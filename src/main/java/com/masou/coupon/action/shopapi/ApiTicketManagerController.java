@@ -101,9 +101,12 @@ public class ApiTicketManagerController {
     @RequestMapping(value = "/selectlist", method = RequestMethod.GET)
     public Result selectTicketList(@RequestParam("sid") Long sid,
                                    @RequestParam("page") Integer page,
+                                   @RequestParam(value = "token", required = false) String token,
+                                   @RequestParam("uid") Long uid,
                                    @RequestParam(value = "status", required = false) String status,
                                    @RequestParam(value = "pageSize", required = false) Integer pageSize){
-        TicketResultVO ticketResultVO = ticketManagerService.showTicketList(sid, page, pageSize,status);
+//        Long uid = userTokenService.getUid(token);
+        TicketResultVO ticketResultVO = ticketManagerService.showTicketList(sid, uid, page, pageSize,status);
         if(ticketResultVO != null){
             return ResultHelper.genResultWithSuccess(ticketResultVO);
         }

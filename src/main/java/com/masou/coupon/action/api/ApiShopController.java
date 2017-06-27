@@ -60,15 +60,14 @@ public class ApiShopController {
 
     @ApiOperation("用户关注店铺")
     @RequestMapping(value = "/follow", method = RequestMethod.GET)
-    public Result section(@RequestParam("token") String token,
+    public Result section(
+            @RequestParam("token") String token,
+//              @RequestParam("uid") Long uid,
                           @RequestParam("sid") Long sid,
                           @RequestParam("status") Integer status) {
 
         Long uid = userTokenService.getUid(token);
-        if(shopService.follow(uid, sid, status) > 0){
-            return ResultHelper.genResultWithSuccess();
-        }
-        return ResultHelper.genResult(ErrorCodeEnum.FOLLOW_SHOP_FAILED);
+        return shopService.follow(uid, sid, status) ;
     }
 
     @ApiOperation("用户关注店铺列表")
@@ -84,6 +83,6 @@ public class ApiShopController {
         if(shopResultVOs != null){
             return ResultHelper.genResultWithSuccess(shopResultVOs);
         }
-        return ResultHelper.genResult(ErrorCodeEnum.FAILED);
+        return ResultHelper.genResult(ErrorCodeEnum.FOLLOW_SHOP_NO);
     }
 }

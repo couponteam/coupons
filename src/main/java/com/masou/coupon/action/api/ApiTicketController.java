@@ -105,10 +105,10 @@ public class ApiTicketController {
     @RequestMapping(value = "/my_t", method = RequestMethod.GET)
     public Result myTicket(@RequestParam("page") Integer page,
                            @RequestParam(value = "pageSize", required = false) Integer pageSize,
-//                           @RequestParam("token") String token,
-                           @RequestParam("uid") Long uid,
+                           @RequestParam("token") String token,
+//                           @RequestParam("uid") Long uid,
                            @RequestParam(value = "status", required = false) Integer status){
-//        Long uid = userTokenService.getUid(token);
+        Long uid = userTokenService.getUid(token);
         return ticketService.myTicket(page,pageSize,uid,status);
     }
 

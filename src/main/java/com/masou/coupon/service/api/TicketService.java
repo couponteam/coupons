@@ -19,6 +19,7 @@ import com.masou.coupon.data.filter.LocaltionFilter;
 import com.masou.coupon.data.filter.ShopFilter;
 import com.masou.coupon.data.mappers.LogUserShopMapper;
 import com.masou.coupon.data.mappers.TicketTypeMapper;
+import com.masou.coupon.data.mappers.UserShopMapper;
 import com.masou.coupon.data.mappers.UserTicketMapper;
 import com.masou.coupon.data.models.*;
 import com.masou.coupon.data.param.PageParam;
@@ -78,6 +79,9 @@ public class TicketService {
     private ShopManagerService shopManagerService;
 
     @Autowired
+    private UserShopMapper userShopMapper;
+
+    @Autowired
     public DateUtil dateUtil;
 
     public static final Object lock = new Object();
@@ -125,6 +129,15 @@ public class TicketService {
                 shop.getTicket().setTicketType(
                         ticketTypeMapper.selectByPrimaryKey(
                                 Integer.parseInt(shop.getTicket().getTypeId() + "")));
+
+                UserTicket userTicket = new UserTicket();
+                userTicket.setUserId(uid);
+                userTicket.setTicketId(shop.getTicket().getTicketId());
+
+                List<UserTicket> userTickets = userTicketMapper.findByUidTid(userTicket);
+                if(userTickets  != null && userTickets.size() > 0){
+                    shop.getTicket().setUserTicket(userTickets.get(0));
+                }
             }
 
             shopLists.setShops(shopList);
@@ -288,11 +301,23 @@ public class TicketService {
         try {
             shopTicket.setShop(shopService.selectByPrimaryKey(sid));
 
-            TicketResultVO ticketResultVO = ticketManagerService.showTicketList(sid, page,pageSize, null);
+            TicketResultVO ticketResultVO = ticketManagerService.showTicketList(sid, uid, page,pageSize, null);
             Tickets tickets = new Tickets();
             tickets.setTickes(ticketResultVO.getTicketVO());
             tickets.setTotal(ticketResultVO.getTotal());
 
+            //获取当前店铺是否已关注
+            if (uid != null && uid > 0){
+                System.out.println("UID is not empty");
+                UserShop userShop = new UserShop();
+                userShop.setUserId(uid);
+                userShop.setShopId(sid);
+                UserShop rs = userShopMapper.selectByUidSid(userShop);
+                System.out.println(JSON.toJSONString(rs));
+                if (rs != null && rs.getId() > 0){
+                    shopTicket.setIsFocus("已关注");
+                }
+            }
             shopTicket.setTickets(tickets);
             logUserViewShop(sid,uid,ip);
         }catch(Exception e){

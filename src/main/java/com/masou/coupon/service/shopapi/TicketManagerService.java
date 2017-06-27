@@ -7,9 +7,11 @@ import com.masou.coupon.action.api.vo.ticketvo.TicketVO;
 import com.masou.coupon.action.erpapi.vo.TicketPageParam;
 import com.masou.coupon.dao.ShopApiDao.TicketManagerDao;
 import com.masou.coupon.data.mappers.TicketTypeMapper;
+import com.masou.coupon.data.mappers.UserTicketMapper;
 import com.masou.coupon.data.models.Ticket;
 import com.masou.coupon.data.models.TicketType;
 import com.masou.coupon.data.models.TicketWithBLOBs;
+import com.masou.coupon.data.models.UserTicket;
 import com.masou.coupon.data.param.PageParam;
 import com.masou.coupon.exception.UserException;
 import com.masou.coupon.service.CommonService;
@@ -36,6 +38,9 @@ public class TicketManagerService {
 
     @Autowired
     private TicketTypeMapper ticketTypeMapper;
+
+    @Autowired
+    private UserTicketMapper userTicketMapper;
 
     @Autowired
     private CommonService commonService;
@@ -66,7 +71,7 @@ public class TicketManagerService {
      * @param sid
      * @return
      */
-    public  TicketResultVO showTicketList(Long sid, Integer page, Integer pageSize, String status){
+    public  TicketResultVO showTicketList(Long sid, Long uid, Integer page, Integer pageSize, String status){
         try {
             TicketPageParam tdata = new TicketPageParam();
             tdata.setShop_id(sid);
@@ -86,6 +91,18 @@ public class TicketManagerService {
             List<TicketVO> listVo = new ArrayList<TicketVO>();
             for (TicketWithBLOBs ticket: list) {
                 TicketVO vo = new TicketVO();
+
+                if(uid != null && uid > 0){
+                    UserTicket userTicket = new UserTicket();
+                    userTicket.setUserId(uid);
+                    userTicket.setTicketId(ticket.getTicketId());
+
+                    List<UserTicket> userTickets = userTicketMapper.findByUidTid(userTicket);
+                    if(userTickets != null && userTickets.size() > 0){
+                        vo.setIsTaken("已领取");
+                    }
+                }
+
                 vo.setTicket(ticket);
                 fileTicketVO(vo, ticket);
                 listVo.add(vo);

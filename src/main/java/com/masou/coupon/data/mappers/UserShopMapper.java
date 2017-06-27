@@ -25,4 +25,6 @@ public interface UserShopMapper {
     int followers(StatisticFilter statisticFilter);
 
     int memberCount(Date today);
+
+    UserShop selectByUidSid(UserShop record);
 }

@@ -31,9 +31,10 @@ public enum ErrorCodeEnum {
     BLACK_LIST_EXIST(10018, "已在黑名单"),
     RANK_FAILED(10019, "设置权重失败"),
     FOLLOW_SHOP_FAILED(10020,"关注店铺失败"),
+    FOLLOW_SHOP_NO(10020,"未关注店铺"),
 
 
-    IMAGE_UPLOAD_FAILED(10021,"图片上传失败"),
+
 
     TICKET_INSERT_FAILED(10030, "新增券失败"),
     TICKET_SELECT_FAILED(10031, "查询券失败"),
@@ -45,6 +46,7 @@ public enum ErrorCodeEnum {
     TICKET_POP_FAILED(10037, "无人气推荐"),
 
     STATISTIC_SSELECT_FAILED(10040, "获取数据失败"),
+    IMAGE_UPLOAD_FAILED(10041,"图片上传失败"),
 
 
     SHOP_REGIS_FAILED(10050, "注册店铺失败"),

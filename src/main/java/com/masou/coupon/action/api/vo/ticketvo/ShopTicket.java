@@ -11,6 +11,8 @@ public class ShopTicket {
 
     private Tickets tickets;
 
+    private String isFocus;
+
     public Shop getShop() {
         return shop;
     }
@@ -25,5 +27,13 @@ public class ShopTicket {
 
     public void setTickets(Tickets tickets) {
         this.tickets = tickets;
+    }
+
+    public String getIsFocus() {
+        return isFocus;
+    }
+
+    public void setIsFocus(String isFocus) {
+        this.isFocus = isFocus;
     }
 }

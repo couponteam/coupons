@@ -5,6 +5,7 @@ import com.masou.coupon.action.api.vo.ShopResultVO;
 import com.masou.coupon.action.api.vo.ShopapiVO;
 import com.masou.coupon.action.api.vo.ticketvo.TicketVO;
 import com.masou.coupon.data.mappers.LogUserShopMapper;
+import com.masou.coupon.data.mappers.TicketTypeMapper;
 import com.masou.coupon.data.param.PageParam;
 import com.masou.coupon.action.shopapi.vo.ShopVO;
 import com.masou.coupon.action.shopapi.vo.UserShopVO;
@@ -59,6 +60,8 @@ public class ShopService {
 
     @Autowired
     private SmsClientService smsClientService;
+    @Autowired
+    private TicketTypeMapper ticketTypeMapper;
 
     @Autowired
     private ShopManagerService shopManagerService;
@@ -236,18 +239,21 @@ public class ShopService {
      * @param status
      * @return
      */
-    public int follow(Long uid, Long sid, Integer status){
+    public Result follow(Long uid, Long sid, Integer status){
         UserShop userShop = new UserShop();
-        userShop.setId(uid);
+        userShop.setUserId(uid);
         userShop.setShopId(sid);
         userShop.setStatus(new Byte(status + ""));
 
         //查询店铺是否存在
         Shop shop = shop2Dao.selectByPrimaryKey(sid);
         if(shop != null && shop.getShopName().length() > 0){
-            return userShopMapper.insertSelective(userShop);
+            if(userShopMapper.selectByUidSid(userShop) != null && userShop.getId() > 0){
+                return ResultHelper.genResult(ErrorCodeEnum.FAILED.getCode(), "已关注过");
+            }
+            return ResultHelper.genResultWithSuccess(userShopMapper.insertSelective(userShop));
         }
-        return 0;
+        return ResultHelper.genResult(ErrorCodeEnum.FAILED.getCode(), "关注失败");
     }
 
     /**
@@ -262,7 +268,7 @@ public class ShopService {
         shopFilter.setUid(uid);
         shopFilter.setOffset(pageSize);
         shopFilter.setLimit(page);
-        if(pageSize == null && pageSize <= 0){
+        if(pageSize == null || pageSize <= 0){
             shopFilter.setOffset(PageParam.PAGESIZE_DEFAULT);
         }
 
@@ -276,8 +282,9 @@ public class ShopService {
                 shopFilter.setCreateTime(logUserShop.getCreateTime());
             }
 
+            //查询数据库用户未读的店铺动态
             shopList = shopDao.findUnread(shopFilter);
-            if (shopList == null) {
+            if (shopList == null || shopList.size() <= 0) {
                 //
                 shopFilter.setCreateTime(null);
                 shopList = shopDao.findUnread(shopFilter);
@@ -303,6 +310,9 @@ public class ShopService {
         if (shopList != null && shopList.size() > 0) {
             for (Shop shop : shopList) {
                 ShopapiVO shopapiVO = new ShopapiVO();
+                shop.getTicket().setTicketType(
+                        ticketTypeMapper.selectByPrimaryKey(
+                                Integer.parseInt(shop.getTicket().getTypeId() + "")));
                 shopapiVO.setShop(shopManagerService.changeStatus2Char(shop));
 
                 //组装ticketvo

@@ -21,6 +21,8 @@ public class TicketVO {
     //用户对券的使用情况
     private String utStatus;
 
+    private String isTaken;
+
     public TicketWithBLOBs getTicket() {
         return ticket;
     }
@@ -67,5 +69,13 @@ public class TicketVO {
 
     public void set_isReUse(String _isReUse) {
         this._isReUse = _isReUse;
+    }
+
+    public String getIsTaken() {
+        return isTaken;
+    }
+
+    public void setIsTaken(String isTaken) {
+        this.isTaken = isTaken;
     }
 }

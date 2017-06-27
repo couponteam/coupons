@@ -3,8 +3,8 @@
 <mapper namespace="com.masou.coupon.data.mappers.UserShopMapper">
   <resultMap id="BaseResultMap" type="com.masou.coupon.data.models.UserShop">
     <id column="id" jdbcType="BIGINT" property="id" />
-    <result column="user_id" jdbcType="CHAR" property="userId" />
-    <result column="shop_id" jdbcType="CHAR" property="shopId" />
+    <result column="user_id" jdbcType="BIGINT" property="userId" />
+    <result column="shop_id" jdbcType="BIGINT" property="shopId" />
     <result column="status" jdbcType="TINYINT" property="status" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
   </resultMap>
@@ -16,6 +16,14 @@
     <include refid="Base_Column_List" />
     from rel_user_shop
     where id = #{id,jdbcType=BIGINT}
+  </select>
+
+  <select id="selectByUidSid" parameterType="com.masou.coupon.data.models.UserShop" resultMap="BaseResultMap">
+    select
+    id
+    from rel_user_shop
+    where user_id = #{userId,jdbcType=BIGINT}
+		AND shop_id = #{shopId, jdbcType=BIGINT}
   </select>
 
   <select id="followers" parameterType="com.masou.coupon.data.filter.StatisticFilter"  resultType="java.lang.Integer">
@@ -35,15 +43,12 @@
   <insert id="insert" parameterType="com.masou.coupon.data.models.UserShop">
     insert into rel_user_shop (id, user_id, shop_id, 
       status, create_time)
-    values (#{id,jdbcType=BIGINT}, #{userId,jdbcType=CHAR}, #{shopId,jdbcType=CHAR}, 
+    values (#{id,jdbcType=BIGINT}, #{userId,jdbcType=CHAR}, #{shopId,jdbcType=BIGINT},
       #{status,jdbcType=TINYINT}, #{createTime,jdbcType=TIMESTAMP})
   </insert>
   <insert id="insertSelective" parameterType="com.masou.coupon.data.models.UserShop">
     insert into rel_user_shop
     <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="id != null">
-        id,
-      </if>
       <if test="userId != null">
         user_id,
       </if>
@@ -62,10 +67,10 @@
         #{id,jdbcType=BIGINT},
       </if>
       <if test="userId != null">
-        #{userId,jdbcType=CHAR},
+        #{userId,jdbcType=BIGINT},
       </if>
       <if test="shopId != null">
-        #{shopId,jdbcType=CHAR},
+        #{shopId,jdbcType=BIGINT},
       </if>
       <if test="status != null">
         #{status,jdbcType=TINYINT},
@@ -79,10 +84,10 @@
     update rel_user_shop
     <set>
       <if test="userId != null">
-        user_id = #{userId,jdbcType=CHAR},
+        user_id = #{userId,jdbcType=BIGINT},
       </if>
       <if test="shopId != null">
-        shop_id = #{shopId,jdbcType=CHAR},
+        shop_id = #{shopId,jdbcType=BIGINT},
       </if>
       <if test="status != null">
         status = #{status,jdbcType=TINYINT},
@@ -95,8 +100,8 @@
   </update>
   <update id="updateByPrimaryKey" parameterType="com.masou.coupon.data.models.UserShop">
     update rel_user_shop
-    set user_id = #{userId,jdbcType=CHAR},
-      shop_id = #{shopId,jdbcType=CHAR},
+    set user_id = #{userId,jdbcType=BIGINT},
+      shop_id = #{shopId,jdbcType=BIGINT},
       status = #{status,jdbcType=TINYINT},
       create_time = #{createTime,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=BIGINT}

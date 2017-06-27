@@ -301,7 +301,7 @@
         </if>
         ORDER BY
             us.create_time DESC
-        limit #{offset,jdbcType=INTEGER}, #{limit, jdbcType=INTEGER}
+        limit #{limit,jdbcType=INTEGER}, #{offset, jdbcType=INTEGER}
     </select>
 
     <select id="findUnread" parameterType="com.masou.coupon.data.filter.ShopFilter" resultMap="BaseResultMap">
