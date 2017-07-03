@@ -1,5 +1,7 @@
 package com.masou.coupon.data.mappers;
 
+import com.masou.coupon.data.filter.BaseFilter;
+import com.masou.coupon.data.filter.ShopFilter;
 import com.masou.coupon.data.models.UserTicket;
 import org.apache.ibatis.annotations.Mapper;
 
@@ -26,4 +28,8 @@ public interface UserTicketMapper {
     int updateByUtId(UserTicket userTicket);
 
     Integer ticketTaken();
+
+    Integer ticketUnRead(BaseFilter baseFilter);
+
+    List<UserTicket> ticketBeenTakenAndUsed(ShopFilter shopFilter);
 }

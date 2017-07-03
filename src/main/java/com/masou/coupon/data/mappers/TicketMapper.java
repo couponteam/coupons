@@ -2,6 +2,7 @@ package com.masou.coupon.data.mappers;
 
 import com.masou.coupon.action.erpapi.vo.TicketPageParam;
 import com.masou.coupon.data.filter.BaseFilter;
+import com.masou.coupon.data.filter.StatisticFilter;
 import com.masou.coupon.data.models.UserTicket;
 import com.masou.coupon.data.param.PageParam;
 import com.masou.coupon.data.filter.ShopFilter;
@@ -45,5 +46,7 @@ public interface TicketMapper {
 
     int isRetaken(UserTicket record);
 
-    Integer ticketCount(BaseFilter baseFilter);
+    Integer ticketCount(StatisticFilter statisticFilter);
+
+    Integer selectCountByTid(StatisticFilter statisticFilter);
 }

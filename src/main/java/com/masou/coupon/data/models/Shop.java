@@ -25,9 +25,9 @@ public class Shop {
 
     private String businessLicenseId;
 
-    private float longitude;
+    private Float longitude;
 
-    private float dimensionality;
+    private Float dimensionality;
 
     private Byte isShopVerified;
 
@@ -191,22 +191,6 @@ public class Shop {
         this.phoneVerifiedTime = phoneVerifiedTime;
     }
 
-    public float getLongitude() {
-        return longitude;
-    }
-
-    public void setLongitude(float longitude) {
-        this.longitude = longitude;
-    }
-
-    public float getDimensionality() {
-        return dimensionality;
-    }
-
-    public void setDimensionality(float dimensionality) {
-        this.dimensionality = dimensionality;
-    }
-
     public Integer getRank() {
         return rank;
     }
@@ -301,5 +285,21 @@ public class Shop {
 
     public void setUread(Integer uread) {
         this.uread = uread;
+    }
+
+    public Float getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(Float longitude) {
+        this.longitude = longitude;
+    }
+
+    public Float getDimensionality() {
+        return dimensionality;
+    }
+
+    public void setDimensionality(Float dimensionality) {
+        this.dimensionality = dimensionality;
     }
 }

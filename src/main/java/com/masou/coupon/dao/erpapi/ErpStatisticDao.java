@@ -1,6 +1,7 @@
 package com.masou.coupon.dao.erpapi;
 
 import com.masou.coupon.data.filter.BaseFilter;
+import com.masou.coupon.data.filter.StatisticFilter;
 import com.masou.coupon.data.mappers.*;
 import com.masou.coupon.data.models.LogUserVisit;
 import com.masou.coupon.data.models.UserManager;
@@ -53,9 +54,10 @@ public class ErpStatisticDao {
         return 0;
     }
 
-    public Integer ticketCount(BaseFilter baseFilter){
-        Integer count = ticketMapper.ticketCount(baseFilter);
-        if(count != null)
+    public Integer ticketCount(StatisticFilter statisticFilter){
+//        StatisticFilter statisticFilter = (StatisticFilter) baseFilter;
+        Integer count = ticketMapper.ticketCount(statisticFilter);
+        if(count != null && count > 0)
             return count;
         return 0;
     }

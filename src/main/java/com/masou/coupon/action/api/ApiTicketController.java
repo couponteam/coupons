@@ -6,7 +6,6 @@ import com.masou.coupon.common.constant.DicValue;
 import com.masou.coupon.common.enums.ErrorCodeEnum;
 import com.masou.coupon.common.struct.Result;
 import com.masou.coupon.common.utils.ResultHelper;
-import com.masou.coupon.data.filter.LngAndLatParam;
 import com.masou.coupon.data.filter.LocaltionFilter;
 import com.masou.coupon.data.models.LogUserVisit;
 import com.masou.coupon.data.models.Shop;
@@ -74,7 +73,6 @@ public class ApiTicketController {
                                     @RequestParam("tid") String tid
 //                                    ,@RequestParam("uid") Long uid
                                     ){
-
         Long uid = userTokenService.getUid(token);
         return ticketService.userCollectTicket(uid,tid, DicValue.TICKET_STATUS_GOT);
     }
@@ -125,6 +123,7 @@ public class ApiTicketController {
                              @RequestParam( value = "industry", required = false) Integer industry,
                              @RequestParam(value = "type", required = false) Integer type,
                              @RequestParam("page") Integer page,
+//                             @RequestParam("uid") Long uid,
                              @RequestParam(value = "pageSize",required = false) Integer pageSize,
                              @RequestParam(value = "keyword", required = false) String keyword,
                              @RequestParam(value = "token", required = false) String token,
@@ -141,9 +140,7 @@ public class ApiTicketController {
             params.setRadius(radius);
             try {
                 Long uid = userTokenService.getUid(token);
-                if(Boolean.parseBoolean(isFollow)){
-                    params.setUid(uid);
-                }
+                params.setUid(uid);
             }catch(Exception e){
                 e.printStackTrace();
                 return ResultHelper.genResult(ErrorCodeEnum.SHOP_NECESSERY);
@@ -155,7 +152,6 @@ public class ApiTicketController {
             if(keyword != null && keyword.trim().length() > 0){
                 params.setKeyword(keyword);
             }
-            params.setKeyword(keyword);
             if(Math.abs(Float.parseFloat(longitude)) <= 0 && Math.abs(Float.parseFloat(latitude)) <= 0){
                 logger.info("" + longitude + "-" +  latitude);
                 //定位失败

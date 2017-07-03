@@ -3,6 +3,8 @@ package com.masou.coupon.service.api;
 
 import com.masou.coupon.action.api.vo.UserVO;
 import com.masou.coupon.action.erpapi.vo.UserListVO;
+import com.masou.coupon.data.mappers.UserApplyMapper;
+import com.masou.coupon.data.models.UserApply;
 import com.masou.coupon.data.param.PageParam;
 import com.masou.coupon.common.enums.MessageTypeEnum;
 import com.masou.coupon.common.struct.Result;
@@ -37,6 +39,9 @@ public class UserService {
 
     @Autowired
     private UserTokenService userTokenService;
+
+//    @Autowired
+//    private UserApplyMapper userApplyMapper = new UserApply();
 
     @Autowired
     private MD5Util md5Util;
@@ -77,48 +82,77 @@ public class UserService {
 
     @Transactional
     public Result register(String phone, String verify, String password, String fromKey, String beInviteCode,boolean ignoreVerify,Integer role) {
+        //手机号格式是否正确
         if (!phoneUtil.isPhone(phone)) {
             throw new UserException(ErrorCodeEnum.SYS_ERROR, "手机号不正确");
         }
-        User user = userDao.selectByPhone(phone);
-        if (user != null) {
-            throw new UserException(ErrorCodeEnum.PHONE_EXIST);
-        }
 
+        //手机号是否验证
         if (!ignoreVerify) {
             if (!phoneMessageService.checkVerify(phone, verify, MessageTypeEnum.USER_REGISTER.getCode())) {
                 throw new UserException(ErrorCodeEnum.WRONG_VERIFY);
             }
         }
 
+        //商户注册，查看表中是否存在该手机号
+        User user = userDao.selectByPhone(phone);
+        if (user != null) {
+            throw new UserException(ErrorCodeEnum.PHONE_EXIST);
+        }
         Long uid = CommonKeyUtils.genUniqueKey();
-
         user = new User(uid, phone, this.encrypt(password), new Date(), role, phone);
-
         UserProfile profile = new UserProfile();
         profile.setBeInviteCode(beInviteCode);
         profile.setFromKey(fromKey);
         profile.setNickname(phone);
         profile.setPhone(phone);
 
+        int count = 0;
         while (true) {
             String inviteCode = randomKeyUtil.getRandomString(5);
             User existUser = userDao.selectByInviteCode(inviteCode);
-            if (existUser == null) {
+            if (existUser == null || count >= 3) {
                 profile.setInviteCode(inviteCode);
                 break;
             }
+            count ++;
         }
-
         profile.setUid(uid);
-
         userDao.insertSelective(user);
         userProfileDao.insertSelective(profile);
-
         return ResultHelper.genResultWithSuccess();
-
     }
 
+    /**
+     * 我的店铺要加入
+     * @param phone
+     * @param verify
+     * @param username
+     * @param ignoreVerify
+     * @return
+     */
+    @Transactional
+    public Result myShopJoin(String phone, String verify, String username, boolean ignoreVerify){
+        //手机号格式是否正确
+        if (!phoneUtil.isPhone(phone)) {
+            throw new UserException(ErrorCodeEnum.SYS_ERROR, "手机号不正确");
+        }
+
+        //手机号是否验证
+        if (!ignoreVerify) {
+            if (!phoneMessageService.checkVerify(phone, verify, MessageTypeEnum.USER_REGISTER.getCode())) {
+                throw new UserException(ErrorCodeEnum.WRONG_VERIFY);
+            }
+        }
+        //我要加入
+        UserApply userApply = new UserApply();
+        userApply.setPhone(phone);
+        userApply.setUsername(username);
+        if(userDao.insertSelective(userApply) > 0){
+            return ResultHelper.genResultWithSuccess();
+        }
+        return ResultHelper.genResult(ErrorCodeEnum.FAILED);
+    }
 
     public Result changePassword(Long uid, String oldPassword, String newPassword) {
         User user = userDao.selectByPrimaryKey(uid);
@@ -131,7 +165,6 @@ public class UserService {
 
         return ResultHelper.genResultWithSuccess();
     }
-
 
     public Result forgetPassword(String phone, String verify, String newPassword) {
         if (!phoneUtil.isPhone(phone)) {

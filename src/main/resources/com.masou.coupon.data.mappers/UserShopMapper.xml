@@ -20,7 +20,7 @@
 
   <select id="selectByUidSid" parameterType="com.masou.coupon.data.models.UserShop" resultMap="BaseResultMap">
     select
-    id
+    id,status
     from rel_user_shop
     where user_id = #{userId,jdbcType=BIGINT}
 		AND shop_id = #{shopId, jdbcType=BIGINT}

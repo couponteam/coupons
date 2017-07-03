@@ -19,6 +19,8 @@ public class UserTicket {
 
     private String statusStr;
 
+    private Integer num;
+
     public Long getId() {
         return id;
     }
@@ -81,5 +83,13 @@ public class UserTicket {
 
     public void setStatusStr(String statusStr) {
         this.statusStr = statusStr;
+    }
+
+    public Integer getNum() {
+        return num;
+    }
+
+    public void setNum(Integer num) {
+        this.num = num;
     }
 }

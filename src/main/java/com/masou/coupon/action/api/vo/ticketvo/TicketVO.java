@@ -23,6 +23,10 @@ public class TicketVO {
 
     private String isTaken;
 
+    private int taken;
+
+    private int used;
+
     public TicketWithBLOBs getTicket() {
         return ticket;
     }
@@ -77,5 +81,21 @@ public class TicketVO {
 
     public void setIsTaken(String isTaken) {
         this.isTaken = isTaken;
+    }
+
+    public int getTaken() {
+        return taken;
+    }
+
+    public void setTaken(int taken) {
+        this.taken = taken;
+    }
+
+    public int getUsed() {
+        return used;
+    }
+
+    public void setUsed(int used) {
+        this.used = used;
     }
 }

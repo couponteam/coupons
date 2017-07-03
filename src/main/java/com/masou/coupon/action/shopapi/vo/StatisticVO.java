@@ -5,17 +5,17 @@ package com.masou.coupon.action.shopapi.vo;
  */
 public class StatisticVO {
 
-    private Integer followersTotal;
+    private int followersTotal;
 
-    private Integer followersToday;
+    private int followersToday;
 
-    private Integer pageViewTotal;
+    private int pageViewTotal;
 
-    private Integer pageViewToday;
+    private int pageViewToday;
 
-    private Integer ticketTotal;
+    private int ticketTotal;
 
-    private Integer ticketToday;
+    private int ticketToday;
 
     public Integer getFollowersTotal() {
         return followersTotal;

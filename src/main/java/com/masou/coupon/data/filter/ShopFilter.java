@@ -32,6 +32,8 @@ public class ShopFilter extends BaseFilter {
 
     private Integer verified = ShopVerifyEnum.VERIFIED.getCode();
 
+    private Integer rank;
+
     public Integer getVerified() {
         return verified;
     }
@@ -112,5 +114,13 @@ public class ShopFilter extends BaseFilter {
 
     public void setIds(List<Long> ids) {
         this.ids = ids;
+    }
+
+    public Integer getRank() {
+        return rank;
+    }
+
+    public void setRank(Integer rank) {
+        this.rank = rank;
     }
 }

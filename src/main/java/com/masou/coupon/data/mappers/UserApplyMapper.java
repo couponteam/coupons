@@ -1,9 +1,12 @@
 package com.masou.coupon.data.mappers;
 
+import com.masou.coupon.data.filter.ShopFilter;
 import com.masou.coupon.data.models.UserApply;
+import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
 
+@Mapper
 public interface UserApplyMapper {
     int deleteByPrimaryKey(Long id);
 
@@ -17,5 +20,5 @@ public interface UserApplyMapper {
 
     int updateByPrimaryKey(UserApply record);
 
-    List<UserApply> applylist(Byte status);
+    List<UserApply> applylist(ShopFilter shopFilter);
 }

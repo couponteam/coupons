@@ -22,7 +22,7 @@ public interface UserShopMapper {
 
     int statistic(StatisticFilter statisticFilter);
 
-    int followers(StatisticFilter statisticFilter);
+    Integer followers(StatisticFilter statisticFilter);
 
     int memberCount(Date today);
 

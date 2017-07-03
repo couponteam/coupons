@@ -10,7 +10,7 @@ public class ErpStscVO {
 
     private Integer MemberDaily;
 
-    private Integer ticketTotal;
+    private Integer ticketTotal = 0;
 
     private Integer ticketDaily;
 

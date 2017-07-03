@@ -34,10 +34,6 @@ public class ErpUserDenyController {
     @RequestMapping(value = "/insert", method = RequestMethod.POST)
     public Result insert(@RequestParam("phone") String phone,
                          @RequestParam("description") String description) {
-
-
         return userDenyService.insertSelective(phone, description);
     }
-
-
 }

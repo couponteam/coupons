@@ -26,14 +26,31 @@ public class ErpShopManagerController {
     private ErpShopManagerService erpShopManagerService;
 
     @ApiOperation("精选店铺排行")
-    @RequestMapping(value = "/insert", method = RequestMethod.POST)
-    public Result bestShopRank(@RequestParam(value = "sid") Long sid,
-                               @RequestParam(value = "rank") Integer rank){
+    @RequestMapping(value = "/update", method = RequestMethod.GET)
+    public Result bestShopRank(@RequestParam("sid") Long sid,
+                               @RequestParam(value = "rank", required = false) Integer rank){
 
-
-
-
+        if(erpShopManagerService.bestShopRank(sid, rank) > 0){
+            return ResultHelper.genResultWithSuccess();
+        }
         return ResultHelper.genResult(ErrorCodeEnum.RANK_FAILED);
+    }
+
+    @ApiOperation("我的店铺要加入列表")
+    @RequestMapping(value = "/applyList", method = RequestMethod.GET)
+    public Result applyForShopList(
+                                    @RequestParam("token") String token,
+                                   @RequestParam(value = "status", required = false) String status){
+//        Long uid = userTokenService.getUid(token);
+        return erpShopManagerService.applyForShopList(status);
+    }
+
+    @ApiOperation("精选店铺列表")
+    @RequestMapping(value = "/bestList", method = RequestMethod.GET)
+    public Result bestShopList(
+            @RequestParam("token") String token){
+//        Long uid = userTokenService.getUid(token);
+        return erpShopManagerService.bestShopList();
     }
 
 

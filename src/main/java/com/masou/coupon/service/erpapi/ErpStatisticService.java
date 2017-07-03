@@ -6,8 +6,8 @@ import com.masou.coupon.common.struct.Result;
 import com.masou.coupon.common.utils.ResultHelper;
 import com.masou.coupon.dao.erpapi.ErpStatisticDao;
 import com.masou.coupon.data.filter.BaseFilter;
+import com.masou.coupon.data.filter.StatisticFilter;
 import com.masou.coupon.data.models.UserManager;
-import com.masou.coupon.data.param.PageParam;
 import com.masou.coupon.utils.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -28,6 +28,7 @@ public class ErpStatisticService {
 
     public ErpStscVO statistic(){
         ErpStscVO erpStscVO = new ErpStscVO();
+        StatisticFilter statisticFilter = new StatisticFilter();
         BaseFilter baseFilter = new BaseFilter();
         //无须时间参数
         erpStscVO.setMemberTotal(erpStatisticDao.memberCount(baseFilter));
@@ -35,15 +36,15 @@ public class ErpStatisticService {
 
         erpStscVO.setShopTotal(erpStatisticDao.shopCount(baseFilter));
         erpStscVO.setTicketTaken(erpStatisticDao.ticketTaken());
-        erpStscVO.setTicketTotal(erpStatisticDao.ticketCount(baseFilter));
-
+        erpStscVO.setTicketTotal(erpStatisticDao.ticketCount(statisticFilter));
 
         baseFilter.setToday(dateUtil.todayOnlyDate());
+        statisticFilter.setToday(dateUtil.todayOnlyDate());
         //需要时间参数的请求
         erpStscVO.setUv(erpStatisticDao.webStatistic(baseFilter));
         erpStscVO.setMemberDaily(erpStatisticDao.memberCount(baseFilter));
         erpStscVO.setShopDaily(erpStatisticDao.shopCount(baseFilter));
-        erpStscVO.setTicketDaily(erpStatisticDao.ticketCount(baseFilter));
+        erpStscVO.setTicketDaily(erpStatisticDao.ticketCount(statisticFilter));
 
         return erpStscVO;
     }

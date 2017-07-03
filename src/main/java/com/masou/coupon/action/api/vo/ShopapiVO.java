@@ -12,7 +12,11 @@ public class ShopapiVO implements Comparable<ShopapiVO>{
 
     @Override
     public int compareTo(ShopapiVO o) {
-        return Integer.parseInt((this.distance - o.distance) + "");
+
+        if((this.distance - o.distance) > 0 ){
+            return 1;
+        }
+        return 0;
     }
 
     private Shop shop;

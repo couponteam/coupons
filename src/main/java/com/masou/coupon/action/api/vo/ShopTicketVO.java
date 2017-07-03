@@ -1,5 +1,6 @@
 package com.masou.coupon.action.api.vo;
 
+import com.masou.coupon.action.api.vo.ticketvo.TicketVO;
 import com.masou.coupon.data.models.Shop;
 import com.masou.coupon.data.models.TicketWithBLOBs;
 
@@ -11,7 +12,8 @@ import java.util.List;
  */
 public class ShopTicketVO {
 
-    private TicketWithBLOBs ticket;
+//    private TicketWithBLOBs ticket;
+    private TicketVO ticketVO;
 
     private Shop shop;
 
@@ -23,11 +25,19 @@ public class ShopTicketVO {
         this.shop = shop;
     }
 
-    public TicketWithBLOBs getTicket() {
-        return ticket;
+    public TicketVO getTicketVO() {
+        return ticketVO;
     }
 
-    public void setTicket(TicketWithBLOBs ticket) {
-        this.ticket = ticket;
+    public void setTicketVO(TicketVO ticketVO) {
+        this.ticketVO = ticketVO;
     }
+
+    //    public TicketWithBLOBs getTicket() {
+//        return ticket;
+//    }
+//
+//    public void setTicket(TicketWithBLOBs ticket) {
+//        this.ticket = ticket;
+//    }
 }

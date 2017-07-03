@@ -6,12 +6,10 @@ import com.masou.coupon.action.api.vo.TicketResultVO;
 import com.masou.coupon.action.api.vo.ticketvo.TicketVO;
 import com.masou.coupon.action.erpapi.vo.TicketPageParam;
 import com.masou.coupon.dao.ShopApiDao.TicketManagerDao;
+import com.masou.coupon.data.filter.ShopFilter;
 import com.masou.coupon.data.mappers.TicketTypeMapper;
 import com.masou.coupon.data.mappers.UserTicketMapper;
-import com.masou.coupon.data.models.Ticket;
-import com.masou.coupon.data.models.TicketType;
-import com.masou.coupon.data.models.TicketWithBLOBs;
-import com.masou.coupon.data.models.UserTicket;
+import com.masou.coupon.data.models.*;
 import com.masou.coupon.data.param.PageParam;
 import com.masou.coupon.exception.UserException;
 import com.masou.coupon.service.CommonService;
@@ -102,6 +100,7 @@ public class TicketManagerService {
                         vo.setIsTaken("已领取");
                     }
                 }
+                ticketBeenTakenAndUsed(ticket, vo);
 
                 vo.setTicket(ticket);
                 fileTicketVO(vo, ticket);
@@ -109,12 +108,35 @@ public class TicketManagerService {
             }
             resultVo.setTicketVO(listVo);
             resultVo.setTotal(selectCount(tdata));
+
             return resultVo;
         }catch (Exception e){
             e.printStackTrace();
             throw new UserException();
         }
     }
+
+    /**
+     * 查询数据库中已领取券数和已使用券数
+     * @param ticket
+     * @return
+     */
+    private void ticketBeenTakenAndUsed(TicketWithBLOBs ticket, TicketVO vo){
+        ShopFilter shopFilter = new ShopFilter();
+        shopFilter.setTid(ticket.getTicketId());
+
+        List<UserTicket> userTickets = userTicketMapper.ticketBeenTakenAndUsed(shopFilter);
+        for (UserTicket userTicket : userTickets) {
+            if (userTicket .getStatus() == 2){
+                //设置已领取的数量
+                vo.setTaken(userTicket.getNum());
+            }else if(userTicket .getStatus() == 3){
+                //设置已使用的数量
+                vo.setUsed(userTicket.getNum());
+            }
+        }
+    }
+
 
     public void fileTicketVO(TicketVO vo, TicketWithBLOBs ticket){
         vo.set_typeId(commonService.changeTicketType(ticket.getTypeId()));

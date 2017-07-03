@@ -45,6 +45,12 @@
             <result column="applicable_scope" jdbcType="LONGVARCHAR" property="applicableScope" />
             <result column="working_condition" jdbcType="LONGVARCHAR" property="workingCondition" />
             <result column="validity_comment" jdbcType="LONGVARCHAR" property="validityComment" />
+            <association property="ticketType" javaType="com.masou.coupon.data.models.TicketType">
+                <id column="id" jdbcType="INTEGER" property="id" />
+                <result column="ttcomment" jdbcType="VARCHAR" property="comment" />
+                <result column="status" jdbcType="INTEGER" property="status" />
+                <result column="icon" jdbcType="VARCHAR" property="icon" />
+            </association>
         </association>
         <association property="userShop" javaType="com.masou.coupon.data.models.UserShop">
             <id column="id" jdbcType="BIGINT" property="id" />
@@ -77,6 +83,23 @@
     <sql id="Base_Column_ut">
        ut.id as uticketid, ut.user_id, ut.ticket_id, ut.status as utStatus, ut.create_time, ut.ut_id
     </sql>
+    <sql id="Ticket_Type_list">
+        tt.comment as ttcomment,tt.icon
+    </sql>
+
+    <select id="ticketUnRead" parameterType="com.masou.coupon.data.filter.BaseFilter" resultType="java.lang.Integer">
+        SELECT
+          COUNT(t.id)
+        FROM
+          rel_user_shop us,
+          ety_ticket t
+        WHERE
+            t.shop_id = us.shop_id
+            AND us.user_id = #{uid, jdbcType=BIGINT}
+            AND t.create_time > #{today, jdbcType=TIMESTAMP}
+        LIMIT 1;
+    </select>
+
     <select id="selectByType" parameterType="com.masou.coupon.data.filter.ShopFilter" resultMap="BaseResultMap">
         SELECT
           *
@@ -84,12 +107,15 @@
         (
             SELECT
                 s.*,
-                <include refid="Base_Column_Ticket"/>
+                <include refid="Base_Column_Ticket"/>,
+                <include refid="Ticket_Type_list"/>
             FROM
                 ety_shop s,
-                ety_ticket t
+                ety_ticket t,
+                dic_ticket_type tt
             WHERE
                 s.id = t.shop_id
+                AND tt.id = t.type_id
                 <if test="industry != null">
                     and s.industry_id=#{industry, jdbcType=INTEGER}
                 </if>
@@ -112,24 +138,43 @@
         SELECT
             s.*,
             <include refid="Base_Column_Ticket"/>,
-            <include refid="Base_Column_ut"/>
+            <include refid="Base_Column_ut"/>,
+            <include refid="Ticket_Type_list" />
         FROM
         ety_shop s,
         ety_ticket t,
-        rel_user_ticket ut
+        rel_user_ticket ut,
+        dic_ticket_type tt
         WHERE
         s.id = t.shop_id
         AND t.ticket_id = ut.ticket_id
         AND ut.user_id = #{uid, jdbcType=BIGINT}
-        <!--<if test="status == 2">-->
-            <!--AND t.period_of_validity_endTime &lt; NOW()-->
-        <!--</if>-->
-        <!--<if test="status == -3">-->
-            <!--t.status = #{status, jdbcType=TINYINT}-->
-        <!--</if>-->
-        <!--<if test="status == 3 or status=4">-->
-            <!--AND ut.`status` = #{status, jdbcType=TINYINT}-->
-        <!--</if>-->
+        AND  tt.id = t.type_id
+        AND t.period_of_validity_endTime &gt; NOW()
+        AND t.`status`&lt;&gt; 3
+        ORDER BY
+        ut.create_time
+        limit #{limit,jdbcType=INTEGER}, #{offset, jdbcType=INTEGER};
+    </select>
+
+    <select id="myTicketNoUse" parameterType="com.masou.coupon.data.filter.ShopFilter" resultMap="BaseResultMap">
+        SELECT
+        s.*,
+        <include refid="Base_Column_Ticket"/>,
+        <include refid="Base_Column_ut"/>,
+        <include refid="Ticket_Type_list" />
+        FROM
+        ety_shop s,
+        ety_ticket t,
+        rel_user_ticket ut,
+        dic_ticket_type tt
+        WHERE
+        s.id = t.shop_id
+        AND t.ticket_id = ut.ticket_id
+        AND ut.user_id = #{uid, jdbcType=BIGINT}
+        AND  tt.id = t.type_id
+        AND (t.period_of_validity_endTime &lt; NOW()
+        OR t.`status` = 3 OR  t.`status` = -3)
         ORDER BY
         ut.create_time
         limit #{limit,jdbcType=INTEGER}, #{offset, jdbcType=INTEGER};
@@ -147,15 +192,8 @@
         s.id = t.shop_id
         AND t.ticket_id = ut.ticket_id
         AND ut.user_id = #{uid, jdbcType=BIGINT}
-        <!--<if test="status == 2">-->
-            <!--AND t.period_of_validity_endTime &lt; NOW()-->
-        <!--</if>-->
-        <!--<if test="status == -3">-->
-            <!--t.status = #{status, jdbcType=TINYINT}-->
-        <!--</if>-->
-        <!--<if test="status == 3 or status=4">-->
-            <!--AND ut.`status` = #{status, jdbcType=TINYINT}-->
-        <!--</if>-->
+        AND t.period_of_validity_endTime &gt; NOW()
+        AND t.`status`&lt;&gt; 3
         ORDER BY
         ut.create_time;
     </select>
@@ -164,14 +202,17 @@
         SELECT
             s.*,
             <include refid="Base_Column_Ticket"/>,
+            <include refid="Ticket_Type_list" />,
             COUNT(*) AS pnum
         FROM
             ety_shop s,
             ety_ticket t,
-            rel_user_ticket ut
+            rel_user_ticket ut,
+            dic_ticket_type tt
         WHERE
             s.id = t.shop_id
         AND t.ticket_id = ut.ticket_id
+        AND  tt.id = t.type_id
         GROUP BY
             t.shop_id
         ORDER BY
@@ -182,19 +223,40 @@
     <select id="userReadTicket" parameterType="com.masou.coupon.data.filter.ShopFilter" resultMap="BaseResultMap">
         SELECT
             s.*,
-            <include refid="Base_Column_Ticket"/>
+            <include refid="Base_Column_Ticket"/>,
+            <include refid="Ticket_Type_list" />
         FROM
             ety_shop s,
-            ety_ticket t
+            ety_ticket t,
+            dic_ticket_type tt
         WHERE
             s.id = t.shop_id
         AND t.ticket_id = #{tid, jdbcType=CHAR}
+        AND  tt.id = t.type_id
+    </select>
+
+    <select id="bestShopList" parameterType="com.masou.coupon.data.filter.ShopFilter" resultMap="BaseResultMap">
+        SELECT
+            <include refid="Base_Column_List"/>
+        FROM
+            ety_shop
+        WHERE
+            rank > 0
+        ORDER BY
+            create_time DESC;
     </select>
 
     <select id="bestShop" parameterType="com.masou.coupon.data.filter.ShopFilter" resultMap="BaseResultMap">
-        select
-        <include refid="Base_Column_List"/>
-        from ety_shop where rank > 0 ORDER BY create_time desc,rank DESC LIMIT #{limit, jdbcType=INTEGER};
+        SELECT
+          <include refid = "Base_Column_List" />
+        FROM
+          ety_shop
+        WHERE
+          rank > 0
+        ORDER BY
+          create_time DESC,
+          rank DESC
+        LIMIT #{limit, jdbcType=INTEGER};
     </select>
 
     <select id="findByLocation" parameterType="com.masou.coupon.data.filter.LocaltionFilter" resultMap="BaseResultMap">
@@ -204,12 +266,15 @@
         (
             SELECT
                 s.*,
-                <include refid="Base_Column_Ticket"/>
+                <include refid="Base_Column_Ticket"/>,
+                <include refid="Ticket_Type_list" />
             FROM
                 ety_shop s,
-                ety_ticket t
+                ety_ticket t,
+                dic_ticket_type tt
             WHERE
                 s.id = t.shop_id
+                AND  tt.id = t.type_id
                 <if test="industry != null">
                     and s.industry_id=#{industry, jdbcType=INTEGER}
                 </if>
@@ -283,15 +348,18 @@
             s.dimensionality,
             s.profile_picture,
             s.brief_intro,
-            t.*
+            t.*,
+            <include refid="Ticket_Type_list" />
         FROM
             ety_shop s,
             rel_user_shop us,
-            ety_ticket t
+            ety_ticket t,
+            dic_ticket_type tt
         WHERE
             us.user_id = #{uid, jdbcType=BIGINT}
         AND s.id = us.shop_id
         AND t.shop_id = s.id
+        AND  tt.id = t.type_id
         <if test="keyword != null">
             AND (
             s.shop_name like "%"#{keyword, jdbcType=VARCHAR}"%"
@@ -330,7 +398,12 @@
         AND t.create_time &gt; #{createTime,jdbcType=TIMESTAMP}
         </if>
         AND t.`status` = 1
-        AND s.id
+        <if test = "ids != null">
+            AND s.id NOT IN
+            <foreach collection="ids" item="ids" index = "index" open="(" close=")" separator=",">
+                #{ids}
+            </foreach>
+        </if>
         GROUP BY
             s.id
         ORDER BY

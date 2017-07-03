@@ -9,6 +9,7 @@
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="last_update_time" jdbcType="TIMESTAMP" property="lastUpdateTime" />
     <result column="ut_id" jdbcType="VARCHAR" property="utId" />
+    <result column="num" jdbcType="INTEGER" property="num" />
   </resultMap>
   <sql id="Base_Column_List">
     id, user_id, ticket_id,ut_id, status, create_time, last_update_time
@@ -29,6 +30,29 @@
         `status` = 2;
   </select>
 
+  <select id="ticketUnRead" parameterType="com.masou.coupon.data.filter.BaseFilter" resultType="java.lang.Integer">
+    SELECT
+	  COUNT(id)
+    FROM
+        rel_user_ticket
+    WHERE
+        user_id = #{uid, jdbcType=BIGINT}
+    AND create_time > #{today, jdbcType=TIMESTAMP}
+    LIMIT 1;
+  </select>
+
+  <select id="ticketBeenTakenAndUsed" parameterType="com.masou.coupon.data.filter.ShopFilter" resultMap="BaseResultMap">
+    SELECT
+        id,COUNT(id) as num,`status`
+    FROM
+        rel_user_ticket
+    WHERE
+        ticket_id = #{tid, jdbcType=CHAR}
+    AND (`status` = 2 OR `status` = 3)
+    GROUP BY
+        `status`;
+  </select>
+
   <select id="findByUidTid" parameterType="com.masou.coupon.data.models.UserTicket" resultMap="BaseResultMap">
     SELECT
     <include refid="Base_Column_List" />
@@ -36,7 +60,7 @@
         rel_user_ticket
     WHERE
         user_id = #{userId, jdbcType=BIGINT}
-    AND ut_id = #{utId, jdbcType=VARCHAR};
+    AND ticket_id = #{ticketId, jdbcType=VARCHAR};
   </select>
 
   <select id="findByUidTidNotUtid" parameterType="com.masou.coupon.data.models.UserTicket" resultMap="BaseResultMap">

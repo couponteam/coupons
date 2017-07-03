@@ -30,8 +30,12 @@ public class ApiStatisticDao {
      * 店铺总关注数
      * @param statisticFilter
      */
-    public int followersTotal(StatisticFilter statisticFilter){
-        return userShopMapper.followers(statisticFilter);
+    public Integer followersTotal(StatisticFilter statisticFilter){
+        Integer count = userShopMapper.followers(statisticFilter);
+        if(count != null){
+            return count;
+        }
+        return 0;
     }
 
     /**
@@ -42,11 +46,15 @@ public class ApiStatisticDao {
         StatisticFilter sclone = null;
         try {
             sclone = (StatisticFilter)statisticFilter.clone();
-            statisticFilter.setToday(dateUtil.todayOnlyDate());
+            sclone.setToday(dateUtil.todayOnlyDate());
+            Integer count = userShopMapper.followers(sclone);
+            if(count != null){
+                return count;
+            }
         }catch (CloneNotSupportedException e){
             e.printStackTrace();
         }
-        return userShopMapper.followers(statisticFilter);
+        return 0;
     }
 
     /**
@@ -54,8 +62,12 @@ public class ApiStatisticDao {
      * @param statisticFilter
      * @return
      */
-    public int pageViewTotal(StatisticFilter statisticFilter){
-        return logUserShopMapper.pageView(statisticFilter);
+    public Integer pageViewTotal(StatisticFilter statisticFilter){
+        Integer count = logUserShopMapper.pageView(statisticFilter);
+        if(count != null ){
+            return count;
+        }
+        return 0;
     }
 
     /**
@@ -67,11 +79,15 @@ public class ApiStatisticDao {
         StatisticFilter sclone = null;
         try {
             sclone = (StatisticFilter)statisticFilter.clone();
-            statisticFilter.setToday(dateUtil.todayOnlyDate());
+            sclone.setToday(dateUtil.todayOnlyDate());
+            Integer count = logUserShopMapper.pageView(sclone);
+            if(count != null){
+                return count;
+            }
         }catch (CloneNotSupportedException e){
             e.printStackTrace();
         }
-        return logUserShopMapper.pageView(statisticFilter);
+        return 0;
     }
 
     /**
@@ -80,7 +96,11 @@ public class ApiStatisticDao {
      * @return
      */
     public int ticketTotal(StatisticFilter statisticFilter){
-        return logUserShopMapper.pageView(statisticFilter);
+        Integer count = ticketMapper.ticketCount(statisticFilter);
+        if(count != null){
+            return count;
+        }
+        return 0;
     }
 
     /**
@@ -92,12 +112,14 @@ public class ApiStatisticDao {
         StatisticFilter sclone = null;
         try {
             sclone = (StatisticFilter)statisticFilter.clone();
-            statisticFilter.setToday(dateUtil.todayOnlyDate());
+            sclone.setToday(dateUtil.todayOnlyDate());
+            Integer count = ticketMapper.ticketCount(sclone);
+            if(count != null){
+                return count;
+            }
         }catch (CloneNotSupportedException e){
             e.printStackTrace();
         }
-        return logUserShopMapper.pageView(statisticFilter);
+        return 0;
     }
-
-
 }

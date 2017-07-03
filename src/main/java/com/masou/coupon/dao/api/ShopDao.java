@@ -2,6 +2,7 @@ package com.masou.coupon.dao.api;
 
 import com.alibaba.fastjson.JSON;
 import com.masou.coupon.action.api.vo.ticketvo.ShopList;
+import com.masou.coupon.data.filter.BaseFilter;
 import com.masou.coupon.data.filter.LocaltionFilter;
 import com.masou.coupon.data.filter.ShopFilter;
 import com.masou.coupon.data.mappers.ShopMapper;
@@ -40,6 +41,10 @@ public class ShopDao {
         return shopMapper.myTicket(shopFilter);
     }
 
+    public List<Shop> myTicketNoUse(ShopFilter shopFilter){
+        return shopMapper.myTicketNoUse(shopFilter);
+    }
+
     public List<Shop> findUnread(ShopFilter shopFilter){
         return shopMapper.findUnread(shopFilter);
     }
@@ -47,6 +52,10 @@ public class ShopDao {
     public Integer myTicketCount(ShopFilter shopFilter){
         return shopMapper.myTicketCount(shopFilter);
     };
+
+    public Integer ticketUnRead(BaseFilter baseFilter){
+        return shopMapper.ticketUnRead(baseFilter);
+    }
 
     /**
      * 获取当前定位的店铺信息

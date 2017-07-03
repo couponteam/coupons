@@ -13,14 +13,8 @@ import com.masou.coupon.common.struct.Result;
 import com.masou.coupon.common.utils.ResultHelper;
 import com.masou.coupon.dao.api.ShopDao;
 import com.masou.coupon.dao.api.TicketDao;
-import com.masou.coupon.data.filter.BaseFilter;
-import com.masou.coupon.data.filter.LngAndLatParam;
-import com.masou.coupon.data.filter.LocaltionFilter;
-import com.masou.coupon.data.filter.ShopFilter;
-import com.masou.coupon.data.mappers.LogUserShopMapper;
-import com.masou.coupon.data.mappers.TicketTypeMapper;
-import com.masou.coupon.data.mappers.UserShopMapper;
-import com.masou.coupon.data.mappers.UserTicketMapper;
+import com.masou.coupon.data.filter.*;
+import com.masou.coupon.data.mappers.*;
 import com.masou.coupon.data.models.*;
 import com.masou.coupon.data.param.PageParam;
 import com.masou.coupon.service.CommonService;
@@ -76,6 +70,9 @@ public class TicketService {
     private TicketTypeMapper ticketTypeMapper;
 
     @Autowired
+    private TicketMapper ticketMapper;
+
+    @Autowired
     private ShopManagerService shopManagerService;
 
     @Autowired
@@ -112,18 +109,27 @@ public class TicketService {
         shopFilter.setUid(uid);
         shopFilter.setLimit(page);
 
-        if(status != null && status > 0){
-            shopFilter.setStatus(status);
-        }
         shopFilter.setOffset(pageSize);
         if(pageSize == null || pageSize <= 0){
             shopFilter.setOffset(PageParam.PAGESIZE_DEFAULT);
         }
 
         ShopList shopLists = new ShopList();
-        List<Shop> shopList = shopDao.myTicket(shopFilter);
+        List<Shop> shopList = null;
+        if(status != null && status > 0){
+            shopFilter.setStatus(status);
+            shopList = shopDao.myTicket(shopFilter);
+        }else if(status != null && status == -23){
+            shopList = shopDao.myTicketNoUse(shopFilter);
+        }else{
+            shopList = shopDao.myTicket(shopFilter);
+        }
+
+
+        List<Shop> newList = new ArrayList<Shop>();
         if (shopList != null && shopList.size() > 0){
             for (Shop shop: shopList) {
+                System.out.println(JSON.toJSONString(shop));
                 shop.getUserTicket().setStatusStr(changeUtStatus(shop.getUserTicket().getStatus()));
                 //获取券type信息
                 shop.getTicket().setTicketType(
@@ -138,9 +144,10 @@ public class TicketService {
                 if(userTickets  != null && userTickets.size() > 0){
                     shop.getTicket().setUserTicket(userTickets.get(0));
                 }
+                newList.add(shop);
             }
 
-            shopLists.setShops(shopList);
+            shopLists.setShops(newList);
             shopLists.setTotal(shopDao.myTicketCount(shopFilter));
             return ResultHelper.genResultWithSuccess(shopLists);
         }
@@ -232,6 +239,13 @@ public class TicketService {
     }
 
     public synchronized boolean checkTicketAmount(String tid){
+        StatisticFilter statisticFilter = new StatisticFilter();
+        statisticFilter.setTid(tid);
+        int token = ticketMapper.ticketCount(statisticFilter);
+        int total = ticketMapper.selectCountByTid(statisticFilter);
+        if((total - token) <= 0){
+            return false;
+        }
         return true;
     }
 
@@ -268,6 +282,10 @@ public class TicketService {
                 shop.getTicket().setUserTicket(userTickets.get(0));
             }
             shopTicketVO = new ShopTicketVO();
+            TicketVO ticketVO = new TicketVO();
+            ticketManagerService.fileTicketVO(ticketVO,shop.getTicket());
+            shopTicketVO.setTicketVO(ticketVO);
+
             shopManagerService.changeStatus2Char(shop);
             shopTicketVO.setShop(shop);
         }
@@ -308,14 +326,14 @@ public class TicketService {
 
             //获取当前店铺是否已关注
             if (uid != null && uid > 0){
-                System.out.println("UID is not empty");
                 UserShop userShop = new UserShop();
                 userShop.setUserId(uid);
                 userShop.setShopId(sid);
                 UserShop rs = userShopMapper.selectByUidSid(userShop);
-                System.out.println(JSON.toJSONString(rs));
                 if (rs != null && rs.getId() > 0){
-                    shopTicket.setIsFocus("已关注");
+                    if(rs.getStatus() == DicValue.SHOP_USER_FOCUS){
+                        shopTicket.setIsFocus("已关注");
+                    }
                 }
             }
             shopTicket.setTickets(tickets);
@@ -339,11 +357,6 @@ public class TicketService {
         logUserShop.setUid(uid);
         logUserShopMapper.insertSelective(logUserShop);
         logger.info("[User visit shop log] : " + JSON.toJSONString(logUserShop));
-    }
-
-   public List<ShopTicketListVO> selectTicketByShopId(Long sid, Long uid){
-
-        return null;
     }
 
     public List<TicketWithBLOBs> selectByShopId(Long sid){
@@ -385,12 +398,49 @@ public class TicketService {
             }
 
             //对结果进行排序
-            Collections.sort(shopVOList);
+//            Collections.sort(shopVOList);
             shopResultVO.setShopVOList(shopVOList);
             shopResultVO.setTotal(shopVOList.size());
+            shopResultVO.setUnReadMsg(isUnRead(params.getUid()));
             return shopResultVO;
         }
         return null;
+    }
+
+    /**
+     * 查询数据库中是否有未读消息
+     * @param uid
+     * @return
+     */
+    private boolean isUnRead(Long uid){
+        if(uid != null && uid > 0){
+            BaseFilter baseFilter = new BaseFilter();
+            LogUserShop logUserShop = logUserShopMapper.selectByUid(uid);
+            if (logUserShop != null) {
+                baseFilter.setUid(uid);
+                baseFilter.setToday(logUserShop.getCreateTime());
+                Integer count = shopService.ticketUnRead(baseFilter);
+                if(count != null && count > 0){
+                    return true;
+                }
+            }else{
+                return false;
+            }
+        }
+        return false;
+    }
+
+    public Integer unReadCount(Long uid){
+        if(uid != null && uid > 0){
+            BaseFilter baseFilter = new BaseFilter();
+            LogUserShop logUserShop = logUserShopMapper.selectByUid(uid);
+            if (logUserShop != null) {
+                baseFilter.setUid(uid);
+                baseFilter.setToday(logUserShop.getCreateTime());
+                return shopService.ticketUnRead(baseFilter);
+            }
+        }
+        return 0;
     }
 
     /**

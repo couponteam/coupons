@@ -15,6 +15,8 @@ public class StatisticFilter extends BaseFilter implements Cloneable{
 
     private Date today;
 
+    private String tid;
+
     public Date getFromData() {
         return fromData;
     }
@@ -47,6 +49,14 @@ public class StatisticFilter extends BaseFilter implements Cloneable{
         this.today = today;
     }
 
+    public String getTid() {
+        return tid;
+    }
+
+    public void setTid(String tid) {
+        this.tid = tid;
+    }
+
     @Override
     public Object clone() throws CloneNotSupportedException {
         StatisticFilter statisticFilter = null;
@@ -57,4 +67,5 @@ public class StatisticFilter extends BaseFilter implements Cloneable{
         }
         return statisticFilter;
     }
+
 }

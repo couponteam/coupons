@@ -11,6 +11,8 @@ public class ShopResultVO {
 
     private int total;
 
+    private boolean isUnReadMsg;
+
     public List<ShopapiVO> getShopVOList() {
         return shopVOList;
     }
@@ -25,5 +27,13 @@ public class ShopResultVO {
 
     public void setTotal(int total) {
         this.total = total;
+    }
+
+    public boolean isUnReadMsg() {
+        return isUnReadMsg;
+    }
+
+    public void setUnReadMsg(boolean unReadMsg) {
+        isUnReadMsg = unReadMsg;
     }
 }

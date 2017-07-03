@@ -25,13 +25,11 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/shop/api/user")
 public class ApiShopUserController {
 
-
     @Autowired
     private ShopService shopService;
 
     @Autowired
     private UserService userService;
-
 
     @Autowired
     private UserTokenService userTokenService;
@@ -47,6 +45,8 @@ public class ApiShopUserController {
             @RequestParam("shopName") String shopName,
             @RequestParam("shopAddress") String shopAddress,
             @RequestParam("industryId") Integer industryId,
+            @RequestParam("longitude") String longitude,
+            @RequestParam("latitude") String latitude,
             @RequestParam("token") String token) {
         Long uid = userTokenService.getUid(token);
         if (uid == null || uid <= 0) {
@@ -65,6 +65,12 @@ public class ApiShopUserController {
         record.setShopAddress(shopAddress);
         record.setIndustryId(industryId);
         record.setUid(uid);
+        if(longitude != null && longitude.trim().length() > 0){
+            record.setLongitude(Float.parseFloat(longitude));
+            record.setDimensionality(Float.parseFloat(latitude));
+        }else{
+            return ResultHelper.genResult(ErrorCodeEnum.NULL_VALUE_ERROR);
+        }
         return shopService.apply(record);
     }
 
@@ -100,12 +106,12 @@ public class ApiShopUserController {
     @ApiOperation("商家注册")
     @PostMapping("/register")
     public Result register(@RequestParam("phone") String phone,
-                           @RequestParam("verify") String verify,
-                           @RequestParam("password") String password) {
+                           @RequestParam(value = "verify", required = false) String verify,
+                           @RequestParam(value = "username", required = false) String username
+                           ) {
 
-        return userService.register(phone, verify, password, "shop", null, false, RoleEnum.SHOP_OWNER.getRole());
+        return userService.myShopJoin(phone, verify, username, false);
     }
-
 
     @ApiOperation("修改密码")
     @RequestMapping(value = "/changePassword", method = RequestMethod.POST)
@@ -141,6 +147,4 @@ public class ApiShopUserController {
 
         return shopService.logout(token);
     }
-
-
 }

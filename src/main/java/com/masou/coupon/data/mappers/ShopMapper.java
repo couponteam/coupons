@@ -39,6 +39,8 @@ public interface ShopMapper {
 
     List<Shop> bestShop(ShopFilter shopFilter);
 
+//    int bestShopRank(ShopFilter shopFilter);
+
     List<Shop> findByLocation(LocaltionFilter filter);
 
     Shop shopMD5(String shopMD5);
@@ -57,9 +59,15 @@ public interface ShopMapper {
 
     List<Shop> myTicket(ShopFilter shopFilter);
 
+    List<Shop> myTicketNoUse(ShopFilter shopFilter);
+
     int myTicketCount(ShopFilter shopFilter);
 
     List<Shop> popShopList(BaseFilter baseFilter);
 
     Integer shopCount(BaseFilter baseFilter);
+
+    List<Shop> bestShopList();
+
+    Integer ticketUnRead(BaseFilter baseFilter);
 }

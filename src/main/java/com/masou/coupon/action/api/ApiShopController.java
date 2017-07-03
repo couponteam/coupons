@@ -58,7 +58,7 @@ public class ApiShopController {
         return ResultHelper.genResult(ErrorCodeEnum.NULL_VALUE_ERROR.getCode(), "传入店铺id"+ErrorCodeEnum.NULL_VALUE_ERROR.getMsg());
     }
 
-    @ApiOperation("用户关注店铺")
+    @ApiOperation("用户关注/取消关注店铺")
     @RequestMapping(value = "/follow", method = RequestMethod.GET)
     public Result section(
             @RequestParam("token") String token,

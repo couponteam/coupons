@@ -19,7 +19,7 @@ public interface LogUserShopMapper {
 
     int updateByPrimaryKey(LogUserShop record);
 
-    int pageView(StatisticFilter statisticFilter);
+    Integer pageView(StatisticFilter statisticFilter);
 
     LogUserShop selectByUid(Long uid);
 }

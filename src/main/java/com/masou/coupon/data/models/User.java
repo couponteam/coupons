@@ -7,20 +7,20 @@ public class User {
 
     private String username;
 
-    private String password;
-
     private Date createAt;
 
     private Integer role;
 
     private String phone;
 
+    private String password;
+
     private UserProfile profile;
 
     public User() {
     }
 
-    public User(Long id, String username, String password, Date createAt, Integer role, String phone) {
+    public User(Long id,String username, String password, Date createAt, Integer role, String phone) {
         this.id = id;
         this.username = username;
         this.password = password;
