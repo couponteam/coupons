@@ -2,7 +2,9 @@ package com.masou.coupon.data.mappers;
 
 import com.masou.coupon.data.filter.BaseFilter;
 import com.masou.coupon.data.filter.ShopFilter;
+import com.masou.coupon.data.filter.UserFilter;
 import com.masou.coupon.data.models.UserTicket;
+import com.masou.coupon.data.models.UserTicketPersonal;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
@@ -32,4 +34,8 @@ public interface UserTicketMapper {
     Integer ticketUnRead(BaseFilter baseFilter);
 
     List<UserTicket> ticketBeenTakenAndUsed(ShopFilter shopFilter);
+
+
+    List<UserTicketPersonal> selectListByUid(ShopFilter filter);
+
 }

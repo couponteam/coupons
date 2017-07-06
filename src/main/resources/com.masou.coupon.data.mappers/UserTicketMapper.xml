@@ -1,27 +1,162 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.masou.coupon.data.mappers.UserTicketMapper">
-  <resultMap id="BaseResultMap" type="com.masou.coupon.data.models.UserTicket">
-    <id column="id" jdbcType="BIGINT" property="id" />
-    <result column="user_id" jdbcType="CHAR" property="userId" />
-    <result column="ticket_id" jdbcType="CHAR" property="ticketId" />
-    <result column="status" jdbcType="TINYINT" property="status" />
-    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
-    <result column="last_update_time" jdbcType="TIMESTAMP" property="lastUpdateTime" />
-    <result column="ut_id" jdbcType="VARCHAR" property="utId" />
-    <result column="num" jdbcType="INTEGER" property="num" />
-  </resultMap>
-  <sql id="Base_Column_List">
+    <resultMap id="BaseResultMap" type="com.masou.coupon.data.models.UserTicket">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="user_id" jdbcType="CHAR" property="userId"/>
+        <result column="ticket_id" jdbcType="CHAR" property="ticketId"/>
+        <result column="status" jdbcType="TINYINT" property="status"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="last_update_time" jdbcType="TIMESTAMP" property="lastUpdateTime"/>
+        <result column="ut_id" jdbcType="VARCHAR" property="utId"/>
+        <result column="num" jdbcType="INTEGER" property="num"/>
+    </resultMap>
+
+    <resultMap id="DetailResultMap" type="com.masou.coupon.data.models.UserTicketPersonal">
+        <id column="rid" jdbcType="BIGINT" property="id"/>
+        <result column="ruser_id" jdbcType="CHAR" property="userId"/>
+        <result column="rticket_id" jdbcType="CHAR" property="ticketId"/>
+        <result column="rstatus" jdbcType="TINYINT" property="status"/>
+        <result column="rcreate_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="rlast_update_time" jdbcType="TIMESTAMP" property="lastUpdateTime"/>
+        <result column="rut_id" jdbcType="VARCHAR" property="utId"/>
+        <result column="rnum" jdbcType="INTEGER" property="num"/>
+
+        <association property="shop" javaType="com.masou.coupon.data.models.Shop">
+            <id column="sid" jdbcType="BIGINT" property="id"/>
+            <result column="suid" jdbcType="BIGINT" property="uid"></result>
+            <result column="sshop_name" jdbcType="VARCHAR" property="shopName"/>
+            <result column="sicon_id" jdbcType="VARCHAR" property="iconId"/>
+            <result column="sindustry_id" jdbcType="INTEGER" property="industryId"/>
+            <result column="sphone" jdbcType="CHAR" property="phone"/>
+            <result column="sis_phone_verified" jdbcType="TINYINT" property="isPhoneVerified"/>
+            <result column="stelephone" jdbcType="CHAR" property="telephone"/>
+            <result column="stelephone_ex" jdbcType="CHAR" property="telephoneEx"/>
+            <result column="sbrief_intro" jdbcType="VARCHAR" property="briefIntro"/>
+            <result column="sbusiness_license_id" jdbcType="VARCHAR" property="businessLicenseId"/>
+            <result column="slongitude" jdbcType="DECIMAL" property="longitude"/>
+            <result column="sdimensionality" jdbcType="DECIMAL" property="dimensionality"/>
+            <result column="sis_shop_verified" jdbcType="TINYINT" property="isShopVerified"/>
+            <result column="swechat_account" jdbcType="VARCHAR" property="wechatAccount"/>
+            <result column="sshop_address" jdbcType="VARCHAR" property="shopAddress"/>
+            <result column="srank" jdbcType="TINYINT" property="rank"/>
+            <result column="screate_time" jdbcType="TIMESTAMP" property="createTime"/>
+            <result column="slast_update_time" jdbcType="TIMESTAMP" property="lastUpdateTime"/>
+            <result column="sphone_verified_time" jdbcType="TIMESTAMP" property="phoneVerifiedTime"/>
+            <result column="scomment" jdbcType="VARCHAR" property="comment"/>
+            <result column="sprofile_picture" jdbcType="VARCHAR" property="profilePicture"/>
+            <result column="suread" jdbcType="INTEGER" property="uread"/>
+
+        </association>
+
+        <association property="ticket" javaType="com.masou.coupon.data.models.Ticket">
+            <id column="tid" jdbcType="BIGINT" property="id"/>
+            <result column="tticket_id" jdbcType="CHAR" property="ticketId"/>
+            <result column="tshop_id" jdbcType="BIGINT" property="shopId"/>
+            <result column="tticket_name" jdbcType="VARCHAR" property="ticketName"/>
+            <result column="tcontent" jdbcType="VARCHAR" property="content"/>
+            <result column="ttype_id" jdbcType="TINYINT" property="typeId"/>
+            <result column="tperiod_of_validity_startTime" jdbcType="TIMESTAMP" property="periodOfValidityStarttime"/>
+            <result column="tperiod_of_validity_endTime" jdbcType="TIMESTAMP" property="periodOfValidityEndtime"/>
+            <result column="tcomment" jdbcType="VARCHAR" property="comment"/>
+            <result column="tstatus" jdbcType="TINYINT" property="status"/>
+            <result column="tcollecting_method" jdbcType="TINYINT" property="collectingMethod"/>
+            <result column="tis_retaken" jdbcType="TINYINT" property="isRetaken"/>
+            <result column="tis_re_use" jdbcType="TINYINT" property="isReUse"/>
+            <result column="tcreate_time" jdbcType="TIMESTAMP" property="createTime"/>
+            <result column="tamount" jdbcType="INTEGER" property="amount"/>
+            <result column="ttaken" jdbcType="INTEGER" property="taken"/>
+        </association>
+
+
+    </resultMap>
+
+    <sql id="Detail_Column_List">
+        r.id as rid,
+        r.user_id as ruser_id,
+        r.ticket_id as rticket_id,
+        r.status as rstatus,
+        r.create_time as rcreate_time,
+        r.last_update_time as rlast_update_time,
+        r.ut_id as rut_id,
+
+        s.id as sid,
+        s.uid as suid,
+        s.shop_name as sshop_name,
+        s.icon_id as sicon_id,
+        s.industry_id as sindustry_id,
+        s.phone as sphone,
+        s.is_phone_verified as sis_phone_verified,
+        s.telephone as stelephone,
+        s.telephone_ex as stelephone_ex,
+        s.brief_intro as sbrief_intro,
+        s.business_license_id as sbusiness_license_id,
+        s.longitude as slongitude,
+        s.dimensionality as sdimensionality,
+        s.is_shop_verified as sis_shop_verified,
+        s.wechat_account as swechat_account,
+        s.shop_address as sshop_address,
+        s.rank as srank,
+        s.create_time as screate_time,
+        s.last_update_time as slast_update_time,
+        s.phone_verified_time as sphone_verified_time,
+        s.`comment` as scomment,
+        s.profile_picture as sprofile_picture,
+
+        t.id as tid,
+        t.ticket_id as tticket_id,
+        t.shop_id as tshop_id,
+        t.ticket_name as tticket_name,
+        t.content as tcontent,
+        t.type_id as ttype_id,
+        t.period_of_validity_startTime as tperiod_of_validity_startTime,
+        t.period_of_validity_endTime as tperiod_of_validity_endTime,
+        t.comment as tcomment,
+        t.status as tstatus,
+        t.collecting_method as tcollecting_method,
+        t.is_retaken as tis_retaken,
+        t.is_re_use as tis_re_use,
+        t.create_time as tcreate_time,
+        t.amount as tamount
+    </sql>
+
+
+    <sql id="Base_Column_List">
     id, user_id, ticket_id,ut_id, status, create_time, last_update_time
   </sql>
-  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
-    select 
-    <include refid="Base_Column_List" />
-    from rel_user_ticket
-    where id = #{id,jdbcType=BIGINT}
-  </select>
 
-  <select id="ticketTaken" parameterType="java.lang.Integer" resultType="java.lang.Integer">
+    <select id="selectListByUid" resultMap="DetailResultMap">
+        select
+        <include refid="Detail_Column_List"/>
+
+        from rel_user_ticket r
+        left join ety_ticket t
+        on r.ticket_id=t.ticket_id
+        left join ety_shop s
+        on s.id=t.shop_id
+
+
+        <where>
+
+            <if test="uid!=null">
+                and r.user_id = #{uid}
+            </if>
+            <if test="status!=null">
+                and r.status=#{status}
+            </if>
+
+        </where>
+
+    </select>
+
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from rel_user_ticket
+        where id = #{id,jdbcType=BIGINT}
+    </select>
+
+    <select id="ticketTaken" parameterType="java.lang.Integer" resultType="java.lang.Integer">
     SELECT
         COUNT(id)
     FROM
@@ -30,7 +165,7 @@
         `status` = 2;
   </select>
 
-  <select id="ticketUnRead" parameterType="com.masou.coupon.data.filter.BaseFilter" resultType="java.lang.Integer">
+    <select id="ticketUnRead" parameterType="com.masou.coupon.data.filter.BaseFilter" resultType="java.lang.Integer">
     SELECT
 	  COUNT(id)
     FROM
@@ -41,7 +176,8 @@
     LIMIT 1;
   </select>
 
-  <select id="ticketBeenTakenAndUsed" parameterType="com.masou.coupon.data.filter.ShopFilter" resultMap="BaseResultMap">
+    <select id="ticketBeenTakenAndUsed" parameterType="com.masou.coupon.data.filter.ShopFilter"
+            resultMap="BaseResultMap">
     SELECT
         id,COUNT(id) as num,`status`
     FROM
@@ -53,31 +189,31 @@
         `status`;
   </select>
 
-  <select id="findByUidTid" parameterType="com.masou.coupon.data.models.UserTicket" resultMap="BaseResultMap">
-    SELECT
-    <include refid="Base_Column_List" />
-    FROM
+    <select id="findByUidTid" parameterType="com.masou.coupon.data.models.UserTicket" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM
         rel_user_ticket
-    WHERE
+        WHERE
         user_id = #{userId, jdbcType=BIGINT}
-    AND ticket_id = #{ticketId, jdbcType=VARCHAR};
-  </select>
+        AND ticket_id = #{ticketId, jdbcType=VARCHAR};
+    </select>
 
-  <select id="findByUidTidNotUtid" parameterType="com.masou.coupon.data.models.UserTicket" resultMap="BaseResultMap">
-    SELECT
-    <include refid="Base_Column_List" />
-    FROM
-    rel_user_ticket
-    WHERE
-    user_id = #{userId, jdbcType=BIGINT}
-    AND ticket_id = #{ticketId, jdbcType=VARCHAR};
-  </select>
+    <select id="findByUidTidNotUtid" parameterType="com.masou.coupon.data.models.UserTicket" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM
+        rel_user_ticket
+        WHERE
+        user_id = #{userId, jdbcType=BIGINT}
+        AND ticket_id = #{ticketId, jdbcType=VARCHAR};
+    </select>
 
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     delete from rel_user_ticket
     where id = #{id,jdbcType=BIGINT}
   </delete>
-  <insert id="insert" parameterType="com.masou.coupon.data.models.UserTicket">
+    <insert id="insert" parameterType="com.masou.coupon.data.models.UserTicket">
     insert into rel_user_ticket (id, user_id, ticket_id, ut_id,
       status, create_time, last_update_time
       )
@@ -85,77 +221,77 @@
       #{status,jdbcType=TINYINT}, #{createTime,jdbcType=TIMESTAMP}, #{lastUpdateTime,jdbcType=TIMESTAMP}
       )
   </insert>
-  <insert id="insertSelective" parameterType="com.masou.coupon.data.models.UserTicket">
-    insert into rel_user_ticket
-    <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="id != null">
-        id,
-      </if>
-      <if test="userId != null">
-        user_id,
-      </if>
-      <if test="ticketId != null">
-        ticket_id,
-      </if>
-      <if test="utId != null">
-        ut_id,
-      </if>
-      <if test="status != null">
-        status,
-      </if>
-      <if test="createTime != null">
-        create_time,
-      </if>
-      <if test="lastUpdateTime != null">
-        last_update_time,
-      </if>
-    </trim>
-    <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="id != null">
-        #{id,jdbcType=BIGINT},
-      </if>
-      <if test="userId != null">
-        #{userId,jdbcType=VARCHAR},
-      </if>
-      <if test="ticketId != null">
-        #{ticketId,jdbcType=CHAR},
-      </if>
-      <if test="utId != null">
-        #{utId, jdbcType=VARCHAR},
-      </if>
-      <if test="status != null">
-        #{status,jdbcType=TINYINT},
-      </if>
-      <if test="createTime != null">
-        #{createTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="lastUpdateTime != null">
-        #{lastUpdateTime,jdbcType=TIMESTAMP},
-      </if>
-    </trim>
-  </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.masou.coupon.data.models.UserTicket">
-    update rel_user_ticket
-    <set>
-      <if test="userId != null">
-        user_id = #{userId,jdbcType=VARCHAR},
-      </if>
-      <if test="ticketId != null">
-        ticket_id = #{ticketId,jdbcType=CHAR},
-      </if>
-      <if test="status != null">
-        status = #{status,jdbcType=TINYINT},
-      </if>
-      <if test="createTime != null">
-        create_time = #{createTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="lastUpdateTime != null">
-        last_update_time = #{lastUpdateTime,jdbcType=TIMESTAMP},
-      </if>
-    </set>
-    where id = #{id,jdbcType=BIGINT}
-  </update>
-  <update id="updateByPrimaryKey" parameterType="com.masou.coupon.data.models.UserTicket">
+    <insert id="insertSelective" parameterType="com.masou.coupon.data.models.UserTicket">
+        insert into rel_user_ticket
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="userId != null">
+                user_id,
+            </if>
+            <if test="ticketId != null">
+                ticket_id,
+            </if>
+            <if test="utId != null">
+                ut_id,
+            </if>
+            <if test="status != null">
+                status,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="lastUpdateTime != null">
+                last_update_time,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=BIGINT},
+            </if>
+            <if test="userId != null">
+                #{userId,jdbcType=VARCHAR},
+            </if>
+            <if test="ticketId != null">
+                #{ticketId,jdbcType=CHAR},
+            </if>
+            <if test="utId != null">
+                #{utId, jdbcType=VARCHAR},
+            </if>
+            <if test="status != null">
+                #{status,jdbcType=TINYINT},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="lastUpdateTime != null">
+                #{lastUpdateTime,jdbcType=TIMESTAMP},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.masou.coupon.data.models.UserTicket">
+        update rel_user_ticket
+        <set>
+            <if test="userId != null">
+                user_id = #{userId,jdbcType=VARCHAR},
+            </if>
+            <if test="ticketId != null">
+                ticket_id = #{ticketId,jdbcType=CHAR},
+            </if>
+            <if test="status != null">
+                status = #{status,jdbcType=TINYINT},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="lastUpdateTime != null">
+                last_update_time = #{lastUpdateTime,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.masou.coupon.data.models.UserTicket">
     update rel_user_ticket
     set user_id = #{userId,jdbcType=CHAR},
       ticket_id = #{ticketId,jdbcType=CHAR},
@@ -165,7 +301,7 @@
       last_update_time = #{lastUpdateTime,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=BIGINT}
   </update>
-  <update id="updateByUtId" parameterType="com.masou.coupon.data.models.UserTicket">
+    <update id="updateByUtId" parameterType="com.masou.coupon.data.models.UserTicket">
     UPDATE rel_user_ticket
     SET STATUS = #{status,jdbcType=TINYINT},
     WHERE

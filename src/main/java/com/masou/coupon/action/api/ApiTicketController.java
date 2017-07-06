@@ -123,7 +123,7 @@ public class ApiTicketController {
 //                           @RequestParam(value = "uid",required = false) Long uid,
                            @RequestParam(value = "status", required = false) Integer status){
         Long uid = userTokenService.getUid(token);
-        return ticketService.myTicket(page,pageSize,uid,status);
+        return ticketService.myTicket2(page,pageSize,uid,status);
     }
 
     /**

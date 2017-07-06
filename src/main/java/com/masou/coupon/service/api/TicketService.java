@@ -85,6 +85,7 @@ public class TicketService {
     @Autowired
     private UserShopMapper userShopMapper;
 
+
     @Autowired
     public DateUtil dateUtil;
 
@@ -202,6 +203,15 @@ public class TicketService {
 //            return ResultHelper.genResultWithSuccess(shopLists);
 //        }
 //        return ResultHelper.genResult(ErrorCodeEnum.NULL_VALUE_ERROR);
+    }
+
+    public Result myTicket2(Integer page, Integer pageSize, Long uid, Integer status){
+
+        ShopFilter filter = new ShopFilter();
+        filter.setStatus(status);
+        filter.setUid(uid);
+        return ResultHelper.genResultWithSuccess(userTicketMapper.selectListByUid(filter));
+
     }
 
     /**
