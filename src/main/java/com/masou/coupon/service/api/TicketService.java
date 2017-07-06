@@ -160,42 +160,48 @@ public class TicketService {
         }
 
         ShopList shopLists = new ShopList();
-        List<Shop> shopList = null;
-        if(status != null && status > 0){
-            shopFilter.setStatus(status);
-            shopList = shopDao.myTicket(shopFilter);
-        }else if(status != null && status == -23){
-            shopList = shopDao.myTicketNoUse(shopFilter);
-        }else{
-            shopList = shopDao.myTicket(shopFilter);
-        }
 
-        List<Shop> newList = new ArrayList<Shop>();
-        if (shopList != null && shopList.size() > 0){
-            for (Shop shop: shopList) {
-                System.out.println(JSON.toJSONString(shop));
-                shop.getUserTicket().setStatusStr(changeUtStatus(shop.getUserTicket().getStatus()));
-                //获取券type信息
-                shop.getTicket().setTicketType(
-                        ticketTypeMapper.selectByPrimaryKey(
-                                Integer.parseInt(shop.getTicket().getTypeId() + "")));
+        List<Ticket> tickets = ticketMapper.myTicket(shopFilter);
 
-                UserTicket userTicket = new UserTicket();
-                userTicket.setUserId(uid);
-                userTicket.setTicketId(shop.getTicket().getTicketId());
+        return ResultHelper.genResultWithSuccess(tickets);
 
-                List<UserTicket> userTickets = userTicketMapper.findByUidTid(userTicket);
-                if(userTickets  != null && userTickets.size() > 0){
-                    shop.getTicket().setUserTicket(userTickets.get(0));
-                }
-                newList.add(shop);
-            }
 
-            shopLists.setShops(newList);
-            shopLists.setTotal(shopDao.myTicketCount(shopFilter));
-            return ResultHelper.genResultWithSuccess(shopLists);
-        }
-        return ResultHelper.genResult(ErrorCodeEnum.NULL_VALUE_ERROR);
+
+//        List<Shop> shopList = null;
+//        if(status != null && status > 0){
+//            shopFilter.setStatus(status);
+//            shopList = shopDao.myTicket(shopFilter);
+//        }else if(status != null && status == -23){
+//            shopList = shopDao.myTicketNoUse(shopFilter);
+//        }else{
+//            shopList = shopDao.myTicket(shopFilter);
+//        }
+//
+//        List<Shop> newList = new ArrayList<Shop>();
+//        if (shopList != null && shopList.size() > 0){
+//            for (Shop shop: shopList) {
+//                shop.getUserTicket().setStatusStr(changeUtStatus(shop.getUserTicket().getStatus()));
+//                //获取券type信息
+//                shop.getTicket().setTicketType(
+//                        ticketTypeMapper.selectByPrimaryKey(
+//                                Integer.parseInt(shop.getTicket().getTypeId() + "")));
+//
+//                UserTicket userTicket = new UserTicket();
+//                userTicket.setUserId(uid);
+//                userTicket.setTicketId(shop.getTicket().getTicketId());
+//
+//                List<UserTicket> userTickets = userTicketMapper.findByUidTid(userTicket);
+//                if(userTickets  != null && userTickets.size() > 0){
+//                    shop.getTicket().setUserTicket(userTickets.get(0));
+//                }
+//                newList.add(shop);
+//            }
+//
+//            shopLists.setShops(newList);
+//            shopLists.setTotal(shopDao.myTicketCount(shopFilter));
+//            return ResultHelper.genResultWithSuccess(shopLists);
+//        }
+//        return ResultHelper.genResult(ErrorCodeEnum.NULL_VALUE_ERROR);
     }
 
     /**

@@ -66,6 +66,33 @@
         where t.ticket_id = #{ticketId,jdbcType=CHAR} AND  tt.id = t.type_id
     </select>
 
+
+    <select id="myTicket" parameterType="com.masou.coupon.data.filter.ShopFilter" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>,
+        <include refid="User_Ticket_list"/>,
+        <include refid="Ticket_Type_list" />
+        FROM
+        ety_ticket t,
+        rel_user_ticket ut,
+        dic_ticket_type tt
+        WHERE
+        t.ticket_id = ut.ticket_id
+        AND ut.user_id = #{uid, jdbcType=BIGINT}
+        AND  tt.id = t.type_id
+        AND t.period_of_validity_endTime &gt; NOW()
+        AND t.`status`&lt;&gt; 3
+        AND (
+        ut.`status` = 2
+        OR ut.`status` = 3
+        )
+        ORDER BY
+        ut.create_time
+        limit #{limit,jdbcType=INTEGER}, #{offset, jdbcType=INTEGER};
+    </select>
+
+
+
     <select id="ticketCount" parameterType="com.masou.coupon.data.filter.StatisticFilter" resultType="java.lang.Integer">
         SELECT
             COUNT(t.id)
