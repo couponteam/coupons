@@ -18,7 +18,14 @@
         <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
         <result column="amount" jdbcType="INTEGER" property="amount"/>
         <result column="taken" jdbcType="INTEGER" property="taken"/>
-        <association property="userTicket" javaType="com.masou.coupon.data.models.UserTicket">
+
+        <association property="ticketType" javaType="com.masou.coupon.data.models.TicketType">
+            <id column="id" jdbcType="INTEGER" property="id" />
+            <result column="ttcomment" jdbcType="VARCHAR" property="comment" />
+            <result column="status" jdbcType="INTEGER" property="status" />
+            <result column="icon" jdbcType="VARCHAR" property="icon" />
+        </association>
+        <collection property="userTicket" javaType="com.masou.coupon.data.models.UserTicket">
             <id column="id" jdbcType="BIGINT" property="id" />
             <result column="user_id" jdbcType="CHAR" property="userId" />
             <result column="ticket_id" jdbcType="CHAR" property="ticketId" />
@@ -26,14 +33,7 @@
             <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
             <result column="last_update_time" jdbcType="TIMESTAMP" property="lastUpdateTime" />
             <result column="ut_id" jdbcType="VARCHAR" property="utId" />
-        </association>
-        <association property="ticketType" javaType="com.masou.coupon.data.models.TicketType">
-            <id column="id" jdbcType="INTEGER" property="id" />
-            <result column="ttcomment" jdbcType="VARCHAR" property="comment" />
-            <result column="status" jdbcType="INTEGER" property="status" />
-            <result column="icon" jdbcType="VARCHAR" property="icon" />
-        </association>
-
+        </collection>
     </resultMap>
     <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.masou.coupon.data.models.TicketWithBLOBs">
         <result column="applicable_scope" jdbcType="LONGVARCHAR" property="applicableScope" />
@@ -150,6 +150,16 @@
     ORDER BY
         t.create_time DESC
     </select>
+
+    <select id="selectByTid" parameterType="com.masou.coupon.data.filter.ShopFilter" resultMap="ResultMapWithBLOBs">
+        SELECT
+            <include refid="Base_Column_List" />
+        FROM
+            ety_ticket t
+        WHERE
+            t.ticket_id = #{tid, jdbcType=CHAR}
+    </select>
+
 
     <select id="selectByShopId" parameterType="com.masou.coupon.data.filter.ShopFilter" resultMap="ResultMapWithBLOBs">
         select

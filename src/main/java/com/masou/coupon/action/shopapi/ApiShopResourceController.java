@@ -1,5 +1,6 @@
 package com.masou.coupon.action.shopapi;
 
+import com.masou.coupon.common.constant.DicValue;
 import com.masou.coupon.common.enums.ErrorCodeEnum;
 import com.masou.coupon.common.struct.Result;
 import com.masou.coupon.common.utils.ResultHelper;
@@ -43,6 +44,10 @@ public class ApiShopResourceController {
                          @RequestParam(value = "file") MultipartFile file) {
         String md5 = null;
         try {
+            //判断文件是否大于2M
+            if(file.getSize() > DicValue.MAX_IMAGE_SIZE){
+                throw new UserException("上传失败：文件大小不能超过2M");
+            }
             md5 = md5Util.MD5File(file.getBytes());
             String fileName = file.getOriginalFilename();
             String extension = fileName.substring(fileName.lastIndexOf(".") + 1);

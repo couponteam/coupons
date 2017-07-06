@@ -1,5 +1,6 @@
 package com.masou.coupon.dao;
 
+import com.alibaba.fastjson.JSON;
 import com.masou.coupon.data.mappers.LogUserVisitMapper;
 import com.masou.coupon.data.models.LogUserVisit;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +21,7 @@ public class UserLogDao {
      * @return
      */
     public int insertLog(LogUserVisit logUserVisit){
-        System.out.println("user log dao:");
-        return 0;
+        System.out.println("user log dao:" + JSON.toJSONString(logUserVisit));
+        return logUserVisitMapper.insertSelective(logUserVisit);
     }
 }

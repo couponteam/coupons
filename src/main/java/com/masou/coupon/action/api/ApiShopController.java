@@ -41,6 +41,9 @@ public class ApiShopController {
     private ShopService shopService;
 
     @Autowired
+    private UserLogService userLogService;
+
+    @Autowired
     private UserTokenService userTokenService;
 
     @ApiOperation("根据shop id查询券")
@@ -65,7 +68,6 @@ public class ApiShopController {
 //              @RequestParam("uid") Long uid,
                           @RequestParam("sid") Long sid,
                           @RequestParam("status") Integer status) {
-
         Long uid = userTokenService.getUid(token);
         return shopService.follow(uid, sid, status) ;
     }

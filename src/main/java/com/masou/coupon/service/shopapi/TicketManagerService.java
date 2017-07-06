@@ -137,12 +137,17 @@ public class TicketManagerService {
         }
     }
 
-
+    /**
+     * 将数字状态改成文字状态
+     * @param vo
+     * @param ticket
+     */
     public void fileTicketVO(TicketVO vo, TicketWithBLOBs ticket){
         vo.set_typeId(commonService.changeTicketType(ticket.getTypeId()));
         vo.set_isRetaken(commonService.changeTicketRetaken(ticket.getIsRetaken()));
         vo.set_isReUse(commonService.changeTicketReuse(ticket.getIsReUse()));
         vo.set_status(commonService.changeTicketStatus(ticket.getStatus()));
+        vo.set_colcMethod(commonService.changeCollecting_method(ticket.getCollectingMethod()));
     }
 
     private int selectCount(TicketPageParam tdata){

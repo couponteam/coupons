@@ -38,6 +38,7 @@ public class ShopDao {
 
 
     public List<Shop> myTicket(ShopFilter shopFilter){
+//        System.out.println("###############查询结果################" + JSON.toJSONString());
         return shopMapper.myTicket(shopFilter);
     }
 

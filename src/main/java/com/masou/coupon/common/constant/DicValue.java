@@ -5,6 +5,17 @@ package com.masou.coupon.common.constant;
  */
 public class DicValue {
 
+    //文件上传最大值，2M（1000B * 1000K * 2M）
+    public static final Integer MAX_IMAGE_SIZE = 2000000;
+
+    //券领取方式
+    /** 立即领取 **/
+    public static final Integer PICKUP_RIGHT_NOW = 1;
+    /** 转发领取 **/
+    public static final Integer PICKUP_FORWARD = 2;
+    /** 关注领取 **/
+    public static final Integer PICKUP_FOLLOW = 3;
+
     /** 与券相关的 **/
     public static final Integer TICKET_STATUS_READ = 1;
     public static final Integer TICKET_STATUS_GOT = 2;

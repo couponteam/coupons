@@ -49,4 +49,6 @@ public interface TicketMapper {
     Integer ticketCount(StatisticFilter statisticFilter);
 
     Integer selectCountByTid(StatisticFilter statisticFilter);
+
+    TicketWithBLOBs selectByTid(ShopFilter shopFilter);
 }

@@ -18,6 +18,8 @@ public class TicketVO {
 
     private String _isReUse;
 
+    private String _colcMethod;
+
     //用户对券的使用情况
     private String utStatus;
 
@@ -97,5 +99,13 @@ public class TicketVO {
 
     public void setUsed(int used) {
         this.used = used;
+    }
+
+    public String get_colcMethod() {
+        return _colcMethod;
+    }
+
+    public void set_colcMethod(String _colcMethod) {
+        this._colcMethod = _colcMethod;
     }
 }

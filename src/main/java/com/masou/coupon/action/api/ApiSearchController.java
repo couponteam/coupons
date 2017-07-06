@@ -6,6 +6,7 @@ import com.masou.coupon.common.utils.ResultHelper;
 import com.masou.coupon.data.models.HotWord;
 import com.masou.coupon.data.models.Shop;
 import com.masou.coupon.exception.UserException;
+import com.masou.coupon.service.UserLogService;
 import com.masou.coupon.service.api.BannerService;
 import com.masou.coupon.service.api.SearchService;
 import io.swagger.annotations.ApiOperation;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 /**
@@ -25,6 +27,12 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/search")
 public class ApiSearchController {
+
+    @Autowired
+    private HttpServletRequest request;
+
+    @Autowired
+    private UserLogService userLogService;
 
     @Autowired
     private SearchService searchService;

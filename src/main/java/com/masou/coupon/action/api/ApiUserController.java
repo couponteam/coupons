@@ -3,6 +3,7 @@ package com.masou.coupon.action.api;
 import com.masou.coupon.common.enums.RoleEnum;
 import com.masou.coupon.common.struct.Result;
 import com.masou.coupon.common.utils.ResultHelper;
+import com.masou.coupon.service.UserLogService;
 import com.masou.coupon.service.api.UserService;
 import com.masou.coupon.service.api.UserTokenService;
 import io.swagger.annotations.ApiOperation;
@@ -12,6 +13,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * Created by jason on 2017/5/16.
@@ -26,6 +29,12 @@ public class ApiUserController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private HttpServletRequest request;
+
+    @Autowired
+    private UserLogService userLogService;
 
     /**
      * 创建token
@@ -57,7 +66,7 @@ public class ApiUserController {
                            @RequestParam("fromKey") String fromKey,
                            @RequestParam(value = "beInviteCode", required = false) String beInviteCode) {
 
-        return userService.register(phone, verify, password, fromKey, beInviteCode, false, RoleEnum.USER.getRole());
+        return userService.register(phone, null, verify, password, fromKey, beInviteCode, false, RoleEnum.USER.getRole());
     }
 
 

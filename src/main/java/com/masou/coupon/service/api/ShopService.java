@@ -320,7 +320,6 @@ public class ShopService {
                 shopFilter.setCreateTime(null);
                 shopList = shopDao.findUnread(shopFilter);
             } else if (shopList.size() < shopFilter.getOffset()) {
-                System.out.println("Get read count");
                 shopFilter.setCreateTime(null);
                 shopFilter.setOffset(shopFilter.getOffset() - shopList.size());
                 List<Long> ids = new ArrayList<Long>();
@@ -344,20 +343,23 @@ public class ShopService {
             for (Shop shop : shopList) {
                 ShopapiVO shopapiVO = new ShopapiVO();
                 shop.setUread(ticketService.unReadCount(uid));
-                shop.getTicket().setTicketType(
-                        ticketTypeMapper.selectByPrimaryKey(
-                                Integer.parseInt(shop.getTicket().getTypeId() + "")));
-                shopapiVO.setShop(shopManagerService.changeStatus2Char(shop));
+                if(shop.getTicket() != null && shop.getTicket().getTicketId()!= null && shop.getTicket().getTicketId().length() > 1){
+                    shop.getTicket().setTicketType(
+                            ticketTypeMapper.selectByPrimaryKey(
+                                    Integer.parseInt(shop.getTicket().getTypeId() + "")));
 
-                //组装ticketvo
-                List<TicketVO> ticketVOs = new ArrayList<>();
-                List<TicketWithBLOBs> ticketWithBLOBses = shopDao.findBySid(shopFilter);
-                for (TicketWithBLOBs ticket : ticketWithBLOBses) {
-                    TicketVO ticketVo = new TicketVO();
-                    ticketManagerService.fileTicketVO(ticketVo, ticket);
-                    ticketVOs.add(ticketVo);
+                    //组装ticketvo
+                    List<TicketVO> ticketVOs = new ArrayList<>();
+                    List<TicketWithBLOBs> ticketWithBLOBses = shopDao.findBySid(shopFilter);
+                    for (TicketWithBLOBs ticket : ticketWithBLOBses) {
+                        TicketVO ticketVo = new TicketVO();
+                        ticketManagerService.fileTicketVO(ticketVo, ticket);
+                        ticketVOs.add(ticketVo);
+                    }
+                    shopapiVO.setTicketVO(ticketVOs);
                 }
-                shopapiVO.setTicketVO(ticketVOs);
+
+                shopapiVO.setShop(shopManagerService.changeStatus2Char(shop));
                 shopapiVOs.add(shopapiVO);
             }
             shopResultVO.setShopVOList(shopapiVOs);

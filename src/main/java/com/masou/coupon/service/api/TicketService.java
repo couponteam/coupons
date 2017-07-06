@@ -17,6 +17,7 @@ import com.masou.coupon.data.filter.*;
 import com.masou.coupon.data.mappers.*;
 import com.masou.coupon.data.models.*;
 import com.masou.coupon.data.param.PageParam;
+import com.masou.coupon.exception.UserException;
 import com.masou.coupon.service.CommonService;
 import com.masou.coupon.service.LocaltionCalcService;
 import com.masou.coupon.service.shopapi.ShopManagerService;
@@ -61,6 +62,9 @@ public class TicketService {
     private TicketManagerService ticketManagerService;
 
     @Autowired
+    private FcodeMapper fcodeMapper;
+
+    @Autowired
     private LogUserShopMapper logUserShopMapper;
 
     @Autowired
@@ -70,10 +74,13 @@ public class TicketService {
     private TicketTypeMapper ticketTypeMapper;
 
     @Autowired
-    private TicketMapper ticketMapper;
+    private FollowTicketService followTicketService;
 
     @Autowired
     private ShopManagerService shopManagerService;
+
+    @Autowired
+    private TicketMapper ticketMapper;
 
     @Autowired
     private UserShopMapper userShopMapper;
@@ -95,6 +102,44 @@ public class TicketService {
         shopFilter.setIndustry(industry);
         shopFilter.setIndustry(type);
         return ticketDao.selectByType(shopFilter);
+    }
+
+    /**
+     * 转发领券
+     * @param uid
+     * @param ip
+     * @return
+     */
+    public Result forwardTicket(Long uid, Long sid, String ip){
+        //验证券
+        //根据uid和tid，获取店铺和券的详细信息
+//        ShopFilter param = new ShopFilter();
+//        param.setTid(tid);
+//        TicketWithBLOBs ticket = ticketMapper.selectByTid(param);
+//
+//        if(ticket != null && ticket.getShopId() > 0){
+            //生成fcode
+            Fcode fcode = new Fcode();
+            fcode.setUid(uid);
+            fcode.setSid(sid);
+            fcode.setFcode(CommonKeyUtils.fcode(ip));
+            fcodeMapper.insertSelective(fcode);
+            fcode.setUid(null);
+            return ResultHelper.genResultWithSuccess(fcode);
+//        }
+//        return ResultHelper.genResult(ErrorCodeEnum.NULL_VALUE_ERROR);
+    }
+
+    /**
+     * 处理用户领取券：关注领取，转发领取，立即领取
+     * @param uid
+     * @param tid
+     * @param status
+     * @param fcode 转发码
+     * @return
+     */
+    public Result userCollectTicket(Long uid, String tid, Integer status, String fcode, Long sid){
+        return followTicketService.userCollectTicket(uid,tid, status,fcode,sid);
     }
 
     /**
@@ -124,7 +169,6 @@ public class TicketService {
         }else{
             shopList = shopDao.myTicket(shopFilter);
         }
-
 
         List<Shop> newList = new ArrayList<Shop>();
         if (shopList != null && shopList.size() > 0){
@@ -196,61 +240,6 @@ public class TicketService {
         }
         return null;
     }
-
-//    public void
-
-    /**
-     * 用户点击查看一条记录，领取一张券，等等的接口
-     * @param uid
-     * @param tid
-     * @param status
-     * @return
-     */
-    public Result userCollectTicket(Long uid, String tid, Integer status){
-        UserTicket userTicket = new UserTicket();
-        userTicket.setUserId(uid);
-        userTicket.setTicketId(tid);
-        userTicket.setCreateTime(new Date());
-        userTicket.setStatus(Byte.parseByte(status+""));
-
-        //检查当前券的数量是否可再领取
-        if (checkTicketAmount(tid)){
-            //检查数据库中是否已经存在
-            List<UserTicket> userTickets = ticketDao.findByUidTid(userTicket);
-            if(userTickets != null &&userTickets.size() > 0){
-                //已经存在，检查是否可重复领取
-                int isRetaken = ticketDao.isRetaken(userTicket);
-                //不可重复领取，返回false
-                if(isRetaken != DicValue.TICKET_IS_RETAKEN || userTickets.size() >= 2){
-                    return ResultHelper.genResult(ErrorCodeEnum.USER_TICKET_OPEATE_FAILED.getCode(), "不可重复领取");
-                }
-            }
-
-            String utId = CommonKeyUtils.genTicketKey(uid);
-            userTicket.setUtId(utId);
-            if(ticketDao.userCollectTicket(userTicket) > 0){
-                //领取成功后，对券数量减一
-                return ResultHelper.genResultWithSuccess(userTicket);
-            }
-        }else{
-            return ResultHelper.genResult(ErrorCodeEnum.USER_TICKET_OPEATE_FAILED.getCode(), "OOPS，已经领完了");
-        }
-        return ResultHelper.genResult(ErrorCodeEnum.USER_TICKET_OPEATE_FAILED);
-    }
-
-    public synchronized boolean checkTicketAmount(String tid){
-        StatisticFilter statisticFilter = new StatisticFilter();
-        statisticFilter.setTid(tid);
-        int token = ticketMapper.ticketCount(statisticFilter);
-        int total = ticketMapper.selectCountByTid(statisticFilter);
-        if((total - token) <= 0){
-            return false;
-        }
-        return true;
-    }
-
-
-
 
     /**
      * 用户读取券
@@ -350,7 +339,7 @@ public class TicketService {
      * @param uid
      * @param ip
      */
-    private void logUserViewShop(Long sid, Long uid, String ip){
+    public void logUserViewShop(Long sid, Long uid, String ip){
         LogUserShop logUserShop = new LogUserShop();
         logUserShop.setIp(ip);
         logUserShop.setSid(sid);

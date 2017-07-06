@@ -25,8 +25,8 @@
         <result column="comment" jdbcType="VARCHAR" property="comment"/>
         <result column="profile_picture" jdbcType="VARCHAR" property="profilePicture"/>
         <result column="uread" jdbcType="INTEGER" property="uread"/>
-        <association property="ticket" javaType="com.masou.coupon.data.models.TicketWithBLOBs">
-            <id column="id" jdbcType="BIGINT" property="id" />
+        <collection property="ticket" javaType="com.masou.coupon.data.models.TicketWithBLOBs">
+            <id column="tid" jdbcType="BIGINT" property="id" />
             <result column="ticket_id" jdbcType="CHAR" property="ticketId" />
             <result column="shop_id" jdbcType="BIGINT" property="shopId" />
             <result column="ticket_name" jdbcType="VARCHAR" property="ticketName" />
@@ -46,20 +46,20 @@
             <result column="working_condition" jdbcType="LONGVARCHAR" property="workingCondition" />
             <result column="validity_comment" jdbcType="LONGVARCHAR" property="validityComment" />
             <association property="ticketType" javaType="com.masou.coupon.data.models.TicketType">
-                <id column="id" jdbcType="INTEGER" property="id" />
+                <id column="ttid" jdbcType="INTEGER" property="id" />
                 <result column="ttcomment" jdbcType="VARCHAR" property="comment" />
                 <result column="status" jdbcType="INTEGER" property="status" />
                 <result column="icon" jdbcType="VARCHAR" property="icon" />
             </association>
-        </association>
-        <association property="userShop" javaType="com.masou.coupon.data.models.UserShop">
+        </collection>
+        <collection property="userShop" javaType="com.masou.coupon.data.models.UserShop">
             <id column="id" jdbcType="BIGINT" property="id" />
             <result column="user_id" jdbcType="CHAR" property="userId" />
             <result column="shop_id" jdbcType="CHAR" property="shopId" />
             <result column="status" jdbcType="TINYINT" property="status" />
             <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
-        </association>
-        <association property="userTicket" javaType="com.masou.coupon.data.models.UserTicket">
+        </collection>
+        <collection property="userTicket" javaType="com.masou.coupon.data.models.UserTicket">
             <id column="uticketid" jdbcType="BIGINT" property="id" />
             <result column="user_id" jdbcType="CHAR" property="userId" />
             <result column="ticket_id" jdbcType="CHAR" property="ticketId" />
@@ -67,7 +67,7 @@
             <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
             <result column="last_update_time" jdbcType="TIMESTAMP" property="lastUpdateTime" />
             <result column="ut_id" jdbcType="VARCHAR" property="utId" />
-        </association>
+        </collection>
     </resultMap>
 
     <sql id="Base_Column_List">
@@ -76,7 +76,7 @@
         shop_address, rank, create_time, last_update_time, phone_verified_time, `comment`,profile_picture
     </sql>
     <sql id="Base_Column_Ticket">
-        t.ticket_id, t.shop_id, t.ticket_name, t.content, t.type_id, t.period_of_validity_startTime,
+        t.id AS tid,t.ticket_id, t.shop_id, t.ticket_name, t.content, t.type_id, t.period_of_validity_startTime,
         t.period_of_validity_endTime, t.status, t.collecting_method, t.is_retaken, t.is_re_use,
         t.amount,t.applicable_scope, t.working_condition, t.validity_comment
     </sql>
@@ -84,8 +84,27 @@
        ut.id as uticketid, ut.user_id, ut.ticket_id, ut.status as utStatus, ut.create_time, ut.ut_id
     </sql>
     <sql id="Ticket_Type_list">
-        tt.comment as ttcomment,tt.icon
+        tt.id AS ttid,tt.comment as ttcomment,tt.icon
     </sql>
+
+    <select id="selectTicketBysid" parameterType="com.masou.coupon.data.filter.ShopFilter" resultMap="BaseResultMap">
+        SELECT
+            s.*,
+            <include refid="Base_Column_Ticket"/>,
+            <include refid="Base_Column_ut"/>
+        FROM
+            ety_shop s,
+            ety_ticket tLEFT
+        JOIN rel_user_ticket ut ON ut.ticket_id = t.ticket_id
+        WHERE
+            t.shop_id = s.id
+        AND t.`status` = 2
+        AND s.id = #{sid, jdbcType=BIGINT}
+        ORDER BY
+            t.create_time DESC
+        LIMIT 1;
+
+    </select>
 
     <select id="ticketUnRead" parameterType="com.masou.coupon.data.filter.BaseFilter" resultType="java.lang.Integer">
         SELECT
@@ -134,6 +153,21 @@
         LIMIT #{offset, jdbcType=INTEGER}, #{limit, jdbcType=INTEGER};
     </select>
 
+    <select id="selectCountByUidTid" parameterType="com.masou.coupon.data.filter.ShopFilter" resultType="java.lang.Integer">
+
+        SELECT
+            COUNT(*)
+        FROM
+            ety_ticket t,
+            rel_user_shop us
+        WHERE
+            t.shop_id = us.shop_id
+        AND us.user_id = 197150877725753726
+        AND t.ticket_id = 'ef9881898a494ac7bca62c9676c3d2a1'
+        LIMIT 1;
+
+    </select>
+
     <select id="myTicket" parameterType="com.masou.coupon.data.filter.ShopFilter" resultMap="BaseResultMap">
         SELECT
             s.*,
@@ -152,6 +186,10 @@
         AND  tt.id = t.type_id
         AND t.period_of_validity_endTime &gt; NOW()
         AND t.`status`&lt;&gt; 3
+        AND (
+            ut.`status` = 2
+            OR ut.`status` = 3
+        )
         ORDER BY
         ut.create_time
         limit #{limit,jdbcType=INTEGER}, #{offset, jdbcType=INTEGER};
@@ -175,6 +213,10 @@
         AND  tt.id = t.type_id
         AND (t.period_of_validity_endTime &lt; NOW()
         OR t.`status` = 3 OR  t.`status` = -3)
+        AND (
+            ut.`status` = 2
+            OR ut.`status` = 3
+        )
         ORDER BY
         ut.create_time
         limit #{limit,jdbcType=INTEGER}, #{offset, jdbcType=INTEGER};
@@ -387,17 +429,17 @@
             s.brief_intro,
             t.*
         FROM
-            ety_shop s,
             rel_user_shop us,
-            ety_ticket t
+            ety_shop s
+            LEFT JOIN ety_ticket t ON t.shop_id = s.id
         WHERE
             us.user_id = #{uid, jdbcType=BIGINT}
         AND s.id = us.shop_id
-        AND t.shop_id = s.id
         <if test="createTime != null">
         AND t.create_time &gt; #{createTime,jdbcType=TIMESTAMP}
-        </if>
         AND t.`status` = 1
+        </if>
+
         <if test = "ids != null">
             AND s.id NOT IN
             <foreach collection="ids" item="ids" index = "index" open="(" close=")" separator=",">

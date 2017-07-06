@@ -7,6 +7,7 @@ import com.masou.coupon.common.enums.ErrorCodeEnum;
 import com.masou.coupon.common.struct.Result;
 import com.masou.coupon.common.utils.ResultHelper;
 import com.masou.coupon.data.filter.LocaltionFilter;
+import com.masou.coupon.data.models.LogUserShop;
 import com.masou.coupon.data.models.LogUserVisit;
 import com.masou.coupon.data.models.Shop;
 import com.masou.coupon.data.models.UserTicket;
@@ -43,6 +44,12 @@ public class ApiTicketController {
     private UserLogService userLogService;
 
     @Autowired
+    private IPUtil ipUtil;
+
+    @Autowired
+    private HttpServletRequest request;
+
+    @Autowired
     private UserTokenService userTokenService;
 
     private Logger logger = LoggerFactory.getLogger(ApiTicketController.class);
@@ -70,20 +77,29 @@ public class ApiTicketController {
     @RequestMapping(value = "/get_t", method = RequestMethod.GET)
     public Result userCollectTicket(
                                     @RequestParam("token") String token,
-                                    @RequestParam("tid") String tid
-//                                    ,@RequestParam("uid") Long uid
+                                    @RequestParam(value = "tid", required = false) String tid,
+                                    @RequestParam(value = "fcode", required = false) String fcode,
+                                    @RequestParam(value = "sid", required = false) Long sid
                                     ){
         Long uid = userTokenService.getUid(token);
-        return ticketService.userCollectTicket(uid,tid, DicValue.TICKET_STATUS_GOT);
+        return ticketService.userCollectTicket(uid,tid, DicValue.TICKET_STATUS_GOT, fcode, sid);
+    }
+
+    @ApiOperation("转发领取")
+    @RequestMapping(value = "/forward", method = RequestMethod.GET)
+    public Result forwardTicket(@RequestParam("sid") Long sid,
+                                @RequestParam("token") String token){
+        Long uid = userTokenService.getUid(token);
+        return ticketService.forwardTicket(uid,sid,ipUtil.getIpAddress(request));
     }
 
     @ApiOperation("用户读取券")
     @RequestMapping(value = "/read", method = RequestMethod.GET)
-        public Result userReadTicket(@RequestParam(value = "token", required = false) String token,
+    public Result userReadTicket(@RequestParam(value = "token", required = false) String token,
                                      @RequestParam("tid") String tid,
                                      @RequestParam(value = "status",required = false) Integer status){
+        userLogService.userLogs(request);
         Long uid = userTokenService.getUid(token);
-//        UserTicket utId = ticketService.userReadTicket(uid,tid, DicValue.TICKET_STATUS_READ);
         ShopTicketVO shopTicketVO = ticketService.userReadTicket(uid,tid,status);
         if(shopTicketVO != null){
             return ResultHelper.genResultWithSuccess(shopTicketVO);
@@ -104,7 +120,7 @@ public class ApiTicketController {
     public Result myTicket(@RequestParam("page") Integer page,
                            @RequestParam(value = "pageSize", required = false) Integer pageSize,
                            @RequestParam("token") String token,
-//                           @RequestParam("uid") Long uid,
+//                           @RequestParam(value = "uid",required = false) Long uid,
                            @RequestParam(value = "status", required = false) Integer status){
         Long uid = userTokenService.getUid(token);
         return ticketService.myTicket(page,pageSize,uid,status);

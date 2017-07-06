@@ -70,4 +70,6 @@ public interface ShopMapper {
     List<Shop> bestShopList();
 
     Integer ticketUnRead(BaseFilter baseFilter);
+
+    Shop selectTicketBysid(ShopFilter shopFilter);
 }

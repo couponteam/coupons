@@ -1,5 +1,7 @@
 package com.masou.coupon.service;
 
+import com.masou.coupon.common.constant.DicValue;
+import com.masou.coupon.common.enums.StatusEnum;
 import com.masou.coupon.data.mappers.TicketTypeMapper;
 import com.masou.coupon.data.models.TicketType;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,6 +49,29 @@ public class CommonService {
                 default:;
             }
             return msg;
+        }
+        return null;
+    }
+
+    /**
+     * 改变券的领取方式
+     * @param status
+     * @return
+     */
+    public String changeCollecting_method(Byte status){
+        if (status != null && status > 0){
+            int statusInt = Integer.parseInt(status.toString());
+            if (statusInt == StatusEnum.PICKUP_RIGHT_NOW.getStatus()){
+                return StatusEnum.PICKUP_RIGHT_NOW.getComment();
+            }
+
+            if (statusInt == StatusEnum.PICKUP_FORWARD.getStatus()){
+                return StatusEnum.PICKUP_FORWARD.getComment();
+            }
+
+            if (statusInt == StatusEnum.PICKUP_FOLLOW.getStatus()){
+                return StatusEnum.PICKUP_FOLLOW.getComment();
+            }
         }
         return null;
     }

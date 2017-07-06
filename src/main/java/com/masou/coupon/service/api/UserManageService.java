@@ -53,7 +53,7 @@ public class UserManageService {
 
             User user = userService.selectByPhone(phone);
             if (user == null) {
-                userService.register(phone, null, "123456", "manager", null, true, RoleEnum.MANAGER.getRole());
+                userService.register(phone,null, null, "123456", "manager", null, true, RoleEnum.MANAGER.getRole());
                 user = userService.selectByPhone(phone);
             }
             record.setEnable(1);

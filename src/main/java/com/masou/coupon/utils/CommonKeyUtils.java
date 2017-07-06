@@ -64,11 +64,6 @@ public class CommonKeyUtils {
 
         rand = random.nextInt(randMask);
 
-        System.out.println(timestamp - twepoch);
-        System.out.println((timestamp - twepoch) << 22);
-        System.out.println((timestamp - twepoch) << 22 | sequence << 10);
-        System.out.println(rand);
-
         return ((timestamp - twepoch) << 22 | sequence << 10 | rand);
     }
 
@@ -91,6 +86,27 @@ public class CommonKeyUtils {
         String uid_four = uid.toString().substring(uid.toString().length()-4,uid.toString().length());
         String uuid = UUID.randomUUID().toString().replaceAll("-","").substring(0,6).toUpperCase();
         return uuid + rand + uid_four;
+    }
+
+    /**
+     * 生成用户领券时的唯一券号
+     * @param
+     * @return
+     */
+    public static String fcode(String ip){
+        int rand = random.nextInt(randMask);
+        int ipInt = 0;
+        if (ip != null && ip.trim().length() > 1){
+            if (ip.contains(":")){
+                ipInt = Integer.parseInt(ip.replaceAll(":",""));
+            }
+            else {
+                ipInt = Integer.parseInt(ip.replaceAll(".",""));
+            }
+        }
+
+        String uuid = UUID.randomUUID().toString().replaceAll("-","").substring(0,4).toUpperCase();
+        return uuid + ipInt + rand;
     }
 
 

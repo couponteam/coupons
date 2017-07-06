@@ -25,7 +25,7 @@ public class LogInterceptor implements HandlerInterceptor {
     private IPUtil ipUtil;
 
     @Autowired
-    private UserLogService userLogService = new UserLogService();
+    private UserLogService userLogService;
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
@@ -36,11 +36,7 @@ public class LogInterceptor implements HandlerInterceptor {
                 request.getMethod(),
                 JSON.toJSONString(request.getParameterMap()));
 
-        LogUserVisit logUserVisit = new LogUserVisit();
-        logUserVisit.setIp(ip);
-        logUserVisit.setMethod(request.getMethod());
-        logUserVisit.setUrl(request.getRequestURI());
-        userLogService.insertLog(logUserVisit);
+
         return true;
     }
 

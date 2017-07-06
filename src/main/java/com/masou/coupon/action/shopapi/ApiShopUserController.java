@@ -107,10 +107,11 @@ public class ApiShopUserController {
     @PostMapping("/register")
     public Result register(@RequestParam("phone") String phone,
                            @RequestParam(value = "verify", required = false) String verify,
-                           @RequestParam(value = "username", required = false) String username
+                           @RequestParam(value = "username", required = false) String username,
+                           @RequestParam(value = "password", required = false) String password
                            ) {
 
-        return userService.myShopJoin(phone, verify, username, false);
+        return userService.register(phone,username, verify, password, "shop", null, false, RoleEnum.SHOP_OWNER.getRole());
     }
 
     @ApiOperation("修改密码")

@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.masou.coupon.data.mappers.FcodeMapper">
+  <resultMap id="BaseResultMap" type="com.masou.coupon.data.models.Fcode">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="uid" jdbcType="BIGINT" property="uid" />
+    <result column="sid" jdbcType="BIGINT" property="sid" />
+    <result column="fcode" jdbcType="VARCHAR" property="fcode" />
+    <result column="status" jdbcType="TINYINT" property="status" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, uid, sid, fcode, status, create_time
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from ety_fcode
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from ety_fcode
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.masou.coupon.data.models.Fcode">
+    insert into ety_fcode (id, uid, sid, fcode, 
+      status, create_time)
+    values (#{id,jdbcType=BIGINT}, #{uid,jdbcType=BIGINT}, #{sid,jdbcType=BIGINT}, #{fcode,jdbcType=VARCHAR}, 
+      #{status,jdbcType=TINYINT}, #{createTime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.masou.coupon.data.models.Fcode">
+    insert into ety_fcode
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="uid != null">
+        uid,
+      </if>
+      <if test="sid != null">
+        sid,
+      </if>
+      <if test="fcode != null">
+        fcode,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="uid != null">
+        #{uid,jdbcType=BIGINT},
+      </if>
+      <if test="sid != null">
+        #{sid,jdbcType=BIGINT},
+      </if>
+      <if test="fcode != null">
+        #{fcode,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=TINYINT},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.masou.coupon.data.models.Fcode">
+    update ety_fcode
+    <set>
+      <if test="uid != null">
+        uid = #{uid,jdbcType=BIGINT},
+      </if>
+      <if test="sid != null">
+        sid = #{sid,jdbcType=BIGINT},
+      </if>
+      <if test="fcode != null">
+        fcode = #{fcode,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=TINYINT},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.masou.coupon.data.models.Fcode">
+    update ety_fcode
+    set uid = #{uid,jdbcType=BIGINT},
+      sid = #{sid,jdbcType=BIGINT},
+      fcode = #{fcode,jdbcType=VARCHAR},
+      status = #{status,jdbcType=TINYINT},
+      create_time = #{createTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>
