@@ -14,4 +14,7 @@ public class BeValue {
 
     public static final String USER_DEFAULT_IMG = "62C2B5FCD6D469F97B76ECAFCF2C2F53.jpg";
     public static final String SHOP_DEFAULT_IMG = "A7E34E58A354A07E0ED1C5F029B8FAB3.jpg";
+
+    public static final String FROM_KEY_APP = "app";
+    public static final String FROM_KEY_WEB = "web";
 }

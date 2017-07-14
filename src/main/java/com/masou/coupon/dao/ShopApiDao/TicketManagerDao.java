@@ -62,6 +62,10 @@ public class TicketManagerDao {
        return ticketMapper.selectByLimit(param);
     }
 
+    public List<TicketWithBLOBs> selectTicketWithoutUTID( TicketPageParam param){
+        return ticketMapper.selectTicketWithoutUTID(param);
+    }
+
     public TicketWithBLOBs selectByTicketId(String tid){
         return ticketMapper.selectByPrimaryKey(tid);
     }

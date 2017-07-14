@@ -20,6 +20,7 @@
     select
     <include refid="Base_Column_List" />
     from ety_hot_word
+    WHERE word &lt;&gt;  ''
     ORDER BY frequence DESC LIMIT #{pageSize,jdbcType=INTEGER }
   </select>
 

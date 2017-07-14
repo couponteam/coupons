@@ -17,4 +17,6 @@ public interface FcodeMapper {
     int updateByPrimaryKeySelective(Fcode record);
 
     int updateByPrimaryKey(Fcode record);
+
+    Fcode selectByFcode(Fcode fcode);
 }

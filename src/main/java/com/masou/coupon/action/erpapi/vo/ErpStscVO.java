@@ -20,9 +20,13 @@ public class ErpStscVO {
 
     private Integer shopDaily;
 
-    private Integer uv;
+    private Integer uvTotal;
 
-    private Integer pv;
+    private Integer pvTotal;
+
+    private Integer uvToday;
+
+    private Integer pvToday;
 
     public Integer getMemberTotal() {
         return memberTotal;
@@ -80,19 +84,35 @@ public class ErpStscVO {
         this.shopDaily = shopDaily;
     }
 
-    public Integer getUv() {
-        return uv;
+    public Integer getUvTotal() {
+        return uvTotal;
     }
 
-    public void setUv(Integer uv) {
-        this.uv = uv;
+    public void setUvTotal(Integer uvTotal) {
+        this.uvTotal = uvTotal;
     }
 
-    public Integer getPv() {
-        return pv;
+    public Integer getPvTotal() {
+        return pvTotal;
     }
 
-    public void setPv(Integer pv) {
-        this.pv = pv;
+    public void setPvTotal(Integer pvTotal) {
+        this.pvTotal = pvTotal;
+    }
+
+    public Integer getUvToday() {
+        return uvToday;
+    }
+
+    public void setUvToday(Integer uvToday) {
+        this.uvToday = uvToday;
+    }
+
+    public Integer getPvToday() {
+        return pvToday;
+    }
+
+    public void setPvToday(Integer pvToday) {
+        this.pvToday = pvToday;
     }
 }

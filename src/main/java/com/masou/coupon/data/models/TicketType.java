@@ -9,6 +9,8 @@ public class TicketType {
 
     private String icon;
 
+    private String ticketName;
+
     public Integer getId() {
         return id;
     }
@@ -39,5 +41,13 @@ public class TicketType {
 
     public void setIcon(String icon) {
         this.icon = icon;
+    }
+
+    public String getTicketName() {
+        return ticketName;
+    }
+
+    public void setTicketName(String ticketName) {
+        this.ticketName = ticketName;
     }
 }

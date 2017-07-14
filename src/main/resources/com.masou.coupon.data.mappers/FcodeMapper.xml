@@ -18,6 +18,20 @@
     from ety_fcode
     where id = #{id,jdbcType=BIGINT}
   </select>
+
+  <select id="selectByFcode" parameterType="com.masou.coupon.data.models.Fcode" resultMap="BaseResultMap">
+    SELECT
+      <include refid="Base_Column_List" />
+    FROM
+      ety_fcode
+    WHERE
+      fcode = #{fcode, jdbcType=VARCHAR}
+    ORDER BY
+      create_time DESC
+    LIMIT 1;
+  </select>
+
+
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     delete from ety_fcode
     where id = #{id,jdbcType=BIGINT}

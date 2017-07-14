@@ -1,5 +1,6 @@
 package com.masou.coupon.action.shopapi;
 
+import com.masou.coupon.common.constant.BeValue;
 import com.masou.coupon.common.enums.ErrorCodeEnum;
 import com.masou.coupon.common.enums.RoleEnum;
 import com.masou.coupon.common.enums.ShopVerifyEnum;
@@ -7,6 +8,7 @@ import com.masou.coupon.common.struct.Result;
 import com.masou.coupon.common.utils.ResultHelper;
 import com.masou.coupon.data.models.Shop;
 import com.masou.coupon.exception.UserException;
+import com.masou.coupon.service.UserLogService;
 import com.masou.coupon.service.api.ShopService;
 import com.masou.coupon.service.api.UserService;
 import com.masou.coupon.service.api.UserTokenService;
@@ -17,6 +19,8 @@ import io.swagger.models.auth.In;
 import org.codehaus.groovy.tools.StringHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * Created by jason on 2017/5/16.
@@ -34,6 +38,13 @@ public class ApiShopUserController {
     @Autowired
     private UserTokenService userTokenService;
 
+    @Autowired
+    private HttpServletRequest request;
+
+    @Autowired
+    private UserLogService userLogService;
+
+
     @ApiOperation("商家申请")
     @ApiImplicitParam(name = "industryId", value = "店铺所属行业类型", paramType = "query", dataType = "String")
     @PostMapping("/apply")
@@ -48,6 +59,7 @@ public class ApiShopUserController {
             @RequestParam("longitude") String longitude,
             @RequestParam("latitude") String latitude,
             @RequestParam("token") String token) {
+        userLogService.userLogs(request,BeValue.FROM_KEY_WEB);
         Long uid = userTokenService.getUid(token);
         if (uid == null || uid <= 0) {
             return ResultHelper.genResult(ErrorCodeEnum.TOKEN_INVALID);
@@ -65,6 +77,8 @@ public class ApiShopUserController {
         record.setShopAddress(shopAddress);
         record.setIndustryId(industryId);
         record.setUid(uid);
+        //设置店铺默认头像
+        record.setIconId(BeValue.SHOP_DEFAULT_IMG);
         if(longitude != null && longitude.trim().length() > 0){
             record.setLongitude(Float.parseFloat(longitude));
             record.setDimensionality(Float.parseFloat(latitude));
@@ -83,7 +97,7 @@ public class ApiShopUserController {
                          @RequestParam(value = "shopName",required = false) String shopName,
                          @RequestParam(value = "shopAddress",required = false) String shopAddress
                          ) {
-
+        userLogService.userLogs(request,BeValue.FROM_KEY_WEB);
         Shop shop = shopService.selectByPrimaryKey(shopId);
         if (shop==null){
             throw new UserException("店铺不存在");
@@ -110,7 +124,7 @@ public class ApiShopUserController {
                            @RequestParam(value = "username", required = false) String username,
                            @RequestParam(value = "password", required = false) String password
                            ) {
-
+        userLogService.userLogs(request,BeValue.FROM_KEY_WEB);
         return userService.register(phone,username, verify, password, "shop", null, false, RoleEnum.SHOP_OWNER.getRole());
     }
 
@@ -130,7 +144,7 @@ public class ApiShopUserController {
     public Result forgetPassword(@RequestParam("phone") String phone,
                                  @RequestParam("verify") String verify,
                                  @RequestParam("newPassword") String password) {
-
+        userLogService.userLogs(request,BeValue.FROM_KEY_WEB);
         return userService.forgetPassword(phone, verify, password);
     }
 

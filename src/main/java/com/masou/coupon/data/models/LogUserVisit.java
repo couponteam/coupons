@@ -13,6 +13,8 @@ public class LogUserVisit {
 
     private Date createTime;
 
+    private String fromkey;
+
     public Long getId() {
         return id;
     }
@@ -51,5 +53,13 @@ public class LogUserVisit {
 
     public void setCreateTime(Date createTime) {
         this.createTime = createTime;
+    }
+
+    public String getFromkey() {
+        return fromkey;
+    }
+
+    public void setFromkey(String fromkey) {
+        this.fromkey = fromkey;
     }
 }

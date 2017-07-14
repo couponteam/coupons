@@ -4,6 +4,7 @@ package com.masou.coupon.service.api;
 import com.masou.coupon.action.api.vo.UserVO;
 import com.masou.coupon.action.erpapi.vo.UserListVO;
 import com.masou.coupon.common.constant.BeValue;
+import com.masou.coupon.common.enums.RoleEnum;
 import com.masou.coupon.data.mappers.UserApplyMapper;
 import com.masou.coupon.data.models.UserApply;
 import com.masou.coupon.data.param.PageParam;
@@ -40,6 +41,9 @@ public class UserService {
 
     @Autowired
     private UserTokenService userTokenService;
+
+    @Autowired
+    private UserApplyMapper userApplyMapper;
 
 //    @Autowired
 //    private UserApplyMapper userApplyMapper = new UserApply();
@@ -101,40 +105,77 @@ public class UserService {
             throw new UserException(ErrorCodeEnum.PHONE_EXIST);
         }
 
-        if(password != null && password.trim().length() > 1){
-            Long uid = CommonKeyUtils.genUniqueKey();
-            user = new User(uid, phone, this.encrypt(password), new Date(), role, phone);
-            UserProfile profile = new UserProfile();
-            profile.setBeInviteCode(beInviteCode);
-            profile.setFromKey(fromKey);
-            profile.setNickname(phone);
-            profile.setPhone(phone);
+        Long uid = CommonKeyUtils.genUniqueKey();
+        user = new User(uid, phone, this.encrypt(password), new Date(), role, phone);
+        UserProfile profile = new UserProfile();
+        profile.setBeInviteCode(beInviteCode);
+        profile.setFromKey(fromKey);
+        profile.setNickname(phone);
+        profile.setPhone(phone);
+        profile.setAvatar(BeValue.USER_DEFAULT_IMG);
 
-            int count = 0;
-            while (true) {
-                String inviteCode = randomKeyUtil.getRandomString(5);
-                User existUser = userDao.selectByInviteCode(inviteCode);
-                if (existUser == null || count >= 3) {
-                    profile.setInviteCode(inviteCode);
-                    break;
-                }
-                count ++;
+        int count = 0;
+        while (true) {
+            String inviteCode = randomKeyUtil.getRandomString(5);
+            User existUser = userDao.selectByInviteCode(inviteCode);
+            if (existUser == null || count >= 3) {
+                profile.setInviteCode(inviteCode);
+                break;
             }
-            profile.setUid(uid);
-            userDao.insertSelective(user);
-            userProfileDao.insertSelective(profile);
-            return ResultHelper.genResultWithSuccess();
+            count ++;
+        }
+        profile.setUid(uid);
+        userDao.insertSelective(user);
+        userProfileDao.insertSelective(profile);
+        return ResultHelper.genResultWithSuccess();
 
+    }
+
+    /**
+     * 我的店铺要加入
+     * @param id
+     * @param uid
+     * @param phone
+     * @param verify
+     * @param username
+     * @param status
+     * @param ignoreVerify
+     * @return
+     */
+    public Result myShopJoinIn(Long id, Long uid, String phone, String verify, String username, Integer status, boolean ignoreVerify){
+        //我要加入
+        UserApply userApply = new UserApply();
+        if (id != null && id > 0){
+            //
+            userApply.setId(id);
+            if(status != null && status > 0){
+                userApply.setStatus(Byte.parseByte(status.toString()));
+            }
+            if(userApplyMapper.updateByPrimaryKeySelective(userApply) > 0){
+                return ResultHelper.genResultWithSuccess();
+            }
+            return ResultHelper.genResult(ErrorCodeEnum.FAILED);
         }else{
-            //我要加入
-            UserApply userApply = new UserApply();
+
+            //手机号格式是否正确
+            if (!phoneUtil.isPhone(phone)) {
+                throw new UserException(ErrorCodeEnum.SYS_ERROR, "手机号不正确");
+            }
+
+            //手机号是否验证
+            if (!ignoreVerify) {
+                if (!phoneMessageService.checkVerify(phone, verify, MessageTypeEnum.USER_REGISTER.getCode())) {
+                    throw new UserException(ErrorCodeEnum.WRONG_VERIFY);
+                }
+            }
+
             userApply.setPhone(phone);
             userApply.setUsername(username);
             if(userDao.insertSelective(userApply) > 0){
                 return ResultHelper.genResultWithSuccess();
             }
-            return ResultHelper.genResult(ErrorCodeEnum.FAILED);
         }
+        return ResultHelper.genResult(ErrorCodeEnum.FAILED);
     }
 
     public Result changePassword(Long uid, String oldPassword, String newPassword) {
@@ -206,10 +247,34 @@ public class UserService {
         Integer total = userDao.selectCountByFilter(filter);
         List<User> list = userDao.selectListByFilter(filter);
 
+        for (User user : list) {
+            user.set_role(changeRole2Str(user.getRole()));
+        }
+
         UserListVO vo = new UserListVO();
         vo.setTotal(total);
         vo.setList(list);
         return ResultHelper.genResultWithSuccess(vo);
+    }
+
+    /**
+     * 转换角色名称
+     * @param role
+     * @return
+     */
+    private String changeRole2Str(Integer role){
+        if (role != null){
+            if (role == RoleEnum.USER.getRole()){
+                return RoleEnum.USER.getMsg();
+            }
+            if (role == RoleEnum.SHOP_OWNER.getRole()){
+                return RoleEnum.SHOP_OWNER.getMsg();
+            }
+            if (role == RoleEnum.MANAGER.getRole()){
+                return RoleEnum.MANAGER.getMsg();
+            }
+        }
+        return role.toString();
     }
 
     public User selectByPhoneAndPassword(String phone, String password) {
@@ -232,6 +297,7 @@ public class UserService {
                 profile.setNickname(user.getPhone());
                 profile.setPhone(user.getPhone());
                 profile.setUid(uid);
+                profile.setFromKey("web");
                 isEmpty = true;
             }
             if (StringUtil.areNotEmpty(nickname)) {

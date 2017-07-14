@@ -2,6 +2,7 @@ package com.masou.coupon.service.erpapi;
 
 import com.masou.coupon.common.constant.DicValue;
 import com.masou.coupon.common.enums.ErrorCodeEnum;
+import com.masou.coupon.common.enums.StatusEnum;
 import com.masou.coupon.common.struct.Result;
 import com.masou.coupon.common.utils.ResultHelper;
 import com.masou.coupon.dao.erpapi.ErpShopDao;
@@ -9,6 +10,7 @@ import com.masou.coupon.data.filter.ShopFilter;
 import com.masou.coupon.data.mappers.UserApplyMapper;
 import com.masou.coupon.data.models.Shop;
 import com.masou.coupon.data.models.UserApply;
+import com.masou.coupon.exception.UserException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.integration.IntegrationAutoConfiguration;
 import org.springframework.stereotype.Service;
@@ -56,18 +58,53 @@ public class ErpShopManagerService {
      * @param status
      * @return
      */
-    public Result applyForShopList(String status){
+    public Result applyForShopList(Long id, String status){
         ShopFilter shopFilter = new ShopFilter();
         if(status != null && status.trim().length() > 0){
             shopFilter.setStatus(Integer.parseInt(status));
-        }else{
-            shopFilter.setStatus(DicValue.APPLY_SHOP_DOING);
         }
+        if (id != null && id > 0){
+            if(status == null || status.trim().length() <= 0){
+                throw new UserException("状态值为空");
+            }
+            //有id，表示为更新操作
+            UserApply userApply = new UserApply();
+            userApply.setId(id);
+            userApply.setStatus(Byte.parseByte(status));
+            return ResultHelper.genResultWithSuccess(userApplyMapper.updateByPrimaryKeySelective(userApply));
+        }
+
         List<UserApply> userApplies = erpShopDao.applyForShopList(shopFilter);
         if(userApplies != null && userApplies.size() > 0){
+            for (UserApply userApply : userApplies) {
+                userApply.set_status(changeApplyOpStatus(userApply.getStatus()));
+            }
             return ResultHelper.genResultWithSuccess(userApplies);
         }
         return ResultHelper.genResult(ErrorCodeEnum.NULL_VALUE_ERROR);
+    }
+
+    /**
+     * 修改申请的店铺的状态为中文
+     * @param status
+     * @return
+     */
+    private String changeApplyOpStatus(Byte status){
+        if(status != null && status > 0){
+            Integer statusInt = Integer.parseInt(status.toString());
+            if (statusInt == StatusEnum.ERP_APPLY_SHOP_DOING.getStatus()){
+                return StatusEnum.ERP_APPLY_SHOP_DOING.getComment();
+            }
+
+            if (statusInt == StatusEnum.ERP_APPLY_SHOP_SUCC.getStatus()){
+                return StatusEnum.ERP_APPLY_SHOP_SUCC.getComment();
+            }
+
+            if (statusInt == StatusEnum.ERP_APPLY_SHOP_DEL.getStatus()){
+                return StatusEnum.ERP_APPLY_SHOP_DEL.getComment();
+            }
+        }
+        return status.toString();
     }
 
     public Result bestShopList(){

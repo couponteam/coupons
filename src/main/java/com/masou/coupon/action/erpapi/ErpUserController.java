@@ -27,7 +27,7 @@ public class ErpUserController {
                        @RequestParam(value = "timeBegin", required = false) String timeBegin,
                        @RequestParam(value = "timeEnd", required = false) String timeEnd,
                        @RequestParam(value = "page") Integer page,
-                       @RequestParam(value = "pageSize") Integer pageSize,
+                       @RequestParam(value = "pageSize", required = false) Integer pageSize,
                        @RequestParam(value = "token") String token) {
 
         UserFilter filter = new UserFilter();

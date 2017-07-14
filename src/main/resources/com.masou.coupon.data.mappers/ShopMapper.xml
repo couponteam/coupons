@@ -81,7 +81,7 @@
         t.amount,t.applicable_scope, t.working_condition, t.validity_comment
     </sql>
     <sql id="Base_Column_ut">
-       ut.id as uticketid, ut.user_id, ut.ticket_id, ut.status as utStatus, ut.create_time, ut.ut_id
+        ut.id as uticketid, ut.user_id, ut.ticket_id, ut.status as utStatus, ut.create_time, ut.ut_id
     </sql>
     <sql id="Ticket_Type_list">
         tt.id AS ttid,tt.comment as ttcomment,tt.icon
@@ -89,79 +89,91 @@
 
     <select id="selectTicketBysid" parameterType="com.masou.coupon.data.filter.ShopFilter" resultMap="BaseResultMap">
         SELECT
-            s.*,
-            <include refid="Base_Column_Ticket"/>,
-            <include refid="Base_Column_ut"/>
+        s.*,
+        <include refid="Base_Column_Ticket"/>,
+        <include refid="Base_Column_ut"/>
         FROM
-            ety_shop s,
-            ety_ticket tLEFT
+        ety_shop s,
+        ety_ticket tLEFT
         JOIN rel_user_ticket ut ON ut.ticket_id = t.ticket_id
         WHERE
-            t.shop_id = s.id
+        t.shop_id = s.id
         AND t.`status` = 2
         AND s.id = #{sid, jdbcType=BIGINT}
+        AND t.period_of_validity_endTime &gt; NOW()
         ORDER BY
-            t.create_time DESC
+        t.create_time DESC
         LIMIT 1;
 
     </select>
 
     <select id="ticketUnRead" parameterType="com.masou.coupon.data.filter.BaseFilter" resultType="java.lang.Integer">
         SELECT
-          COUNT(t.id)
+        COUNT(t.id)
         FROM
-          rel_user_shop us,
-          ety_ticket t
+        rel_user_shop us,
+        ety_ticket t
         WHERE
-            t.shop_id = us.shop_id
-            AND us.user_id = #{uid, jdbcType=BIGINT}
-            AND t.create_time > #{today, jdbcType=TIMESTAMP}
+        t.shop_id = us.shop_id
+        AND us.user_id = #{uid, jdbcType=BIGINT}
+        AND t.period_of_validity_endTime &gt; NOW()
+        AND t.create_time > #{today, jdbcType=TIMESTAMP}
         LIMIT 1;
+    </select>
+
+    <select id="shopVerifyStatus" parameterType="com.masou.coupon.data.filter.ShopFilter" resultMap="BaseResultMap">
+        SELECT
+            is_shop_verified,industry_id
+        FROM
+            ety_shop
+        WHERE
+            id = #{sid, jdbcType=BIGINT};
     </select>
 
     <select id="selectByType" parameterType="com.masou.coupon.data.filter.ShopFilter" resultMap="BaseResultMap">
         SELECT
-          *
+        *
         FROM
         (
-            SELECT
-                s.*,
-                <include refid="Base_Column_Ticket"/>,
-                <include refid="Ticket_Type_list"/>
-            FROM
-                ety_shop s,
-                ety_ticket t,
-                dic_ticket_type tt
-            WHERE
-                s.id = t.shop_id
-                AND tt.id = t.type_id
-                <if test="industry != null">
-                    and s.industry_id=#{industry, jdbcType=INTEGER}
-                </if>
-                <if test="type != null">
-                    AND t.type_id=#{type, jdbcType=INTEGER}
-                </if>
-                AND s.is_shop_verified = 1
-                AND t.`status` = 1
-            ORDER BY
-            t.create_time DESC
+        SELECT
+        s.*,
+        <include refid="Base_Column_Ticket"/>,
+        <include refid="Ticket_Type_list"/>
+        FROM
+        ety_shop s,
+        ety_ticket t,
+        dic_ticket_type tt
+        WHERE
+        s.id = t.shop_id
+        AND tt.id = t.type_id
+        AND t.period_of_validity_endTime &gt; NOW()
+        <if test="industry != null">
+            and s.industry_id=#{industry, jdbcType=INTEGER}
+        </if>
+        <if test="type != null">
+            AND t.type_id=#{type, jdbcType=INTEGER}
+        </if>
+        AND s.is_shop_verified = 1
+        AND t.`status` = 1
+        ORDER BY
+        t.create_time DESC
         ) tmp
         GROUP BY
-          id
+        id
         ORDER BY
-          create_time
+        create_time
         LIMIT #{offset, jdbcType=INTEGER}, #{limit, jdbcType=INTEGER};
     </select>
 
     <select id="selectCountByUidTid" parameterType="com.masou.coupon.data.filter.ShopFilter" resultType="java.lang.Integer">
 
         SELECT
-            COUNT(*)
+        COUNT(*)
         FROM
-            ety_ticket t,
-            rel_user_shop us
+        ety_ticket t,
+        rel_user_shop us
         WHERE
-            t.shop_id = us.shop_id
+        t.shop_id = us.shop_id
         AND us.user_id = 197150877725753726
         AND t.ticket_id = 'ef9881898a494ac7bca62c9676c3d2a1'
         LIMIT 1;
@@ -170,10 +182,10 @@
 
     <select id="myTicket" parameterType="com.masou.coupon.data.filter.ShopFilter" resultMap="BaseResultMap">
         SELECT
-            s.*,
-            <include refid="Base_Column_Ticket"/>,
-            <include refid="Base_Column_ut"/>,
-            <include refid="Ticket_Type_list" />
+        s.*,
+        <include refid="Base_Column_Ticket"/>,
+        <include refid="Base_Column_ut"/>,
+        <include refid="Ticket_Type_list" />
         FROM
         ety_shop s,
         ety_ticket t,
@@ -187,8 +199,8 @@
         AND t.period_of_validity_endTime &gt; NOW()
         AND t.`status`&lt;&gt; 3
         AND (
-            ut.`status` = 2
-            OR ut.`status` = 3
+        ut.`status` = 2
+        OR ut.`status` = 3
         )
         ORDER BY
         ut.create_time
@@ -214,8 +226,8 @@
         AND (t.period_of_validity_endTime &lt; NOW()
         OR t.`status` = 3 OR  t.`status` = -3)
         AND (
-            ut.`status` = 2
-            OR ut.`status` = 3
+        ut.`status` = 2
+        OR ut.`status` = 3
         )
         ORDER BY
         ut.create_time
@@ -242,111 +254,120 @@
 
     <select id="popShopList" parameterType="com.masou.coupon.data.filter.ShopFilter" resultMap="BaseResultMap">
         SELECT
-            s.*,
-            <include refid="Base_Column_Ticket"/>,
-            <include refid="Ticket_Type_list" />,
-            COUNT(*) AS pnum
+        s.*,
+        <include refid="Base_Column_Ticket"/>,
+        <include refid="Ticket_Type_list" />,
+        COUNT(*) AS pnum
         FROM
-            ety_shop s,
-            ety_ticket t,
-            rel_user_ticket ut,
-            dic_ticket_type tt
+        ety_shop s,
+        ety_ticket t,
+        rel_user_ticket ut,
+        dic_ticket_type tt
         WHERE
-            s.id = t.shop_id
+        s.id = t.shop_id
         AND t.ticket_id = ut.ticket_id
         AND  tt.id = t.type_id
+        AND t.period_of_validity_endTime &gt; NOW()
         GROUP BY
-            t.shop_id
+        t.shop_id
         ORDER BY
-            pnum DESC
+        pnum DESC
         limit #{limit,jdbcType=INTEGER}, #{offset, jdbcType=INTEGER};
     </select>
 
     <select id="userReadTicket" parameterType="com.masou.coupon.data.filter.ShopFilter" resultMap="BaseResultMap">
         SELECT
-            s.*,
-            <include refid="Base_Column_Ticket"/>,
-            <include refid="Ticket_Type_list" />
+        s.*,
+        <include refid="Base_Column_Ticket"/>,
+        <include refid="Ticket_Type_list" />
         FROM
-            ety_shop s,
-            ety_ticket t,
-            dic_ticket_type tt
+        ety_shop s,
+        ety_ticket t,
+        dic_ticket_type tt
         WHERE
-            s.id = t.shop_id
+        s.id = t.shop_id
         AND t.ticket_id = #{tid, jdbcType=CHAR}
+        AND t.period_of_validity_endTime &gt; NOW()
         AND  tt.id = t.type_id
     </select>
 
     <select id="bestShopList" parameterType="com.masou.coupon.data.filter.ShopFilter" resultMap="BaseResultMap">
         SELECT
-            <include refid="Base_Column_List"/>
+        <include refid="Base_Column_List"/>
         FROM
-            ety_shop
+        ety_shop
         WHERE
-            rank > 0
+        rank > 0
         ORDER BY
-            create_time DESC;
+        create_time DESC;
     </select>
 
     <select id="bestShop" parameterType="com.masou.coupon.data.filter.ShopFilter" resultMap="BaseResultMap">
         SELECT
-          <include refid = "Base_Column_List" />
+        DISTINCT(t.shop_id),
+        s.*
         FROM
-          ety_shop
+        ety_shop s,
+        ety_ticket t
         WHERE
-          rank > 0
+        s.id = t.shop_id
+        AND	s.rank > 0
+        AND t.period_of_validity_endTime &gt; NOW()
         ORDER BY
-          create_time DESC,
-          rank DESC
+        t.create_time DESC,
+        s.rank DESC
         LIMIT #{limit, jdbcType=INTEGER};
     </select>
 
     <select id="findByLocation" parameterType="com.masou.coupon.data.filter.LocaltionFilter" resultMap="BaseResultMap">
         SELECT
-          *
+        *
         FROM
         (
-            SELECT
-                s.*,
-                <include refid="Base_Column_Ticket"/>,
-                <include refid="Ticket_Type_list" />
-            FROM
-                ety_shop s,
-                ety_ticket t,
-                dic_ticket_type tt
-            WHERE
-                s.id = t.shop_id
-                AND  tt.id = t.type_id
-                <if test="industry != null">
-                    and s.industry_id=#{industry, jdbcType=INTEGER}
-                </if>
-                <if test="type != null">
-                    AND t.type_id=#{type, jdbcType=INTEGER}
-                </if>
-                AND (
-                s.longitude &gt;=#{leftTop.longitude, jdbcType=DECIMAL}
-                AND s.longitude &lt;= #{rightTop.longitude, jdbcType=DECIMAL}
-                )
-                AND (
-                s.dimensionality &gt;= #{leftBottom.latitude, jdbcType=DECIMAL}
-                AND s.dimensionality &lt;= #{leftTop.latitude, jdbcType=DECIMAL}
-                )
-                <if test="keyword != null">
-                AND (
-                  s.shop_name like "%"#{keyword, jdbcType=VARCHAR}"%"
-                  OR
-                  t.ticket_name like "%"#{keyword, jdbcType=VARCHAR}"%"
-                )
-                </if>
-                AND s.is_shop_verified = 1
-                AND t.`status` = 1
-            ORDER BY
-              t.create_time DESC
+        SELECT
+        s.*,
+        <include refid="Base_Column_Ticket"/>,
+        <include refid="Ticket_Type_list" />,
+        t.create_time ttcreate_time
+        FROM
+        ety_shop s,
+        ety_ticket t,
+        dic_ticket_type tt
+        WHERE
+        s.id = t.shop_id
+        AND  tt.id = t.type_id
+        AND t.period_of_validity_endTime &gt; NOW()
+        <if test="industry != null">
+            and s.industry_id=#{industry, jdbcType=INTEGER}
+        </if>
+        <if test="type != null">
+            AND t.type_id=#{type, jdbcType=INTEGER}
+        </if>
+        AND (
+        s.longitude &gt;=#{leftTop.longitude, jdbcType=DECIMAL}
+        AND s.longitude &lt;= #{rightTop.longitude, jdbcType=DECIMAL}
+        )
+        AND (
+        s.dimensionality &gt;= #{leftBottom.latitude, jdbcType=DECIMAL}
+        AND s.dimensionality &lt;= #{leftTop.latitude, jdbcType=DECIMAL}
+        )
+        <if test="keyword != null">
+            AND (
+            s.shop_name like "%"#{keyword, jdbcType=VARCHAR}"%"
+            OR
+            t.ticket_name like "%"#{keyword, jdbcType=VARCHAR}"%"
+            )
+        </if>
+        AND s.is_shop_verified = 1
+        AND t.`status` = 1
+        ORDER BY
+
+        t.create_time DESC
         ) tmp
         GROUP BY
         id
         ORDER BY
-        create_time
+        ttcreate_time DESC
         LIMIT 100;
     </select>
     <select id="shopList" parameterType="com.masou.coupon.data.filter.BaseFilter" resultMap="BaseResultMap">
@@ -382,26 +403,27 @@
     </select>
     <select id="findByUid" parameterType="com.masou.coupon.data.filter.ShopFilter" resultMap="BaseResultMap">
         SELECT
-            DISTINCT(s.id),
-            s.shop_name,
-            s.shop_address,
-            s.icon_id,
-            s.longitude,
-            s.dimensionality,
-            s.profile_picture,
-            s.brief_intro,
-            t.*,
-            <include refid="Ticket_Type_list" />
+        DISTINCT(s.id),
+        s.shop_name,
+        s.shop_address,
+        s.icon_id,
+        s.longitude,
+        s.dimensionality,
+        s.profile_picture,
+        s.brief_intro,
+        t.*,
+        <include refid="Ticket_Type_list" />
         FROM
-            ety_shop s,
-            rel_user_shop us,
-            ety_ticket t,
-            dic_ticket_type tt
+        ety_shop s,
+        rel_user_shop us,
+        ety_ticket t,
+        dic_ticket_type tt
         WHERE
-            us.user_id = #{uid, jdbcType=BIGINT}
+        us.user_id = #{uid, jdbcType=BIGINT}
         AND s.id = us.shop_id
         AND t.shop_id = s.id
         AND  tt.id = t.type_id
+        AND t.period_of_validity_endTime &gt; NOW()
         <if test="keyword != null">
             AND (
             s.shop_name like "%"#{keyword, jdbcType=VARCHAR}"%"
@@ -410,7 +432,7 @@
             )
         </if>
         ORDER BY
-            us.create_time DESC
+        us.create_time DESC
         limit #{limit,jdbcType=INTEGER}, #{offset, jdbcType=INTEGER}
     </select>
 
@@ -419,25 +441,26 @@
         <if test="createTime != null">
             COUNT(s.id) AS uread,
         </if>
-            s.id,
-            s.shop_name,
-            s.shop_address,
-            s.icon_id,
-            s.longitude,
-            s.dimensionality,
-            s.profile_picture,
-            s.brief_intro,
-            t.*
+        s.id,
+        s.shop_name,
+        s.shop_address,
+        s.icon_id,
+        s.longitude,
+        s.dimensionality,
+        s.profile_picture,
+        s.brief_intro,
+        t.*
         FROM
-            rel_user_shop us,
-            ety_shop s
-            LEFT JOIN ety_ticket t ON t.shop_id = s.id
+        rel_user_shop us,
+        ety_shop s
+        LEFT JOIN ety_ticket t ON t.shop_id = s.id
         WHERE
-            us.user_id = #{uid, jdbcType=BIGINT}
+        us.user_id = #{uid, jdbcType=BIGINT}
         AND s.id = us.shop_id
+        AND t.period_of_validity_endTime &gt; NOW()
         <if test="createTime != null">
-        AND t.create_time &gt; #{createTime,jdbcType=TIMESTAMP}
-        AND t.`status` = 1
+            AND t.create_time &gt; #{createTime,jdbcType=TIMESTAMP}
+            AND t.`status` = 1
         </if>
 
         <if test = "ids != null">
@@ -447,9 +470,9 @@
             </foreach>
         </if>
         GROUP BY
-            s.id
+        s.id
         ORDER BY
-            us.create_time DESC
+        t.create_time DESC
         limit #{limit,jdbcType=INTEGER}, #{offset, jdbcType=INTEGER}
     </select>
 

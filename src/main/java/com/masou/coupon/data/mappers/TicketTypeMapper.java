@@ -1,6 +1,9 @@
 package com.masou.coupon.data.mappers;
 
+import com.masou.coupon.data.filter.ShopFilter;
 import com.masou.coupon.data.models.TicketType;
+import com.masou.coupon.data.models.TicketWithBLOBs;
+import com.masou.coupon.data.models.UserTicket;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
@@ -20,5 +23,7 @@ public interface TicketTypeMapper {
     int updateByPrimaryKey(TicketType record);
 
     List<TicketType> selectList();
+
+    List<TicketWithBLOBs> selectShopTicketType(ShopFilter filter);
 
 }

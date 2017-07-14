@@ -1,6 +1,7 @@
 
 package com.masou.coupon.utils;
 
+import java.util.Calendar;
 import java.util.Random;
 import java.util.UUID;
 
@@ -64,6 +65,8 @@ public class CommonKeyUtils {
 
         rand = random.nextInt(randMask);
 
+        System.out.println(timestamp - twepoch);
+
         return ((timestamp - twepoch) << 22 | sequence << 10 | rand);
     }
 
@@ -81,11 +84,21 @@ public class CommonKeyUtils {
      * @param uid
      * @return
      */
-    public static String genTicketKey(Long uid){
-        int rand = random.nextInt(randMask);
-        String uid_four = uid.toString().substring(uid.toString().length()-4,uid.toString().length());
-        String uuid = UUID.randomUUID().toString().replaceAll("-","").substring(0,6).toUpperCase();
-        return uuid + rand + uid_four;
+    public static synchronized String genTicketKey(Long uid){
+
+        //生成时间戳
+        Calendar cal = Calendar.getInstance();
+        cal.get(Calendar.MONTH);
+        cal.get(Calendar.DAY_OF_MONTH);
+
+        //获取时间戳后6位
+        long timedix = timeGen() - twepoch;
+        String head = (cal.get(Calendar.MONTH) + 1) +  cal.get(Calendar.DAY_OF_MONTH) + ((timedix + "").substring((timedix + "").length()-4, (timedix + "").length()));
+
+//        int rand = random.nextInt(randMask);
+        String uid_three = uid.toString().substring(uid.toString().length()-3,uid.toString().length());
+//        String uuid = UUID.randomUUID().toString().replaceAll("-","").substring(0,6).toUpperCase();
+        return ((Long.parseLong((head) + uid_three  + randThree())) << 3) + "" ;
     }
 
     /**
@@ -95,23 +108,32 @@ public class CommonKeyUtils {
      */
     public static String fcode(String ip){
         int rand = random.nextInt(randMask);
-        int ipInt = 0;
+//        int ipInt = 0;
         if (ip != null && ip.trim().length() > 1){
             if (ip.contains(":")){
-                ipInt = Integer.parseInt(ip.replaceAll(":",""));
+                ip = ip.replaceAll(":","");
             }
             else {
-                ipInt = Integer.parseInt(ip.replaceAll(".",""));
+                ip = ip.replaceAll("\\.","");
             }
         }
 
         String uuid = UUID.randomUUID().toString().replaceAll("-","").substring(0,4).toUpperCase();
-        return uuid + ipInt + rand;
+        return uuid + ip + rand;
     }
 
 
     private static long timeGen() {
         return System.currentTimeMillis();
+    }
+
+    private static int randThree(){
+        while (true){
+            double rand = Math.random();
+            if (rand >= 0.1){
+                return (int)(rand * 1000);
+            }
+        }
     }
 
 }

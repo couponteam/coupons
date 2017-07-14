@@ -32,16 +32,19 @@ public class ErpStatisticService {
         BaseFilter baseFilter = new BaseFilter();
         //无须时间参数
         erpStscVO.setMemberTotal(erpStatisticDao.memberCount(baseFilter));
-        erpStscVO.setPv(erpStatisticDao.webStatistic(baseFilter));
+        erpStscVO.setPvTotal(erpStatisticDao.webStatisticPV(baseFilter));
+        erpStscVO.setUvTotal(erpStatisticDao.webStatisticUV(baseFilter));
 
         erpStscVO.setShopTotal(erpStatisticDao.shopCount(baseFilter));
         erpStscVO.setTicketTaken(erpStatisticDao.ticketTaken());
         erpStscVO.setTicketTotal(erpStatisticDao.ticketCount(statisticFilter));
 
+        /**设置时间**/
         baseFilter.setToday(dateUtil.todayOnlyDate());
         statisticFilter.setToday(dateUtil.todayOnlyDate());
         //需要时间参数的请求
-        erpStscVO.setUv(erpStatisticDao.webStatistic(baseFilter));
+        erpStscVO.setPvToday(erpStatisticDao.webStatisticPV(baseFilter));
+        erpStscVO.setUvToday(erpStatisticDao.webStatisticUV(baseFilter));
         erpStscVO.setMemberDaily(erpStatisticDao.memberCount(baseFilter));
         erpStscVO.setShopDaily(erpStatisticDao.shopCount(baseFilter));
         erpStscVO.setTicketDaily(erpStatisticDao.ticketCount(statisticFilter));

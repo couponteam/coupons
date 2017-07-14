@@ -1,10 +1,12 @@
 package com.masou.coupon.action.shopapi;
 
 import com.masou.coupon.action.api.vo.ticketvo.Shops;
+import com.masou.coupon.common.constant.BeValue;
 import com.masou.coupon.common.enums.ErrorCodeEnum;
 import com.masou.coupon.common.struct.Result;
 import com.masou.coupon.common.utils.ResultHelper;
 import com.masou.coupon.data.models.Shop;
+import com.masou.coupon.service.UserLogService;
 import com.masou.coupon.service.api.UserTokenService;
 import com.masou.coupon.service.shopapi.ShopManagerService;
 import com.masou.coupon.utils.StringUtil;
@@ -17,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 /**
@@ -25,6 +28,12 @@ import java.util.List;
 @RestController
 @RequestMapping("/shop/api/shopmag")
 public class ApiShopManagerController {
+
+    @Autowired
+    private HttpServletRequest request;
+
+    @Autowired
+    private UserLogService userLogService;
 
     @Autowired
     private ShopManagerService shopManagerService;
@@ -42,6 +51,7 @@ public class ApiShopManagerController {
                            @RequestParam("page") Integer page,
                            @RequestParam(value = "pageSize" , required = false) Integer pageSize){
 //        Long uid = userTokenService.getUid(token);
+        userLogService.userLogs(request, BeValue.FROM_KEY_WEB);
         Shops shops = shopManagerService.shopList(uid,page,pageSize);
         if(shops != null ){
             return ResultHelper.genResultWithSuccess(shops);
@@ -55,6 +65,7 @@ public class ApiShopManagerController {
     @RequestMapping(value = "/use_t", method = RequestMethod.POST)
     public Result userTicketUse(@RequestParam("tid") String tid,
                             @RequestParam("token") String token){
+        userLogService.userLogs(request,BeValue.FROM_KEY_WEB);
         Long uid = userTokenService.getUid(token);
         return shopManagerService.userTicketUse(tid);
     }
@@ -63,6 +74,7 @@ public class ApiShopManagerController {
     @RequestMapping(value = "/shop", method = RequestMethod.GET)
     public Result shopBysid(@RequestParam("sid") Long sid,
                             @RequestParam("token") String token){
+        userLogService.userLogs(request,BeValue.FROM_KEY_WEB);
         Long uid = userTokenService.getUid(token);
         if(sid != null && sid > 0){
             Shop shop = shopManagerService.shopBysid(sid);
@@ -98,6 +110,7 @@ public class ApiShopManagerController {
     @RequestMapping(value = "/delete", method = RequestMethod.POST)
     public Result deleteShop(@RequestParam("token") String token,
                              @RequestParam("sid") Long sid){
+        userLogService.userLogs(request,BeValue.FROM_KEY_WEB);
         Long uid = userTokenService.getUid(token);
         if(uid == null || uid <= 0){
             return ResultHelper.genResult(ErrorCodeEnum.TOKEN_INVALID);

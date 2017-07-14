@@ -33,6 +33,8 @@ public interface TicketMapper {
 
     int updateByPrimaryKey(Ticket record);
 
+    List<TicketWithBLOBs> selectTicketWithoutUTID( TicketPageParam param);
+
     //根据店铺的id，获取
     List<TicketWithBLOBs> selectByLimit(TicketPageParam page);
 
@@ -44,13 +46,27 @@ public interface TicketMapper {
 
     List<TicketWithBLOBs> findBySid(ShopFilter shopFilter);
 
-    int isRetaken(UserTicket record);
+    int ticketCanRetaken(UserTicket record);
 
     Integer ticketCount(StatisticFilter statisticFilter);
+
+    Integer ticketCountByTake(StatisticFilter statisticFilter);
 
     Integer selectCountByTid(StatisticFilter statisticFilter);
 
     TicketWithBLOBs selectByTid(ShopFilter shopFilter);
 
-    List<Ticket> myTicket(ShopFilter shopFilter);
+    List<TicketWithBLOBs> myTicket(ShopFilter shopFilter);
+
+    List<TicketWithBLOBs> myTicketNoUse(ShopFilter shopFilter);
+
+    TicketWithBLOBs ticketByFollow(ShopFilter shopFilter);
+
+    TicketWithBLOBs selectFollowTicket(ShopFilter shopFilter);
+
+    List<TicketWithBLOBs> selectShopTicketType(ShopFilter filter);
+
+    TicketWithBLOBs selectIdBySidUid(ShopFilter shopFilter);
+
+    TicketWithBLOBs ticketByFollowShop(ShopFilter shopFilter);
 }

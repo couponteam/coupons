@@ -39,10 +39,11 @@ public class ErpShopManagerController {
     @ApiOperation("我的店铺要加入列表")
     @RequestMapping(value = "/applyList", method = RequestMethod.GET)
     public Result applyForShopList(
+                                    @RequestParam(value = "id",required = false) Long id,
                                     @RequestParam("token") String token,
                                    @RequestParam(value = "status", required = false) String status){
 //        Long uid = userTokenService.getUid(token);
-        return erpShopManagerService.applyForShopList(status);
+        return erpShopManagerService.applyForShopList(id, status);
     }
 
     @ApiOperation("精选店铺列表")

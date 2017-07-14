@@ -29,6 +29,8 @@ public class TicketVO {
 
     private int used;
 
+    private Boolean unread;
+
     public TicketWithBLOBs getTicket() {
         return ticket;
     }
@@ -107,5 +109,13 @@ public class TicketVO {
 
     public void set_colcMethod(String _colcMethod) {
         this._colcMethod = _colcMethod;
+    }
+
+    public Boolean getUnread() {
+        return unread;
+    }
+
+    public void setUnread(Boolean unread) {
+        this.unread = unread;
     }
 }

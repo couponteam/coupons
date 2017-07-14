@@ -1,6 +1,7 @@
 package com.masou.coupon.data.mappers;
 
 
+import com.masou.coupon.data.filter.ShopFilter;
 import com.masou.coupon.data.filter.StatisticFilter;
 import com.masou.coupon.data.models.LogUserShop;
 import org.apache.ibatis.annotations.Mapper;
@@ -22,4 +23,7 @@ public interface LogUserShopMapper {
     Integer pageView(StatisticFilter statisticFilter);
 
     LogUserShop selectByUid(Long uid);
+
+    LogUserShop selectByUidSid(ShopFilter shopFilter);
+
 }

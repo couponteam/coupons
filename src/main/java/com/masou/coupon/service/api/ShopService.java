@@ -3,10 +3,13 @@ package com.masou.coupon.service.api;
 import com.alibaba.fastjson.JSON;
 import com.masou.coupon.action.api.vo.ShopResultVO;
 import com.masou.coupon.action.api.vo.ShopapiVO;
+import com.masou.coupon.action.api.vo.SverifyVO;
 import com.masou.coupon.action.api.vo.ticketvo.TicketVO;
+import com.masou.coupon.action.erpapi.vo.TicketPageParam;
+import com.masou.coupon.common.constant.DicValue;
+import com.masou.coupon.common.enums.StatusEnum;
 import com.masou.coupon.data.filter.BaseFilter;
-import com.masou.coupon.data.mappers.LogUserShopMapper;
-import com.masou.coupon.data.mappers.TicketTypeMapper;
+import com.masou.coupon.data.mappers.*;
 import com.masou.coupon.data.param.PageParam;
 import com.masou.coupon.action.shopapi.vo.ShopVO;
 import com.masou.coupon.action.shopapi.vo.UserShopVO;
@@ -16,7 +19,6 @@ import com.masou.coupon.common.utils.ResultHelper;
 import com.masou.coupon.dao.Shop2Dao;
 import com.masou.coupon.dao.api.ShopDao;
 import com.masou.coupon.data.filter.ShopFilter;
-import com.masou.coupon.data.mappers.UserShopMapper;
 import com.masou.coupon.data.models.*;
 import com.masou.coupon.exception.UserException;
 import com.masou.coupon.service.shopapi.ShopManagerService;
@@ -48,13 +50,22 @@ public class ShopService {
     private PhoneUtil phoneUtil;
 
     @Autowired
+    private ShopService shopService;
+
+    @Autowired
     private UserService userService;
 
     @Autowired
     private UserTokenService userTokenService;
 
     @Autowired
+    private TicketMapper ticketMapper;
+
+    @Autowired
     private TicketManagerService ticketManagerService;
+
+    @Autowired
+    private FollowTicketService followTicketService;
 
     @Autowired
     private UserShopMapper userShopMapper;
@@ -84,6 +95,28 @@ public class ShopService {
     }
 
 
+    public Result shopVerifyStatus(Long sid){
+
+        if (sid != null && sid > 0){
+            ShopFilter shopFilter = new ShopFilter();
+            shopFilter.setSid(sid);
+
+            Shop shop = shopDao.shopVerifyStatus(shopFilter);
+            if(shop != null){
+                SverifyVO sverifyVO = new SverifyVO();
+                sverifyVO.setApplyShop(false);
+                if (shop.getIsShopVerified() == StatusEnum.APPLY_SHOP_PASS.getStatus()){
+                    sverifyVO.setApplyShop(true);
+                }
+                sverifyVO.setIndustryId(shop.getIndustryId());
+                sverifyVO.setIsShopVerified(shop.getIsShopVerified());
+                return ResultHelper.genResultWithSuccess(sverifyVO);
+            }
+        }
+        return ResultHelper.genResult(ErrorCodeEnum.FAILED);
+    }
+
+
     /**
      * 申请店铺
      *
@@ -95,9 +128,9 @@ public class ShopService {
         if (!phoneUtil.isPhone(record.getPhone())) {
             throw new UserException("手机号不正确");
         }
-//        if (shop2Dao.selectByPhone(record.getPhone()) != null) {
-//            throw new UserException("手机号已经注册");
-//        }
+        if (shop2Dao.selectByPhone(record.getPhone()) != null) {
+            throw new UserException("手机号已经注册");
+        }
 
 //        User user = userService.selectByPhone(record.getPhone());
 //        if (user == null) {
@@ -266,8 +299,20 @@ public class ShopService {
                     //数据库中存在数据
                     return ResultHelper.genResult(ErrorCodeEnum.FAILED.getCode(), "已关注过");
                 }else
-                    //插入到关注列表中
-                    return ResultHelper.genResultWithSuccess(userShopMapper.insertSelective(userShop));
+                    //插入到关注列表中,并且自动领取那张关注即领取的券
+                    if(userShopMapper.insertSelective(userShop) > 0){
+                        ShopFilter shopFilter = new ShopFilter();
+                        shopFilter.setSid(sid);
+                        //获取关注领取的券
+                        TicketWithBLOBs ticket = ticketMapper.ticketByFollowShop(shopFilter);
+                        if(ticket != null){
+                            if(followTicketService.insertTicket(uid, ticket.getTicketId()) > 0){
+                                return ResultHelper.genResultWithSuccess();
+                            }
+                        }
+                        return ResultHelper.genResult(ErrorCodeEnum.FAILED);
+                    }
+                    return ResultHelper.genResultWithSuccess();
             }else if (status == 2){
                 //如果为2，表示取消关注，则更新数据库
                 if(rs != null && rs.getId() > 0){
@@ -343,6 +388,20 @@ public class ShopService {
             for (Shop shop : shopList) {
                 ShopapiVO shopapiVO = new ShopapiVO();
                 shop.setUread(ticketService.unReadCount(uid));
+
+                //获取当前店铺所拥有的券类型
+                shopFilter.setSid(shop.getId());
+                List<TicketWithBLOBs> uts = ticketMapper.selectShopTicketType(shopFilter);
+                List<TicketType> tts = new ArrayList<TicketType>();
+                if(uts != null && uts.size() > 0){
+                    for (TicketWithBLOBs tb: uts) {
+                        tb.getTicketType().setTicketName(tb.getTicketName());
+                        tts.add(tb.getTicketType());
+                    }
+                    shopapiVO.setTicketTypes(tts);
+                }
+                shop.setUread(isUnRead(uid, shop.getId()));
+
                 if(shop.getTicket() != null && shop.getTicket().getTicketId()!= null && shop.getTicket().getTicketId().length() > 1){
                     shop.getTicket().setTicketType(
                             ticketTypeMapper.selectByPrimaryKey(
@@ -368,4 +427,35 @@ public class ShopService {
         }
         return null;
     }
+
+
+    /**
+     * 查询数据库中是否有未读消息
+     * @param uid
+     * @return
+     */
+    private int  isUnRead(Long uid, Long sid){
+        System.out.println("Enter unread method:" + uid + "      sid:" + sid);
+        if(uid != null && uid > 0){
+            ShopFilter shopFilter = new ShopFilter();
+            shopFilter.setUid(uid);
+            shopFilter.setSid(sid);
+
+            LogUserShop logUserShop = logUserShopMapper.selectByUidSid(shopFilter);
+            if (logUserShop != null) {
+                BaseFilter baseFilter = new BaseFilter();
+                baseFilter.setUid(uid);
+                baseFilter.setToday(logUserShop.getCreateTime());
+                return shopService.ticketUnRead(baseFilter);
+            }else{
+                //如果当前log中没有数据，说明没有用户访问shop记录，有新数据
+                TicketPageParam ticketPageParam = new TicketPageParam();
+                ticketPageParam.setShop_id(sid);
+
+                return ticketMapper.selectCount(ticketPageParam);
+            }
+        }
+        return 0;
+    }
+
 }

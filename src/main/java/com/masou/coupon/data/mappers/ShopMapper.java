@@ -43,6 +43,8 @@ public interface ShopMapper {
 
     List<Shop> findByLocation(LocaltionFilter filter);
 
+    Shop shopVerifyStatus(ShopFilter shopFilter);
+
     Shop shopMD5(String shopMD5);
 
     List<Shop> findByUid(ShopFilter shopFilter);
@@ -72,4 +74,6 @@ public interface ShopMapper {
     Integer ticketUnRead(BaseFilter baseFilter);
 
     Shop selectTicketBysid(ShopFilter shopFilter);
+
+    TicketWithBLOBs selectIdBySidUid(ShopFilter shopFilter);
 }

@@ -22,11 +22,21 @@ public class UserLogService {
     @Autowired
     private IPUtil ipUtil;
 
-    public int userLogs(HttpServletRequest request){
+    public int userLogs(HttpServletRequest request, String fromKey){
         LogUserVisit logUserVisit = new LogUserVisit();
         logUserVisit.setIp(ipUtil.getIpAddress(request));
         logUserVisit.setMethod(request.getMethod());
         logUserVisit.setUrl(request.getRequestURI());
+        logUserVisit.setFromkey(fromKey);
         return userLogDao.insertLog(logUserVisit);
     }
+
+    public int userticketLog(String ip, Long uid, String ticketId){
+
+
+
+
+        return 0;
+    }
+
 }

@@ -1,5 +1,6 @@
 package com.masou.coupon.action.api;
 
+import com.masou.coupon.common.constant.BeValue;
 import com.masou.coupon.common.enums.RoleEnum;
 import com.masou.coupon.common.struct.Result;
 import com.masou.coupon.common.utils.ResultHelper;
@@ -54,7 +55,7 @@ public class ApiUserController {
     public Result loginByPassword(@RequestParam("token") String token,
                                   @RequestParam("phone") String phone,
                                   @RequestParam("password") String password) {
-
+        userLogService.userLogs(request, BeValue.FROM_KEY_APP);
         return userService.loginByPassword(token, phone, password);
     }
 
@@ -65,8 +66,21 @@ public class ApiUserController {
                            @RequestParam("password") String password,
                            @RequestParam("fromKey") String fromKey,
                            @RequestParam(value = "beInviteCode", required = false) String beInviteCode) {
-
+        userLogService.userLogs(request,BeValue.FROM_KEY_APP);
         return userService.register(phone, null, verify, password, fromKey, beInviteCode, false, RoleEnum.USER.getRole());
+    }
+
+    @ApiOperation("我的店铺要加入")
+    @RequestMapping(value = "/sjoin", method = RequestMethod.POST)
+    public Result register(@RequestParam(value = "phone", required = false) String phone,
+                           @RequestParam(value = "verify", required = false) String verify,
+                           @RequestParam(value = "id", required = false) Long id,
+                           @RequestParam(value = "username", required = false) String username,
+                           @RequestParam(value = "status", required = false) Integer status,
+                           @RequestParam(value = "token", required = false) String token) {
+        userLogService.userLogs(request,BeValue.FROM_KEY_APP);
+        Long uid = userTokenService.getUid(token);
+        return userService.myShopJoinIn(id,uid, phone, verify, username, status, false);
     }
 
 
@@ -75,8 +89,8 @@ public class ApiUserController {
     public Result changePassword(@RequestParam("token") String token,
                                  @RequestParam("oldPassword") String oldPassword,
                                  @RequestParam("newPassword") String newPassword) {
+        userLogService.userLogs(request,BeValue.FROM_KEY_APP);
         Long uid = userTokenService.getUid(token);
-
         return userService.changePassword(uid, oldPassword, newPassword);
 
     }
@@ -87,7 +101,7 @@ public class ApiUserController {
     public Result forgetPassword(@RequestParam("phone") String phone,
                                  @RequestParam("verify") String verify,
                                  @RequestParam("newPassword") String password) {
-
+        userLogService.userLogs(request,BeValue.FROM_KEY_APP);
         return userService.forgetPassword(phone, verify, password);
     }
 
@@ -95,7 +109,6 @@ public class ApiUserController {
     @RequestMapping(value = "/logout", method = RequestMethod.POST)
     public Result logout(@RequestParam("token") String token) {
         userService.logout(token);
-
         return ResultHelper.genResultWithSuccess();
     }
 
@@ -113,7 +126,7 @@ public class ApiUserController {
                          @RequestParam(value = "nickname", required = false) String nickname,
                          @RequestParam(value = "gender", required = false) String gender,
                          @RequestParam(value = "avatar", required = false) String avatar) {
-
+        userLogService.userLogs(request,BeValue.FROM_KEY_APP);
         Long uid = userTokenService.getUid(token);
         return userService.update(uid, nickname, gender, avatar);
 

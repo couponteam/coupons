@@ -69,8 +69,15 @@ public class ErpStatisticDao {
         return 0;
     }
 
-    public Integer webStatistic(BaseFilter baseFilter){
-        Integer count = logUserVisitMapper.webStatistic(baseFilter);
+    public Integer webStatisticPV(BaseFilter baseFilter){
+        Integer count = logUserVisitMapper.webStatisticPV(baseFilter);
+        if (count != null)
+            return count;
+        return 0;
+    }
+
+    public Integer webStatisticUV(BaseFilter baseFilter){
+        Integer count = logUserVisitMapper.webStatisticUV(baseFilter);
         if (count != null)
             return count;
         return 0;

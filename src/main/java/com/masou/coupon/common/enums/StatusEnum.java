@@ -29,6 +29,13 @@ public enum StatusEnum {
     APPLY_SHOP_DOING(0,"审核中"),
     APPLY_SHOP_PASS(1, "审核通过"),
     APPLY_SHOP_REJECT(2, "审核未通过"),
+
+
+    //店铺申请状态
+    ERP_APPLY_SHOP_DOING(1,"未操作"),
+    ERP_APPLY_SHOP_SUCC(2,"已通过"),
+    ERP_APPLY_SHOP_DEL(3,"已删除"),
+
     ;
 
     int status;

@@ -14,6 +14,8 @@ public class ShopTicketListVO {
 
     private List<TicketWithBLOBs> ticketWithBLOBsList;
 
+    private Integer total;
+
     public Shop getShop() {
         return shop;
     }
@@ -28,5 +30,13 @@ public class ShopTicketListVO {
 
     public void setTicketWithBLOBsList(List<TicketWithBLOBs> ticketWithBLOBsList) {
         this.ticketWithBLOBsList = ticketWithBLOBsList;
+    }
+
+    public Integer getTotal() {
+        return total;
+    }
+
+    public void setTotal(Integer total) {
+        this.total = total;
     }
 }

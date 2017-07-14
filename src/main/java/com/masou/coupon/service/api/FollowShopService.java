@@ -25,13 +25,12 @@ public class FollowShopService {
      * 用户关注店铺
      * @param uid
      * @param sid
-     * @param status 状态
      * @return
      */
-    public boolean followShop(Long uid, Long sid, Integer status){
+    public boolean followShop(Long uid, Long sid){
         UserShop userShop = new UserShop();
+        userShop.setUserId(uid);
         userShop.setShopId(sid);
-        userShop.setStatus(Byte.parseByte(status + ""));
         int count = userShopMapper.insertSelective(userShop);
         if(count > 0){
             return true;
@@ -50,6 +49,7 @@ public class FollowShopService {
         userShop.setShopId(sid);
         UserShop rs = userShopMapper.selectByUidSid(userShop);
         if(rs != null && rs.getId() > 0){
+            System.out.println("已关注店铺");
             return true;
         }
         return false;

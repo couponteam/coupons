@@ -35,7 +35,4 @@ public interface UserTicketMapper {
 
     List<UserTicket> ticketBeenTakenAndUsed(ShopFilter shopFilter);
 
-
-    List<UserTicketPersonal> selectListByUid(ShopFilter filter);
-
 }

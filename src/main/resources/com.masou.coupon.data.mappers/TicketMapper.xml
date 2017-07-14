@@ -20,7 +20,7 @@
         <result column="taken" jdbcType="INTEGER" property="taken"/>
 
         <association property="ticketType" javaType="com.masou.coupon.data.models.TicketType">
-            <id column="id" jdbcType="INTEGER" property="id" />
+            <!--<id column="id" jdbcType="INTEGER" property="id" />-->
             <result column="ttcomment" jdbcType="VARCHAR" property="comment" />
             <result column="status" jdbcType="INTEGER" property="status" />
             <result column="icon" jdbcType="VARCHAR" property="icon" />
@@ -45,6 +45,45 @@
         t.period_of_validity_endTime, t.comment, t.status, t.collecting_method, t.is_retaken, t.is_re_use,
         t.create_time,t.amount
     </sql>
+
+    <sql id="ticket_list">
+        t.id as tid,
+        t.ticket_id as tticket_id,
+        t.shop_id as tshop_id,
+        t.ticket_name as tticket_name,
+        t.content as tcontent,
+        t.type_id as ttype_id,
+        t.period_of_validity_startTime as tperiod_of_validity_startTime,
+        t.period_of_validity_endTime as tperiod_of_validity_endTime,
+        t.comment as tcomment,
+        t.status as tstatus,
+        t.collecting_method as tcollecting_method,
+        t.is_retaken as tis_retaken,
+        t.is_re_use as tis_re_use,
+        t.create_time as tcreate_time,
+        t.amount as tamount,
+        t.taken as ttaken
+    </sql>
+
+    <sql id="ticket_type_list">
+        tt.id AS ttid,
+        tt.comment AS ttcomment,
+        tt.status AS ttstatus,
+        tt.icon AS tticon
+    </sql>
+
+    <sql id="user_ticket_list">
+
+        ut.id  AS  utid,
+        ut.user_id  AS  utuser_id,
+        ut.ticket_id  AS  utticket_id,
+        ut.status  AS  utstatus,
+        ut.create_time  AS  utcreate_time,
+        ut.last_update_time  AS  utlast_update_time,
+        ut.ut_id  AS  utut_id
+    </sql>
+
+
     <sql id="Blob_Column_List">
         t.applicable_scope, t.working_condition, t.validity_comment
     </sql>
@@ -67,7 +106,7 @@
     </select>
 
 
-    <select id="myTicket" parameterType="com.masou.coupon.data.filter.ShopFilter" resultMap="BaseResultMap">
+    <select id="myTicket" parameterType="com.masou.coupon.data.filter.ShopFilter" resultMap="ResultMapWithBLOBs">
         SELECT
         <include refid="Base_Column_List"/>,
         <include refid="User_Ticket_list"/>,
@@ -91,16 +130,56 @@
         limit #{limit,jdbcType=INTEGER}, #{offset, jdbcType=INTEGER};
     </select>
 
-
+    <select id="myTicketNoUse" parameterType="com.masou.coupon.data.filter.ShopFilter" resultMap="ResultMapWithBLOBs">
+        SELECT
+        <include refid="Base_Column_List"/>,
+        <include refid="User_Ticket_list"/>,
+        <include refid="Ticket_Type_list" />
+        FROM
+        ety_ticket t,
+        rel_user_ticket ut,
+        dic_ticket_type tt
+        WHERE
+        t.ticket_id = ut.ticket_id
+        AND ut.user_id = #{uid, jdbcType=BIGINT}
+        AND  tt.id = t.type_id
+        AND (t.period_of_validity_endTime &lt; NOW()
+        OR t.`status` = 3 OR  t.`status` = -3)
+        AND (
+        ut.`status` = 2
+        OR ut.`status` = 3
+        )
+        ORDER BY
+        ut.create_time
+        limit #{limit,jdbcType=INTEGER}, #{offset, jdbcType=INTEGER};
+    </select>
 
     <select id="ticketCount" parameterType="com.masou.coupon.data.filter.StatisticFilter" resultType="java.lang.Integer">
+
         SELECT
-            COUNT(t.id)
+          COUNT(*)
         FROM
+            ety_shop s,
             ety_ticket t,
             rel_user_ticket ut
         WHERE
-            t.ticket_id = ut.ticket_id
+              s.id = t.shop_id
+            AND t.ticket_id = ut.ticket_id
+            AND s.uid = #{uid, jdbcType=BIGINT}
+        <if test="today != null">
+            AND ut.create_time &gt; #{today, jdbcType=TIMESTAMP}
+        </if>
+    </select>
+
+    <select id="ticketCountByTake" parameterType="com.masou.coupon.data.filter.StatisticFilter" resultType="java.lang.Integer">
+
+        SELECT
+        COUNT(t.id)
+        FROM
+        ety_ticket t,
+        rel_user_ticket ut
+        WHERE
+        t.ticket_id = ut.ticket_id
         <if test="tid != null">
             AND t.ticket_id = #{tid, jdbcType=CHAR}
         </if>
@@ -108,10 +187,11 @@
             AND t.create_time &gt; #{today, jdbcType=TIMESTAMP}
         </if>
         AND (
-            ut.`status` = 2
-            OR ut.`status` = 3
+        ut.`status` = 2
+        OR ut.`status` = 3
         )
     </select>
+
 
     <select id="selectCountByTid" parameterType="com.masou.coupon.data.filter.StatisticFilter" resultType="java.lang.Integer">
         SELECT
@@ -121,6 +201,91 @@
         WHERE
             ticket_id = #{tid, jdbcType=CHAR};
     </select>
+
+    <select id="selectShopTicketType" parameterType="com.masou.coupon.data.filter.ShopFilter" resultMap="ResultMapWithBLOBs">
+        SELECT
+        tt.*, t.ticket_name
+        FROM
+        ety_ticket t,
+        dic_ticket_type tt
+        WHERE
+        t.type_id = tt.id
+        AND t.shop_id = #{sid, jdbcType=BIGINT}
+        AND t.`status` = 1
+        AND t.period_of_validity_endTime > NOW()
+        GROUP BY
+        t.type_id
+        ORDER BY tt.id ASC
+    </select>
+
+    <select id="ticketCanRetaken" parameterType="com.masou.coupon.data.models.UserTicket" resultMap="ResultMapWithBLOBs">
+        SELECT
+            amount
+        FROM
+            ety_ticket
+        WHERE
+            ticket_id = #{tid, jdbcType=CHAR};
+    </select>
+
+    <select id="selectIdBySidUid" parameterType="com.masou.coupon.data.filter.ShopFilter" resultMap="ResultMapWithBLOBs">
+        SELECT
+            t.ticket_id
+        FROM
+            ety_ticket t,
+            rel_user_ticket ut
+        WHERE
+            t.ticket_id = ut.ticket_id
+        AND t.collecting_method = 2
+        AND t.shop_id = #{sid, jdbcType=BIGINT}
+        AND ut.user_id = #{uid, jdbcType=BIGINT}
+        AND t.period_of_validity_endTime &gt; NOW()
+        ORDER BY
+            ut.create_time DESC
+        LIMIT 1;
+    </select>
+
+    <select id="ticketByFollow" parameterType="com.masou.coupon.data.filter.ShopFilter" resultMap="ResultMapWithBLOBs">
+        SELECT
+            t.ticket_id
+        FROM
+            ety_ticket t
+        WHERE
+            t.shop_id = #{sid, jdbcType=BIGINT}
+        AND t.collecting_method = 2
+        AND t.period_of_validity_endTime &gt; NOW()
+        ORDER BY
+            t.create_time DESC
+        LIMIT 1;
+    </select>
+
+    <select id="ticketByFollowShop" parameterType="com.masou.coupon.data.filter.ShopFilter" resultMap="ResultMapWithBLOBs">
+        SELECT
+        t.ticket_id
+        FROM
+        ety_ticket t
+        WHERE
+        t.shop_id = #{sid, jdbcType=BIGINT}
+        AND t.collecting_method = 3
+        AND t.period_of_validity_endTime &gt; NOW()
+        ORDER BY
+        t.create_time DESC
+        LIMIT 1;
+    </select>
+
+    <select id="selectFollowTicket" parameterType="com.masou.coupon.data.filter.ShopFilter" resultMap="ResultMapWithBLOBs">
+        SELECT
+            t.ticket_id
+        FROM
+            ety_ticket t
+        WHERE
+            t.shop_id = #{sid,jdbcType=BIGINT}
+        AND t.`status` = 3
+        AND t.period_of_validity_endTime &gt; NOW()
+        ORDER BY
+            t.create_time DESC
+        LIMIT 1;
+    </select>
+
     <select id="findStatusByUid" parameterType="java.lang.Long" resultType="java.lang.Integer">
         SELECT
         t.`status`
@@ -135,7 +300,7 @@
 
     <select id="selectByLimit" parameterType="com.masou.coupon.action.erpapi.vo.TicketPageParam" resultMap="ResultMapWithBLOBs">
         select
-        <include refid="Base_Column_List"/>
+        <include refid="Base_Column_List" />
         ,
         <include refid="Blob_Column_List"/>
         ,
@@ -146,11 +311,30 @@
         LEFT JOIN rel_user_ticket ut ON ut.ticket_id = t.ticket_id
         where shop_id = #{shop_id,jdbcType=BIGINT}
         AND  tt.id = t.type_id
+        AND t.period_of_validity_endTime &gt; NOW()
         <if test="status != null">
               AND t.status = #{status, jdbcType=TINYINT}
         </if>
         ORDER BY t.create_time DESC limit #{page, jdbcType=BIGINT},#{pageSize,jdbcType=BIGINT}
     </select>
+
+    <select id="selectTicketWithoutUTID" parameterType="com.masou.coupon.action.erpapi.vo.TicketPageParam" resultMap="ResultMapWithBLOBs">
+        select
+        <include refid="Base_Column_List" />
+        ,
+        <include refid="Blob_Column_List"/>
+        ,
+        <include refid="Ticket_Type_list" />
+        from dic_ticket_type tt, ety_ticket t
+        where shop_id = #{shop_id,jdbcType=BIGINT}
+        AND  tt.id = t.type_id
+        AND t.period_of_validity_endTime &gt; NOW()
+        <if test="status != null">
+            AND t.status = #{status, jdbcType=TINYINT}
+        </if>
+        ORDER BY t.create_time DESC limit #{page, jdbcType=BIGINT},#{pageSize,jdbcType=BIGINT}
+    </select>
+
     <select id="selectCount" parameterType="com.masou.coupon.action.erpapi.vo.TicketPageParam" resultType="java.lang.Integer">
         select
         COUNT(id)
@@ -172,6 +356,7 @@
         t.shop_id = #{sid,jdbcType=BIGINT}
     AND t.STATUS = 1
     AND  tt.id = t.type_id
+        AND t.period_of_validity_endTime &gt; NOW()
     GROUP BY
         t.type_id
     ORDER BY
@@ -198,6 +383,7 @@
         from ety_ticket t,dic_ticket_type tt
         where t.shop_id = #{sid,jdbcType=BIGINT}
         AND  tt.id = t.type_id
+        AND t.period_of_validity_endTime &gt; NOW()
         ORDER BY t.create_time DESC;
     </select>
 

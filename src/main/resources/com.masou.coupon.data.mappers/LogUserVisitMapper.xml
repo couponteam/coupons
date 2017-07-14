@@ -7,9 +7,10 @@
     <result column="url" jdbcType="VARCHAR" property="url" />
     <result column="method" jdbcType="VARCHAR" property="method" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="fromkey" jdbcType="VARCHAR" property="fromkey" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, ip, url, method, create_time
+    id, ip, url, method, create_time,fromkey
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
@@ -18,16 +19,36 @@
     where id = #{id,jdbcType=BIGINT}
   </select>
 
-  <select id="webStatistic" parameterType="com.masou.coupon.data.filter.BaseFilter" resultType="java.lang.Integer">
+  <select id="webStatisticPV" parameterType="com.masou.coupon.data.filter.BaseFilter" resultType="java.lang.Integer">
     SELECT
         count(id)
     FROM
         log_user_visit
+    WHERE 1
+    AND fromkey = 'app'
     <if test="today != null">
-      GROUP BY
-      ip,
-      DATE_FORMAT(create_time, '%Y-%m-%d')
+    AND create_time &gt;= #{today,jdbcType=TIMESTAMP}
     </if>
+  </select>
+
+  <select id="webStatisticUV" parameterType="com.masou.coupon.data.filter.BaseFilter" resultType="java.lang.Integer">
+    SELECT
+      SUM(dcount)
+    FROM
+    (
+      SELECT
+        count(id) AS dcount
+      FROM
+        log_user_visit
+      WHERE 1
+      AND fromkey = 'app'
+      <if test="today != null">
+      AND create_time &gt;= #{today,jdbcType=TIMESTAMP}
+      </if>
+      GROUP BY
+        ip,
+        DATE_FORMAT(create_time, '%Y-%m-%d')
+    ) tmp
 
   </select>
 
@@ -59,6 +80,9 @@
       <if test="createTime != null">
         create_time,
       </if>
+      <if test="fromkey != null">
+        fromkey,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -75,6 +99,9 @@
       </if>
       <if test="createTime != null">
         #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="fromkey != null">
+        #{fromkey,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
@@ -93,6 +120,9 @@
       <if test="createTime != null">
         create_time = #{createTime,jdbcType=TIMESTAMP},
       </if>
+      <if test="fromkey != null">
+        fromkey = #{fromkey,jdbcType=VARCHAR},
+      </if>
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
@@ -101,7 +131,8 @@
     set ip = #{ip,jdbcType=VARCHAR},
       url = #{url,jdbcType=VARCHAR},
       method = #{method,jdbcType=VARCHAR},
-      create_time = #{createTime,jdbcType=TIMESTAMP}
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      fromkey = #{fromkey,jdbcType=VARCHAR}
     where id = #{id,jdbcType=BIGINT}
   </update>
 </mapper>

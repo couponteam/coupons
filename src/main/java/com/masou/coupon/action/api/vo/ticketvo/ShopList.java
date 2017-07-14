@@ -9,6 +9,8 @@ import java.util.List;
  */
 public class ShopList {
 
+
+
     private List<Shop> shops;
 
     private Integer total;

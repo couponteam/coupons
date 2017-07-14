@@ -1,6 +1,7 @@
 package com.masou.coupon.action.api;
 
 import com.masou.coupon.action.api.vo.ShopResultVO;
+import com.masou.coupon.common.constant.BeValue;
 import com.masou.coupon.common.enums.ErrorCodeEnum;
 import com.masou.coupon.common.struct.Result;
 import com.masou.coupon.common.utils.ResultHelper;
@@ -53,12 +54,19 @@ public class ApiShopController {
 //                                       @RequestParam("uid") Long uid,
                                        @RequestParam("page") Integer page,
                                        @RequestParam(value = "pageSize", required = false) Integer pageSize){
+        userLogService.userLogs(request,BeValue.FROM_KEY_APP);
         if(sid != null &&sid > 0){
             Long uid = userTokenService.getUid(token);
             return ResultHelper.genResultWithSuccess(
                     ticketService.selectTicketByShopId(sid,uid,ipUtil.getIpAddress(request),page,pageSize));
         }
         return ResultHelper.genResult(ErrorCodeEnum.NULL_VALUE_ERROR.getCode(), "传入店铺id"+ErrorCodeEnum.NULL_VALUE_ERROR.getMsg());
+    }
+
+    @ApiOperation("查询店铺状态")
+    @RequestMapping(value = "/sverify", method = RequestMethod.GET)
+    public Result shopVerifyStatus(@RequestParam("sid") Long sid){
+        return shopService.shopVerifyStatus(sid);
     }
 
     @ApiOperation("用户关注/取消关注店铺")
@@ -68,6 +76,7 @@ public class ApiShopController {
 //              @RequestParam("uid") Long uid,
                           @RequestParam("sid") Long sid,
                           @RequestParam("status") Integer status) {
+        userLogService.userLogs(request,BeValue.FROM_KEY_APP);
         Long uid = userTokenService.getUid(token);
         return shopService.follow(uid, sid, status) ;
     }
@@ -79,7 +88,7 @@ public class ApiShopController {
 //                          @RequestParam("uid") Long uid,
                           @RequestParam(value = "pageSize", required = false) Integer pageSize,
                           @RequestParam(value = "keyword", required = false) String keyword) {
-
+        userLogService.userLogs(request, BeValue.FROM_KEY_APP);
         Long uid = userTokenService.getUid(token);
         ShopResultVO shopResultVOs = shopService.list(uid, page, pageSize, keyword);
         if(shopResultVOs != null){

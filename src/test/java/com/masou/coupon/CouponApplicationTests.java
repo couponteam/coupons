@@ -20,10 +20,7 @@ public class CouponApplicationTests {
 	@Test
 	public void contextLoads() {
 
-		BaseFilter filter = new BaseFilter();
-		filter.setUid(200220439442621212L);
-		List<UserTicketPersonal> list = userTicketMapper.selectListByUid(filter);
-		System.out.print(list.size());
+
 	}
 
 }

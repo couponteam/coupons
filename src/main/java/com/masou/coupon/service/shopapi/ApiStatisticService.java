@@ -4,6 +4,7 @@ import com.masou.coupon.action.shopapi.vo.StatisticVO;
 import com.masou.coupon.action.shopapi.vo.TicketStstcVO;
 import com.masou.coupon.dao.ShopApiDao.ApiStatisticDao;
 import com.masou.coupon.data.filter.StatisticFilter;
+import com.masou.coupon.exception.UserException;
 import com.masou.coupon.utils.DateUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,6 +29,9 @@ public class ApiStatisticService {
     private Logger logger = LoggerFactory.getLogger(ApiStatisticService.class);
 
     public StatisticVO statistic(Long uid, String fromData, String toData, Long sid){
+        if(uid == null || uid <= 0){
+            throw new UserException("无数据");
+        }
         StatisticVO statisticVO = new StatisticVO();
         StatisticFilter statisticFilter = new StatisticFilter();
         statisticFilter.setUid(uid);
@@ -44,9 +48,8 @@ public class ApiStatisticService {
         statisticVO.setFollowersTotal(apiStatisticDao.followersTotal(statisticFilter));
 
         //获取券领取情况
-//        statisticVO.setTicket(ticketCount());
         statisticVO.setTicketToday(apiStatisticDao.ticketToday(statisticFilter));
-        statisticVO.setPageViewTotal(apiStatisticDao.ticketTotal(statisticFilter));
+        statisticVO.setTicketTotal(apiStatisticDao.ticketTotal(statisticFilter));
 
         //获取店铺浏览量
         statisticVO.setPageViewToday(apiStatisticDao.pageViewToday(statisticFilter));

@@ -20,6 +20,7 @@ import com.masou.coupon.data.param.PageParam;
 import com.masou.coupon.exception.UserException;
 import com.masou.coupon.service.CommonService;
 import com.masou.coupon.service.LocaltionCalcService;
+import com.masou.coupon.service.UserLogService;
 import com.masou.coupon.service.shopapi.ShopManagerService;
 import com.masou.coupon.service.shopapi.TicketManagerService;
 import com.masou.coupon.utils.CommonKeyUtils;
@@ -63,6 +64,12 @@ public class TicketService {
 
     @Autowired
     private FcodeMapper fcodeMapper;
+
+    @Autowired
+    private UserLogService userLogService;
+
+    @Autowired
+    private ShopMapper shopMapper;
 
     @Autowired
     private LogUserShopMapper logUserShopMapper;
@@ -160,58 +167,38 @@ public class TicketService {
             shopFilter.setOffset(PageParam.PAGESIZE_DEFAULT);
         }
 
+
         ShopList shopLists = new ShopList();
 
-        List<Ticket> tickets = ticketMapper.myTicket(shopFilter);
+        List<TicketWithBLOBs> tickets;
+        if(status != null && status > 0){
+            shopFilter.setStatus(status);
+            tickets = ticketMapper.myTicket(shopFilter);
+        }else if(status != null && status == -23){
+            tickets = ticketMapper.myTicketNoUse(shopFilter);
+        }else{
+            tickets = ticketMapper.myTicket(shopFilter);
+        }
 
-        return ResultHelper.genResultWithSuccess(tickets);
-
-
-
-//        List<Shop> shopList = null;
-//        if(status != null && status > 0){
-//            shopFilter.setStatus(status);
-//            shopList = shopDao.myTicket(shopFilter);
-//        }else if(status != null && status == -23){
-//            shopList = shopDao.myTicketNoUse(shopFilter);
-//        }else{
-//            shopList = shopDao.myTicket(shopFilter);
-//        }
-//
-//        List<Shop> newList = new ArrayList<Shop>();
-//        if (shopList != null && shopList.size() > 0){
-//            for (Shop shop: shopList) {
-//                shop.getUserTicket().setStatusStr(changeUtStatus(shop.getUserTicket().getStatus()));
-//                //获取券type信息
-//                shop.getTicket().setTicketType(
-//                        ticketTypeMapper.selectByPrimaryKey(
-//                                Integer.parseInt(shop.getTicket().getTypeId() + "")));
-//
-//                UserTicket userTicket = new UserTicket();
-//                userTicket.setUserId(uid);
-//                userTicket.setTicketId(shop.getTicket().getTicketId());
-//
-//                List<UserTicket> userTickets = userTicketMapper.findByUidTid(userTicket);
-//                if(userTickets  != null && userTickets.size() > 0){
-//                    shop.getTicket().setUserTicket(userTickets.get(0));
-//                }
-//                newList.add(shop);
-//            }
-//
-//            shopLists.setShops(newList);
-//            shopLists.setTotal(shopDao.myTicketCount(shopFilter));
-//            return ResultHelper.genResultWithSuccess(shopLists);
-//        }
-//        return ResultHelper.genResult(ErrorCodeEnum.NULL_VALUE_ERROR);
-    }
-
-    public Result myTicket2(Integer page, Integer pageSize, Long uid, Integer status){
-
-        ShopFilter filter = new ShopFilter();
-        filter.setStatus(status);
-        filter.setUid(uid);
-        return ResultHelper.genResultWithSuccess(userTicketMapper.selectListByUid(filter));
-
+        List<Shop> shops = new ArrayList<Shop>();
+        //组装结果
+        if(tickets != null && tickets.size() > 0){
+            for (TicketWithBLOBs ticket: tickets) {
+                //修改状态为中文名
+                ticket.getUserTicket().setStatusStr(changeUtStatus(ticket.getUserTicket().getStatus(), ticket.getPeriodOfValidityEndtime()));
+                //获取一次店铺信息
+                Shop shop = shopMapper.selectByPrimaryKey(ticket.getShopId());
+                if(shop != null){
+                    shop.setTicket(ticket);
+                    //设置店铺信息
+                    shops.add(shop);
+                }
+            }
+            shopLists.setShops(shops);
+            shopLists.setTotal(shopDao.myTicketCount(shopFilter));
+            return ResultHelper.genResultWithSuccess(shopLists);
+        }
+        return ResultHelper.genResult(ErrorCodeEnum.NULL_VALUE_ERROR);
     }
 
     /**
@@ -258,13 +245,29 @@ public class TicketService {
     }
 
     /**
+     * 判断券的状态和是否过期
+     * @param status
+     * @param endTime
+     * @return
+     */
+    public String changeUtStatus(Byte status, Date endTime){
+        if (endTime != null && DateUtil.isOutOfdate(endTime)){
+            return "已过期";
+        }
+        changeUtStatus(status);
+        return null;
+    }
+
+    /**
      * 用户读取券
      * @param uid
      * @param tid
      * @param status
      * @return
      */
-    public ShopTicketVO userReadTicket(Long uid, String tid, Integer status){
+    public ShopTicketVO userReadTicket(Long uid, String tid, Integer status, String ip){
+
+        userLogService.userticketLog(ip, uid,tid);
         ShopTicketVO shopTicketVO = null;
         ShopFilter shopFilter = new ShopFilter();
         shopFilter.setTid(tid);
@@ -324,6 +327,7 @@ public class TicketService {
         try {
             shopTicket.setShop(shopService.selectByPrimaryKey(sid));
 
+            //设置店铺下的券列表
             TicketResultVO ticketResultVO = ticketManagerService.showTicketList(sid, uid, page,pageSize, null);
             Tickets tickets = new Tickets();
             tickets.setTickes(ticketResultVO.getTicketVO());
@@ -390,6 +394,19 @@ public class TicketService {
                         ticketTypeMapper.selectByPrimaryKey(
                                 Integer.parseInt(shop.getTicket().getTypeId() + "")));
 
+                //获取当前店铺所拥有的券类型
+                ShopFilter shopFilter = new ShopFilter();
+                shopFilter.setSid(shop.getId());
+                List<TicketWithBLOBs> uts = ticketMapper.selectShopTicketType(shopFilter);
+                List<TicketType> tts = new ArrayList<TicketType>();
+                if(uts != null && uts.size() > 0){
+                    for (TicketWithBLOBs tb: uts) {
+                        tb.getTicketType().setTicketName(tb.getTicketName());
+                        tts.add(tb.getTicketType());
+                    }
+                    shopVO.setTicketTypes(tts);
+                }
+
                 //计算店铺与用户位置的距离
                 double distance=localtionCalcService.getEarthRadius(
                         new LngAndLatParam(shop.getLongitude(),shop.getDimensionality()),
@@ -418,6 +435,7 @@ public class TicketService {
      * @return
      */
     private boolean isUnRead(Long uid){
+        System.out.println("Enter unread method:" + uid);
         if(uid != null && uid > 0){
             BaseFilter baseFilter = new BaseFilter();
             LogUserShop logUserShop = logUserShopMapper.selectByUid(uid);
@@ -426,10 +444,15 @@ public class TicketService {
                 baseFilter.setToday(logUserShop.getCreateTime());
                 Integer count = shopService.ticketUnRead(baseFilter);
                 if(count != null && count > 0){
+                    //有数量，则说明有新数据
                     return true;
+                }else{
+                    //无数量，则数据都已读取过
+                    return false;
                 }
             }else{
-                return false;
+                //如果当前log中没有数据，说明没有用户访问shop记录，有新数据
+                return true;
             }
         }
         return false;

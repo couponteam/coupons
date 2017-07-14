@@ -28,11 +28,12 @@
 
   <select id="followers" parameterType="com.masou.coupon.data.filter.StatisticFilter"  resultType="java.lang.Integer">
     select
-    COUNT(id)
-    from rel_user_shop
-    where user_id= #{uid, jdbcType=BIGINT}
+    COUNT(us.id)
+    from rel_user_shop us, ety_shop s
+    where us.shop_id = s.id
+    AND s.uid= #{uid, jdbcType=BIGINT}
     <if test="today != null">
-      and create_time &gt;= #{today, jdbcType=TIMESTAMP}
+      and us.create_time &gt;= #{today, jdbcType=TIMESTAMP}
     </if>
   </select>
 

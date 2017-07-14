@@ -7,6 +7,8 @@ import com.masou.coupon.action.api.vo.ticketvo.TicketVO;
 import com.masou.coupon.action.erpapi.vo.TicketPageParam;
 import com.masou.coupon.dao.ShopApiDao.TicketManagerDao;
 import com.masou.coupon.data.filter.ShopFilter;
+import com.masou.coupon.data.mappers.LogUserTicketMapper;
+import com.masou.coupon.data.mappers.TicketMapper;
 import com.masou.coupon.data.mappers.TicketTypeMapper;
 import com.masou.coupon.data.mappers.UserTicketMapper;
 import com.masou.coupon.data.models.*;
@@ -36,6 +38,12 @@ public class TicketManagerService {
 
     @Autowired
     private TicketTypeMapper ticketTypeMapper;
+
+    @Autowired
+    private TicketMapper ticketMapper;
+
+    @Autowired
+    private LogUserTicketMapper logUserTicketMapper;
 
     @Autowired
     private UserTicketMapper userTicketMapper;
@@ -83,7 +91,12 @@ public class TicketManagerService {
                 tdata.setStatus(new Byte(status));
             }
 
-            List<TicketWithBLOBs> list = ticketManagerDao.selectTicket(tdata);
+            List<TicketWithBLOBs> list;
+            if (uid == null || uid <= 0){
+                list = ticketManagerDao.selectTicketWithoutUTID(tdata);
+            }else{
+                list = ticketManagerDao.selectTicket(tdata);
+            }
 
             TicketResultVO resultVo = new TicketResultVO();
             List<TicketVO> listVo = new ArrayList<TicketVO>();
@@ -100,8 +113,10 @@ public class TicketManagerService {
                         vo.setIsTaken("已领取");
                     }
                 }
+
                 ticketBeenTakenAndUsed(ticket, vo);
 
+                vo.setUnread(checkUnreadTicket(uid,ticket.getTicketId()));
                 vo.setTicket(ticket);
                 fileTicketVO(vo, ticket);
                 listVo.add(vo);
@@ -114,6 +129,22 @@ public class TicketManagerService {
             e.printStackTrace();
             throw new UserException();
         }
+    }
+
+    /**
+     * 检查当前的券是否已读
+     * @param uid
+     * @param tid
+     * @return true：存在未读：false：表示已读
+     */
+    private boolean checkUnreadTicket(Long uid, String tid){
+        ShopFilter shopFilter = new ShopFilter();
+        shopFilter.setUid(uid);
+        shopFilter.setTid(tid);
+        if(logUserTicketMapper.checkUnreadTicket(shopFilter) > 0){
+            return false;
+        }
+        return true;
     }
 
     /**

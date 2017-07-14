@@ -11,6 +11,8 @@ public class UserApply {
 
     private Byte status;
 
+    private String _status;
+
     private Date createTime;
 
     public Long getId() {
@@ -51,5 +53,13 @@ public class UserApply {
 
     public void setCreateTime(Date createTime) {
         this.createTime = createTime;
+    }
+
+    public String get_status() {
+        return _status;
+    }
+
+    public void set_status(String _status) {
+        this._status = _status;
     }
 }

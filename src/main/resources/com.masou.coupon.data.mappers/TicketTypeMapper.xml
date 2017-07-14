@@ -22,6 +22,23 @@
     <include refid="Base_Column_List" />
     from dic_ticket_type where status = 1
   </select>
+
+  <select id="selectShopTicketType" parameterType="com.masou.coupon.data.filter.ShopFilter" resultMap="BaseResultMap">
+    SELECT
+    tt.*
+    FROM
+    ety_ticket t,
+    dic_ticket_type tt
+    WHERE
+    t.type_id = tt.id
+    AND t.shop_id = #{sid, jdbcType=BIGINT}
+    AND t.`status` = 1
+    AND t.period_of_validity_endTime > NOW()
+    GROUP BY
+    t.type_id
+    ORDER BY tt.id ASC
+  </select>
+
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from dic_ticket_type
     where id = #{id,jdbcType=INTEGER}

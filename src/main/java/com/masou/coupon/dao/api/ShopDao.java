@@ -58,6 +58,10 @@ public class ShopDao {
         return shopMapper.ticketUnRead(baseFilter);
     }
 
+    public Shop shopVerifyStatus(ShopFilter shopFilter){
+        return shopMapper.shopVerifyStatus(shopFilter);
+    };
+
     /**
      * 获取当前定位的店铺信息
      * @param filter

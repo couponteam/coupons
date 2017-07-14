@@ -11,6 +11,8 @@ public class User {
 
     private Integer role;
 
+    private String _role;
+
     private String phone;
 
     private String password;
@@ -84,5 +86,13 @@ public class User {
 
     public void setProfile(UserProfile profile) {
         this.profile = profile;
+    }
+
+    public String get_role() {
+        return _role;
+    }
+
+    public void set_role(String _role) {
+        this._role = _role;
     }
 }

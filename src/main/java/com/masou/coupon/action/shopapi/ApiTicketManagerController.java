@@ -2,6 +2,7 @@ package com.masou.coupon.action.shopapi;
 
 import com.masou.coupon.action.api.vo.TicketResultVO;
 import com.masou.coupon.action.api.vo.ticketvo.TicketVO;
+import com.masou.coupon.common.constant.BeValue;
 import com.masou.coupon.common.constant.DicValue;
 import com.masou.coupon.common.enums.ErrorCodeEnum;
 import com.masou.coupon.common.struct.Result;
@@ -9,6 +10,7 @@ import com.masou.coupon.common.utils.ResultHelper;
 import com.masou.coupon.data.models.Ticket;
 import com.masou.coupon.data.models.TicketWithBLOBs;
 import com.masou.coupon.exception.UserException;
+import com.masou.coupon.service.UserLogService;
 import com.masou.coupon.service.VerifyService;
 import com.masou.coupon.service.api.UserTokenService;
 import com.masou.coupon.service.shopapi.TicketManagerService;
@@ -20,6 +22,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * Created by jason on 2017/5/17.
@@ -38,6 +42,12 @@ public class ApiTicketManagerController {
 
     @Autowired
     private UserTokenService userTokenService;
+    @Autowired
+    private HttpServletRequest request;
+
+    @Autowired
+    private UserLogService userLogService;
+
 
     /**
      * 新增券
@@ -50,6 +60,7 @@ public class ApiTicketManagerController {
     public Result insertTicket(@RequestParam("data") String data,
                                @RequestParam("sid") String sid,
                                @RequestParam("token") String token){
+        userLogService.userLogs(request,BeValue.FROM_KEY_WEB);
         Long uid = userTokenService.getUid(token);
         if(uid == null || uid <= 0){
             return ResultHelper.genResult(ErrorCodeEnum.TOKEN_INVALID);
@@ -86,6 +97,7 @@ public class ApiTicketManagerController {
     @RequestMapping(value = "/select", method = RequestMethod.GET)
     public Result selectTicket(@RequestParam("tid") String tid,
                                @RequestParam("token") String token){
+        userLogService.userLogs(request,BeValue.FROM_KEY_WEB);;
         Long uid = userTokenService.getUid(token);
         if(uid == null || uid <= 0){
             return ResultHelper.genResult(ErrorCodeEnum.TOKEN_INVALID);
@@ -105,6 +117,7 @@ public class ApiTicketManagerController {
 //                                   @RequestParam("uid") Long uid,
                                    @RequestParam(value = "status", required = false) String status,
                                    @RequestParam(value = "pageSize", required = false) Integer pageSize){
+        userLogService.userLogs(request, BeValue.FROM_KEY_WEB);;
         Long uid = userTokenService.getUid(token);
         TicketResultVO ticketResultVO = ticketManagerService.showTicketList(sid, uid, page, pageSize,status);
         if(ticketResultVO != null){
@@ -121,6 +134,7 @@ public class ApiTicketManagerController {
     @RequestMapping(value = "/delete", method = RequestMethod.GET)
     public Result deleteTicket(@RequestParam("tid") String tid,
                                @RequestParam("token") String token){
+        userLogService.userLogs(request,BeValue.FROM_KEY_WEB);;
         Long uid = userTokenService.getUid(token);
         if(uid == null || uid <= 0){
             return ResultHelper.genResult(ErrorCodeEnum.TOKEN_INVALID);
@@ -140,6 +154,7 @@ public class ApiTicketManagerController {
     @RequestMapping(value = "/update", method = RequestMethod.GET)
     public Result updateTicket(@RequestParam("data") String data,
                                @RequestParam("token") String token){
+        userLogService.userLogs(request,BeValue.FROM_KEY_WEB);;
         Long uid = userTokenService.getUid(token);
         if(uid == null || uid <= 0){
             return ResultHelper.genResult(ErrorCodeEnum.TOKEN_INVALID);
@@ -160,6 +175,7 @@ public class ApiTicketManagerController {
     public Result soldOutTicket(@RequestParam("tid") String tid,
                                 @RequestParam("token") String token,
                                 @RequestParam("status") String status){
+        userLogService.userLogs(request,BeValue.FROM_KEY_WEB);
         Long uid = userTokenService.getUid(token);
         if(tid != null && tid.length() > 0){
             TicketWithBLOBs ticket = new TicketWithBLOBs();

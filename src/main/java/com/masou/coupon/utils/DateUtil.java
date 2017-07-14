@@ -164,6 +164,24 @@ public class DateUtil {
     }
 
     /**
+     * 判断获取的时候是否小于当前时间
+     * @param dbDate
+     * @return true：数据库时间过期；false：时间未过期
+     */
+    public static boolean isOutOfdate(Date dbDate){
+        if(dbDate != null){
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(dbDate);
+            Long btw = calendar.getTimeInMillis() - System.currentTimeMillis();
+            if (btw > 0){
+                return false;
+            }
+            return true;
+        }
+        return true;
+    }
+
+    /**
      *
      * @param oldDate 前一天
      * @param newDate 后一天

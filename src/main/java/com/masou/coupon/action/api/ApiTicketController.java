@@ -2,6 +2,7 @@ package com.masou.coupon.action.api;
 
 import com.masou.coupon.action.api.vo.ShopResultVO;
 import com.masou.coupon.action.api.vo.ShopTicketVO;
+import com.masou.coupon.common.constant.BeValue;
 import com.masou.coupon.common.constant.DicValue;
 import com.masou.coupon.common.enums.ErrorCodeEnum;
 import com.masou.coupon.common.struct.Result;
@@ -62,6 +63,7 @@ public class ApiTicketController {
                                @RequestParam("type") Integer type,
                                @RequestParam("page") Integer page,
                                @RequestParam("pageSize") Integer pageSize){
+        userLogService.userLogs(request,BeValue.FROM_KEY_APP);
         try {
             List<ShopTicketVO> list = ticketService.selectByType(industry,type,page,pageSize);
             if(list != null && list.size() > 0) {
@@ -76,11 +78,12 @@ public class ApiTicketController {
     @ApiOperation("用户领取券")
     @RequestMapping(value = "/get_t", method = RequestMethod.GET)
     public Result userCollectTicket(
-                                    @RequestParam("token") String token,
+                                    @RequestParam(value = "token", required = false) String token,
                                     @RequestParam(value = "tid", required = false) String tid,
                                     @RequestParam(value = "fcode", required = false) String fcode,
                                     @RequestParam(value = "sid", required = false) Long sid
                                     ){
+        userLogService.userLogs(request, BeValue.FROM_KEY_APP);
         Long uid = userTokenService.getUid(token);
         return ticketService.userCollectTicket(uid,tid, DicValue.TICKET_STATUS_GOT, fcode, sid);
     }
@@ -89,6 +92,7 @@ public class ApiTicketController {
     @RequestMapping(value = "/forward", method = RequestMethod.GET)
     public Result forwardTicket(@RequestParam("sid") Long sid,
                                 @RequestParam("token") String token){
+        userLogService.userLogs(request,BeValue .FROM_KEY_APP);
         Long uid = userTokenService.getUid(token);
         return ticketService.forwardTicket(uid,sid,ipUtil.getIpAddress(request));
     }
@@ -98,9 +102,9 @@ public class ApiTicketController {
     public Result userReadTicket(@RequestParam(value = "token", required = false) String token,
                                      @RequestParam("tid") String tid,
                                      @RequestParam(value = "status",required = false) Integer status){
-        userLogService.userLogs(request);
+        userLogService.userLogs(request,BeValue.FROM_KEY_APP);
         Long uid = userTokenService.getUid(token);
-        ShopTicketVO shopTicketVO = ticketService.userReadTicket(uid,tid,status);
+        ShopTicketVO shopTicketVO = ticketService.userReadTicket(uid,tid,status,ipUtil.getIpAddress(request));
         if(shopTicketVO != null){
             return ResultHelper.genResultWithSuccess(shopTicketVO);
         }
@@ -111,7 +115,7 @@ public class ApiTicketController {
     @RequestMapping(value = "/poplist", method = RequestMethod.GET)
     public Result popShopList(@RequestParam("page") Integer page,
                               @RequestParam(value = "pageSize", required = false) Integer pageSize){
-
+        userLogService.userLogs(request,BeValue.FROM_KEY_APP);
         return ticketService.popShopList(page, pageSize);
     }
 
@@ -122,8 +126,9 @@ public class ApiTicketController {
                            @RequestParam("token") String token,
 //                           @RequestParam(value = "uid",required = false) Long uid,
                            @RequestParam(value = "status", required = false) Integer status){
+        userLogService.userLogs(request,BeValue.FROM_KEY_APP);
         Long uid = userTokenService.getUid(token);
-        return ticketService.myTicket2(page,pageSize,uid,status);
+        return ticketService.myTicket(page,pageSize,uid,status);
     }
 
     /**
@@ -145,12 +150,12 @@ public class ApiTicketController {
                              @RequestParam(value = "token", required = false) String token,
                              @RequestParam(value = "radius", required = false) Double radius,
                              @RequestParam(value = "isFollow", required = false) String isFollow){
-
+        userLogService.userLogs(request,BeValue.FROM_KEY_APP);
         ShopResultVO shopResultVO = null;
         try {
             LocaltionFilter params = new LocaltionFilter();
             params.setType(type);
-            params.setType(industry);
+            params.setIndustry(industry);
             params.setOffset(page);
             params.setLimit(pageSize);
             params.setRadius(radius);
@@ -199,6 +204,7 @@ public class ApiTicketController {
     @ApiOperation("精选店铺")
     @RequestMapping(value = "/bestshop", method = RequestMethod.GET)
     public Result bestShop(@RequestParam(value =  "pageSize", required = false) Integer pageSize){
+        userLogService.userLogs(request,BeValue.FROM_KEY_APP);
         try {
             List<Shop> list = ticketService.bestShop(pageSize);
             if(list != null && list.size() > 0){

@@ -6,8 +6,8 @@ package com.masou.coupon.common.enums;
 public enum RoleEnum {
 
     USER(0, "普通用户"),
-    SHOP_OWNER(1, "店长"),
-    MANAGER(2, "管理员"),;
+    SHOP_OWNER(1, "店铺管理员"),
+    MANAGER(2, "系统管理员"),;
 
 
     private int role;

@@ -80,8 +80,8 @@ public class TicketDao {
      * @param record
      * @return
      */
-    public int isRetaken(UserTicket record){
-        return ticketMapper.isRetaken(record);
-    }
+//    public int isRetaken(UserTicket record){
+//        return ticketMapper.isRetaken(record);
+//    }
 
 }

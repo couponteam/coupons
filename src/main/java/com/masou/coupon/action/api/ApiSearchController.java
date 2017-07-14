@@ -1,5 +1,6 @@
 package com.masou.coupon.action.api;
 
+import com.masou.coupon.common.constant.BeValue;
 import com.masou.coupon.common.enums.ErrorCodeEnum;
 import com.masou.coupon.common.struct.Result;
 import com.masou.coupon.common.utils.ResultHelper;
@@ -42,6 +43,7 @@ public class ApiSearchController {
     @ApiOperation("热词接口")
     @RequestMapping(value = "/hotword", method = RequestMethod.GET)
     public Result hotword(@RequestParam(value = "limit", required = false) Integer limit){
+        userLogService.userLogs(request, BeValue.FROM_KEY_APP);
         try {
             List<HotWord> hotword = searchService.hotword(limit);
             if(hotword != null && hotword.size() > 0){

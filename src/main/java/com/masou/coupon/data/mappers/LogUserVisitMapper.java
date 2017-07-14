@@ -19,5 +19,7 @@ public interface LogUserVisitMapper {
 
     int updateByPrimaryKey(LogUserVisit record);
 
-    Integer webStatistic(BaseFilter baseFilter);
+    Integer webStatisticPV(BaseFilter baseFilter);
+
+    Integer webStatisticUV(BaseFilter baseFilter);
 }

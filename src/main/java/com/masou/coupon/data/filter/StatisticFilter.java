@@ -13,6 +13,8 @@ public class StatisticFilter extends BaseFilter implements Cloneable{
 
     private Long sid;
 
+    private Long uid;
+
     private Date today;
 
     private String tid;
@@ -58,6 +60,16 @@ public class StatisticFilter extends BaseFilter implements Cloneable{
     }
 
     @Override
+    public Long getUid() {
+        return uid;
+    }
+
+    @Override
+    public void setUid(Long uid) {
+        this.uid = uid;
+    }
+
+    @Override
     public Object clone() throws CloneNotSupportedException {
         StatisticFilter statisticFilter = null;
         try {
@@ -67,5 +79,6 @@ public class StatisticFilter extends BaseFilter implements Cloneable{
         }
         return statisticFilter;
     }
+
 
 }

@@ -100,7 +100,7 @@ spring:
 
 Loggers:
     Root:
-      level: info
+      level: debug
       AppenderRef:
         - ref: CONSOLE
         - ref: infoRollingFile

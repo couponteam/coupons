@@ -29,11 +29,4 @@ public class ErpStatisticController {
         return ResultHelper.genResultWithSuccess(erpStatisticService.statistic());
     }
 
-//    @ApiOperation("会员详情")
-//    @RequestMapping(value = "/mem_detail", method = RequestMethod.GET)
-//    public Result statistic(@RequestParam("token") String token,
-//                            @RequestParam("page") Integer page,
-//                            @RequestParam(value = "pageSize", required = false) Integer pageSize){
-//        return erpStatisticService.memberList(page,pageSize);
-//    }
 }
