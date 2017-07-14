@@ -49,7 +49,7 @@ public class FollowShopService {
         userShop.setShopId(sid);
         UserShop rs = userShopMapper.selectByUidSid(userShop);
         if(rs != null && rs.getId() > 0){
-            System.out.println("已关注店铺");
+            System.out.println("Already followed the shop");
             return true;
         }
         return false;

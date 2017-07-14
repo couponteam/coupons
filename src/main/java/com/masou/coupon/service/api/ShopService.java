@@ -297,22 +297,21 @@ public class ShopService {
                        return updateFollow(userShop, rs.getId());
                     }
                     //数据库中存在数据
-                    return ResultHelper.genResult(ErrorCodeEnum.FAILED.getCode(), "已关注过");
-                }else
+                    return ResultHelper.genResult(ErrorCodeEnum.FAILED.getCode(), "已关注");
+                }else {
                     //插入到关注列表中,并且自动领取那张关注即领取的券
-                    if(userShopMapper.insertSelective(userShop) > 0){
+                    if (userShopMapper.insertSelective(userShop) > 0) {
                         ShopFilter shopFilter = new ShopFilter();
                         shopFilter.setSid(sid);
                         //获取关注领取的券
                         TicketWithBLOBs ticket = ticketMapper.ticketByFollowShop(shopFilter);
-                        if(ticket != null){
-                            if(followTicketService.insertTicket(uid, ticket.getTicketId()) > 0){
-                                return ResultHelper.genResultWithSuccess();
-                            }
+                        if (ticket != null) {
+                            followTicketService.insertTicket(uid, ticket.getTicketId());
                         }
-                        return ResultHelper.genResult(ErrorCodeEnum.FAILED);
+                        return ResultHelper.genResultWithSuccess();
                     }
-                    return ResultHelper.genResultWithSuccess();
+                    return ResultHelper.genResult(ErrorCodeEnum.FAILED.getCode(),"关注失败");
+                }
             }else if (status == 2){
                 //如果为2，表示取消关注，则更新数据库
                 if(rs != null && rs.getId() > 0){

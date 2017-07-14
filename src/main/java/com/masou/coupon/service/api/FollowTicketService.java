@@ -228,7 +228,7 @@ public class FollowTicketService {
         Fcode rs = fcodeMapper.selectByFcode(fcodeObj);
         if(rs != null && rs.getId() > 0){
             //判断是否关注该店铺
-            if(followShopService.isFollowShop(rs.getUid(), rs.getSid())){
+            if(!followShopService.isFollowShop(rs.getUid(), rs.getSid())){
                 //未关注店铺，则先关注该店铺
                 followShopTicket(rs.getUid(), rs.getSid());
             }
